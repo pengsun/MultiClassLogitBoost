@@ -1,5 +1,5 @@
-classdef uci_par_Boost
-    %UCI_PAR_BOOST Summary of this class goes here
+classdef batch_par_boost_basic
+    %batch_par_boost_basic Summary of this class goes here
     %   Detailed explanation goes here
     
     properties

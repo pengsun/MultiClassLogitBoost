@@ -1,5 +1,5 @@
-classdef uci_par_VTLogitBoost < uci_par_Boost
-  %UCI_PAR_VTLogitBoost Summary of this class goes here
+classdef batch_par_VTLogitBoost < batch_par_boost_basic
+  %batch_par_VTLogitBoost Summary of this class goes here
   %   Detailed explanation goes here
   
   properties
@@ -27,12 +27,12 @@ classdef uci_par_VTLogitBoost < uci_par_Boost
         v = paras{ix}{5};
         J = paras{ix}{6};
         ns = paras{ix}{7};
-        createTask(job, @uci_par_VTLogitBoost.run,...
+        createTask(job, @batch_par_VTLogitBoost.run,...
           0, {fn_data,dir_rst, T,num_Tpre,v,J,ns});
         % log
         %
-        str_dataset = uci_par_VTLogitBoost.dataset_to_str(fn_data);
-        str_para = uci_par_VTLogitBoost.param_to_str(T,v,J,ns);
+        str_dataset = batch_par_VTLogitBoost.dataset_to_str(fn_data);
+        str_para = batch_par_VTLogitBoost.param_to_str(T,v,J,ns);
         str = [str_dataset,' ',str_para,' '];
         set(job.Tasks(ix), 'UserData',str);
       end
