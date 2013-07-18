@@ -1,5 +1,6 @@
 %%
-settings
+% settings
+settings_2
 % settings_server
 %%
 name = 'VTLogitBoost_mex';

@@ -4,7 +4,7 @@ fn_data = '.\dataset\optdigits.mat';
 dir_rst = '.\rst\VTLogitBoost\optdigits';
 
 num_Tpre = 2000;
-T = 60;
+T = 160;
 cv  = {0.1};
 cJ = {20};
 cns = {1};

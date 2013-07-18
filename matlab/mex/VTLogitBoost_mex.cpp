@@ -145,6 +145,7 @@ void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   }
   else if ( 0 == strcmp(str,"delete") ) {
     del(nlhs,plhs, nrhs,prhs);
+  }
   else if ( 0 == strcmp(str,"save") ) {
     save(nlhs,plhs, nrhs,prhs);
   }
