@@ -5,8 +5,8 @@ name = 'optdigits';
 
 % name = 'M-Basic';
 % name = 'isolet';
-dir_root1 = '.\rst\AOSOLogitBoost';
-fn1 = 'T100000_v1.0e-001_J20_ns1.mat';
+dir_root1 = '.\rst\VTLogitBoost';
+fn1 = 'T60_v1.0e-001_J20_ns1.mat';
 dir_root2 = '.\rst\AOSOLogitBoost1';
 fn2 = 'T100000_v1.0e-001_J20_ns1.mat';
 
