@@ -1,4 +1,4 @@
-classdef VTLogitBoost
+classdef VTTCLogitBoost
   % Summary of this class goes here
   %   Detailed explanation goes here
   
@@ -13,26 +13,26 @@ classdef VTLogitBoost
         nvar = size(X,1);
         var_cat_mask = uint8( zeros(nvar,1) );
       end
-      obj.ptr = VTLogitBoost_mex('train',...
+      obj.ptr = VTTCLogitBoost_mex('train',...
         X,Y,var_cat_mask,...
         T, J, v,...
         node_size);
     end
     
     function [NumIter, TrLoss,F,P,tree] = get (obj)
-      [NumIter, TrLoss, F,P] = VTLogitBoost_mex('get',obj.ptr);
+      [NumIter, TrLoss, F,P] = VTTCLogitBoost_mex('get',obj.ptr);
       tree = 0;
     end
     
     function Y = predict(obj, X, T)
       if (nargin==2) 
-        T = VTLogitBoost_mex('get',obj.ptr);
+        T = VTTCLogitBoost_mex('get',obj.ptr);
       end
-      Y = VTLogitBoost_mex('predict',obj.ptr, X, T);
+      Y = VTTCLogitBoost_mex('predict',obj.ptr, X, T);
     end
     
     function delete(obj)
-      VTLogitBoost_mex('delete',obj.ptr);
+      VTTCLogitBoost_mex('delete',obj.ptr);
     end
   end % method
   

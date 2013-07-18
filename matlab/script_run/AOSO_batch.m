@@ -4,7 +4,7 @@ dir_rst = '.\rst\AOSOLogitBoost\optdigits';
 % dir_rst = './';
 %%
 num_Tpre = 2000;
-T = 600;
+T = 3;
 cv = {0.1};
 cJ = {20};
 cns = {1};

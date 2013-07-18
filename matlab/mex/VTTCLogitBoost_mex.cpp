@@ -1,11 +1,11 @@
 #include "mex.h"
 #include "./../../src/MLData.hpp"
-#include "./../../src/VTLogitBoost.hpp"
+#include "./../../src/VTTCLogitBoost.hpp"
 #include "utilCPP.h"
 #include <cstring>
 
 // typedef for booster
-typedef VTLogitBoost booster_t;
+typedef VTTCLogitBoost booster_t;
 
 // h = train(dummy, X,Y, var_cat_mask, T,J,v, node_size);
 void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
@@ -68,7 +68,7 @@ void predict(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   pbooster->predict(&te, T);
 }
 
-// [NumIter,TrLoss,F,P] = get(dummy, h);
+// [NumIter,TrLoss, F,P] = get(dummy, h);
 void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
   /* Input */
@@ -85,7 +85,7 @@ void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
 
   plhs[1] = VecDbl_to_mxArray(pbooster->abs_grad_);
   plhs[2] = cvMatDbl_to_mxArray(pbooster->F_);
-  plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);
+  plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);  
 }
 
 // delete(dummy, h);
@@ -97,7 +97,7 @@ void del(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   booster_t* pt = (booster_t*) p;
 
   /* Delete */
-  pt->~VTLogitBoost();
+  pt->~VTTCLogitBoost();
 
   /* Output */
   return;
@@ -112,22 +112,20 @@ void save(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   long long p = (long long) ptmp[0];
   booster_t* pbooster = (booster_t*) p;  
 
-
-//  //get i
-//  int i = (int)mxGetScalar(prhs[2]); 
-//  i--;
-//
-//  /*Output*/
-//  plhs[0] = cvMatInt_to_mxArray(pbooster->stor_Trees_[i].nodes_);
-//  plhs[1] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].splits_);
-//  plhs[2] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].leaves_);
+  //  //get i
+  //  int i = (int)mxGetScalar(prhs[2]); 
+  //  i--;
+  //
+  //  /*Output*/
+  //  plhs[0] = cvMatInt_to_mxArray(pbooster->stor_Trees_[i].nodes_);
+  //  plhs[1] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].splits_);
+  //  plhs[2] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].leaves_);
 
   //  TODO
   plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);  
   plhs[1] = mxCreateDoubleMatrix(1,1,mxREAL); 
   plhs[2] = mxCreateDoubleMatrix(1,1,mxREAL); 
 }
-
 // entry point
 void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
@@ -145,6 +143,7 @@ void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   }
   else if ( 0 == strcmp(str,"delete") ) {
     del(nlhs,plhs, nrhs,prhs);
+  }
   else if ( 0 == strcmp(str,"save") ) {
     save(nlhs,plhs, nrhs,prhs);
   }

@@ -65,6 +65,7 @@ void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
    plhs[1] = VecDbl_to_mxArray(pbooster->abs_grad_);
    plhs[2] = cvMatDbl_to_mxArray(pbooster->F_);
    plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);
+
 }
 
 // Y = predict(dummy, h, X, T);

@@ -1,7 +1,7 @@
 %% optdigits
 % fn_data = 'D:\Users\sp\data\dataset_mat\optdigits.mat';
 fn_data = '.\dataset\optdigits.mat';
-dir_rst = '.\rst\VTLogitBoost\optdigits';
+dir_rst = '.\rst\VTTCLogitBoost\optdigits';
 
 num_Tpre = 3;
 T = 3;
@@ -9,7 +9,7 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 
-h = batch_VTLogitBoost();
+h = batch_VTTCLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;

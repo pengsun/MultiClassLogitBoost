@@ -2,12 +2,12 @@
 settings
 % settings_server
 %%
-name = 'VTLogitBoost_mex';
+name = 'VTTCLogitBoost_mex';
 fn = {...
   [name,'.cpp'],...
   'utilCPP.cpp',...
   fullfile(dir_src,'MLData.cpp'),...
-  fullfile(dir_src,'VTLogitBoost.cpp')
+  fullfile(dir_src,'VTTCLogitBoost.cpp')
   };
 %% Debug
 % outnamed = sprintf('-output %s', [name,'d']);
