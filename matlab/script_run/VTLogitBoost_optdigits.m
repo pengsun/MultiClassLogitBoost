@@ -3,8 +3,8 @@
 fn_data = '.\dataset\optdigits.mat';
 dir_rst = '.\rst\VTLogitBoost\optdigits';
 
-num_Tpre = 3;
-T = 3;
+num_Tpre = 2000;
+T = 1000;
 cv  = {0.1};
 cJ = {20};
 cns = {1};

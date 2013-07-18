@@ -8,14 +8,14 @@ classdef VTTCLogitBoost
   
   methods
     function obj = train(obj,X,Y, varargin)
-      [var_cat_mask,T,J,v, node_size] = parse_input(varargin{:});
+      [var_cat_mask,T,J,lambda, node_size] = parse_input(varargin{:});
       if (isempty(var_cat_mask))
         nvar = size(X,1);
         var_cat_mask = uint8( zeros(nvar,1) );
       end
       obj.ptr = VTTCLogitBoost_mex('train',...
         X,Y,var_cat_mask,...
-        T, J, v,...
+        T, J, lambda,...
         node_size);
     end
     
@@ -38,7 +38,7 @@ classdef VTTCLogitBoost
   
 end % 
 
-function [var_cat_mask, T, J, v, node_size] = parse_input(varargin)
+function [var_cat_mask, T, J, lambda, node_size] = parse_input(varargin)
   var_cat_mask = [];
   T = 5;
   J = 8;
@@ -51,8 +51,8 @@ function [var_cat_mask, T, J, v, node_size] = parse_input(varargin)
         var_cat_mask = varargin{i+1};
       case 'T'
         T = varargin{i+1};
-      case 'v'
-        v = varargin{i+1};
+      case 'lambda'
+        lambda = varargin{i+1};
       case 'J'
         J = varargin{i+1};
       case 'node_size'

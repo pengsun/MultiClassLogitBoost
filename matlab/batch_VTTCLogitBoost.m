@@ -1,4 +1,4 @@
-classdef batch_VTTCLogitBoost < batch_boost_basic
+classdef batch_VTTCLogitBoost < batch_tcboost_basic
   %batch_VTTCLogitBoost Summary of this class goes here
   %   Detailed explanation goes here
   

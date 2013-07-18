@@ -7,7 +7,7 @@
 // typedef for booster
 typedef VTTCLogitBoost booster_t;
 
-// h = train(dummy, X,Y, var_cat_mask, T,J,v, node_size);
+// h = train(dummy, X,Y, var_cat_mask, T,J,lambda, node_size);
 void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
   /* Input */
@@ -22,8 +22,8 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   int T = (int)mxGetScalar(prhs[4]);
   // J
   int J = (int)mxGetScalar(prhs[5]);
-  // v
-  double v = (double)mxGetScalar(prhs[6]);
+  // lambda
+  double lambda = (double)mxGetScalar(prhs[6]);
   // node_size
   int node_size = (int)mxGetScalar(prhs[7]);
 
@@ -33,7 +33,7 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
 
   booster_t* pbooster = new booster_t;
   pbooster->param_.T = T;
-  pbooster->param_.v = v;
+  pbooster->param_.lambda = lambda;
   pbooster->param_.J = J;
   pbooster->param_.ns = node_size;
   pbooster->train(&tr);

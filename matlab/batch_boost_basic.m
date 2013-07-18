@@ -1,11 +1,11 @@
 classdef batch_boost_basic
-  % Basic class for booster running on uci dataset
+  % Basic class for boosting's batch run
   %   Detailed explanation goes here
   
   properties
     num_Tpre = 4;
     T = 1;
-    v = 1;
+    v = 1; % for fixed step boosting
     J = 2;
     ns = 1;
     
