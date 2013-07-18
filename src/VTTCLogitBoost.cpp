@@ -33,6 +33,7 @@ VTTCLogitNode::VTTCLogitNode(int _K)
   parent_ = left_ = right_ = 0;
   
   fitvals_.assign(_K, 0);
+  fitvals_prev_.assign(_K,0);
 }
 
 VTTCLogitNode::VTTCLogitNode( int _id, int _K )
@@ -41,6 +42,7 @@ VTTCLogitNode::VTTCLogitNode( int _id, int _K )
   parent_ = left_ = right_ = 0;
   
   fitvals_.assign(_K, 0);
+  fitvals_prev_.assign(_K,0);
 }
 
 int VTTCLogitNode::calc_dir( float* _psample )
@@ -63,7 +65,7 @@ int VTTCLogitNode::calc_dir( float* _psample )
 }
 // Implementation of VTTCLogitSolver
 //const double VTTCLogitSolver::EPS = 0.01;
-const double VTTCLogitSolver::MAXGAMMA = 5.0;
+//const double VTTCLogitSolver::MAXGAMMA = 5.0;
 VTTCLogitSolver::VTTCLogitSolver( VTTCLogitData*  _data)
 { 
   data_ = _data;
@@ -117,7 +119,7 @@ void VTTCLogitSolver::update_internal_decre( int idx )
 
 }
 
-void VTTCLogitSolver::calc_gamma( double *gamma)
+void VTTCLogitSolver::calc_gamma( const double* init_gamma, double lambda, double* gamma )
 {
   int K = mg_.size();
   for (int kk = 0; kk < K; ++kk) {
@@ -126,10 +128,22 @@ void VTTCLogitSolver::calc_gamma( double *gamma)
      //if (sh <= 0) cv::error("VTTCLogitSolver::calc_gamma: Invalid Hessian.");
     if (sh == 0) sh = 1;
 
-    double sgamma = smg/sh;
+    // update node value based on L1 regularization (soft thresholding)
+    double alpha = *(init_gamma+kk); // the current value (coordinate)
+    double val1 = (-smg + lambda)/sh;
+    double val2 = (-smg - lambda)/sh;
+    double sgamma;
+    if (alpha > val1)
+      sgamma = alpha + (-val1);
+    else if (alpha < val2)
+      sgamma = alpha + (-val2);
+    else
+      sgamma = 0;
+
+    // capping
     double cap = sgamma;
-    if (cap<-MAXGAMMA) cap = -MAXGAMMA;
-    else if (cap>MAXGAMMA) cap = MAXGAMMA;
+    //if (cap<-MAXGAMMA) cap = -MAXGAMMA;
+    //else if (cap>MAXGAMMA) cap = MAXGAMMA;
     *(gamma+kk) = cap;
 
   }
@@ -154,6 +168,7 @@ VTTCLogitTree::Param::Param()
 {
   max_leaves_ = 2;
   node_size_ = 5;
+  lambda_ = 0.0;
 }
 // Implementation of VTTCLogitTree
 void VTTCLogitTree::split( VTTCLogitData* _data )
@@ -183,9 +198,9 @@ void VTTCLogitTree::split( VTTCLogitData* _data )
     }
 
     split_node(cur_node,_data);
+    // release memory: no longer used in later splitting
     VecIdx tmp;
-    tmp.swap(cur_node->sample_idx_); // release memory.
-    // no longer used in later splitting
+    tmp.swap(cur_node->sample_idx_); 
 
     // find best split for the two newly created nodes
     find_best_candidate_split(cur_node->left_, _data);
@@ -211,10 +226,12 @@ void VTTCLogitTree::fit( VTTCLogitData* _data )
 
     fit_node(nd,_data);
 
-    // release memory.
-    // no longer used in later splitting
+    // do NOT remove example index for this leaf
+#if 0
+    // release memory: no longer used in later splitting
     VecIdx tmp;
     tmp.swap(nd->sample_idx_);
+#endif
   }
 }
 
@@ -508,7 +525,10 @@ void VTTCLogitTree::fit_node( VTTCLogitNode* _node, VTTCLogitData* _data )
 
   sol.update_internal(_node->sample_idx_);
 
-  sol.calc_gamma( &(_node->fitvals_[0]) );
+  // cache node values before updating
+  _node->fitvals_prev_ = _node->fitvals_;
+  sol.calc_gamma(&(_node->fitvals_prev_[0]), this->param_.lambda_, 
+                 &(_node->fitvals_[0]) );
 
 #ifdef OUTPUT
   //os << "id = " << _node->id_ << "(ter), ";
@@ -578,13 +598,45 @@ void VTTCLogitTree::fit_node( VTTCLogitNode* _node, VTTCLogitData* _data )
 
 
 
+void VTTCLogitTree::predict_prev_val( MLData* _data )
+{
+  int N = _data->X.rows;
+  int K = K_;
+  if (_data->Y.rows!=N || _data->Y.cols!=K)
+    _data->Y.create(N,K);
+
+  for (int i = 0; i < N; ++i) {
+    float* p = _data->X.ptr<float>(i);
+    float* score = _data->Y.ptr<float>(i);
+    predict_prev_val(p,score);
+  }
+}
+
+void VTTCLogitTree::predict_prev_val( float* _sample, float* _score )
+{
+  // initialize
+  for (int k = 0; k < K_; ++k) {
+    *(_score+k) = 0;
+  }
+
+  // update all K classes
+  VTTCLogitNode* nd;
+  nd = get_node(_sample);
+
+  for (int k = 0; k < K_; ++k) {
+    *(_score + k) = static_cast<float>( nd->fitvals_prev_[k] );
+  }
+
+}
+
 // Implementation of VTTCLogitBoost::Param
 VTTCLogitBoost::Param::Param()
 {
   T = 2;
-  v = 0.1;
+  lambda = 0.1;
   J = 4;
   ns = 1;
+  TRound = 2;
 }
 // Implementation of VTTCLogitBoost
 const double VTTCLogitBoost::EPS_LOSS = 1e-14;
@@ -597,11 +649,15 @@ void VTTCLogitBoost::train( MLData* _data )
 #ifdef OUTPUT
     os << "t = " << t << endl;
 #endif // OUTPUT
-    trees_[t].split(&klogitdata_);
-    trees_[t].fit(&klogitdata_);
+    trees_[t].split(&logitdata_);
+#if 0
+    trees_[t].fit(&logitdata_);
+#endif
 
-    update_F(t);
-    update_p();
+    // Totally corrective: cyclically revisit and update all tree leveas
+    update_all_tree_leaves(t);
+
+    // update loss & gradients
     calc_loss(_data);
     calc_loss_iter(t);
     calc_grad(t);
@@ -638,13 +694,12 @@ void VTTCLogitBoost::predict( float* _sapmle, float* _score )
   } // for k
 
   // sum of tree
-  float v = float(param_.v);
   vector<float> s(K_);
   for (int t = 0; t < NumIter_; ++t) {
     trees_[t].predict (_sapmle, &s[0]);
 
     for (int k = 0; k < K_; ++k) {
-      *(_score+k) += (v*s[k]);
+      *(_score+k) += (s[k]);
     } // for k
   } // for t
 }
@@ -695,13 +750,12 @@ void VTTCLogitBoost::predict( float* _sapmle, float* _score, int _Tpre )
     *(_score+k) = 0;
 
   // sum of tree
-  float v = float(param_.v);
   vector<float> s(K_);
   for (int t = Tpre_beg_; t < _Tpre; ++t ) {
     trees_[t].predict (_sapmle, &s[0]);
 
     for (int k = 0; k < K_; ++k) {
-      *(_score+k) += (v*s[k]);
+      *(_score+k) += (s[k]);
     }
   }
 
@@ -718,12 +772,13 @@ int VTTCLogitBoost::get_num_iter()
   return NumIter_;
 }
 
-//double VTTCLogitBoost::get_train_loss()
-//{
-//  if (NumIter_<1) return DBL_MAX;
-//  return L_iter_.at<double>(NumIter_-1);
-//}
-
+#if 0
+double VTTCLogitBoost::get_train_loss()
+{
+  if (NumIter_<1) return DBL_MAX;
+  return L_iter_.at<double>(NumIter_-1);
+}
+#endif
 void VTTCLogitBoost::train_init( MLData* _data )
 {
   // class count
@@ -744,10 +799,10 @@ void VTTCLogitBoost::train_init( MLData* _data )
   // iteration for training
   NumIter_ = 0;
 
-  // AOTOData
-  klogitdata_.data_cls_ = _data;
-  klogitdata_.p_ = &p_;
-  klogitdata_.L_ = &L_;
+  // logitData
+  logitdata_.data_cls_ = _data;
+  logitdata_.p_ = &p_;
+  logitdata_.L_ = &L_;
 
   // trees
   trees_.clear();
@@ -755,6 +810,7 @@ void VTTCLogitBoost::train_init( MLData* _data )
   for (int t = 0; t < param_.T; ++t) {
     trees_[t].param_.max_leaves_ = param_.J;
     trees_[t].param_.node_size_ = param_.ns;
+    trees_[t].param_.lambda_ = param_.lambda;
   }
 
   // gradient/delta
@@ -765,18 +821,19 @@ void VTTCLogitBoost::train_init( MLData* _data )
   Tpre_beg_ = 0;
 }
 
-void VTTCLogitBoost::update_F(int t)
+void VTTCLogitBoost::update_F_using_tree(int t)
 {
-  int N = klogitdata_.data_cls_->X.rows;
-  double v = param_.v;
-  vector<float> f(K_);
+  int N = logitdata_.data_cls_->X.rows;
+  vector<float> f(K_), f_prev(K_); // current, previous tree node values
   for (int i = 0; i < N; ++i) {
-    float *psample = klogitdata_.data_cls_->X.ptr<float>(i);
+    float *psample = logitdata_.data_cls_->X.ptr<float>(i);
     trees_[t].predict(psample,&f[0]);
+    trees_[t].predict_prev_val(psample,&f_prev[0]);
 
     double* pF = F_.ptr<double>(i);
     for (int k = 0; k < K_; ++k) {
-      *(pF+k) += (v*f[k]);
+      *(pF+k) -= (f_prev[k]);
+      *(pF+k) += (f[k]);
       // MAX cap
       if (*(pF+k) > MAX_F) *(pF+k) = MAX_F; // TODO: make the threshold a constant variable
     } // for k
@@ -808,30 +865,31 @@ void VTTCLogitBoost::update_p()
   }// for n  
 }
 
-//bool VTTCLogitBoost::should_stop( int t )
-//{
-//  int N = F_.rows;
-//  //double peps = exp(MIN_F-1); // min p <--> MIN_F
-//  double delta = 0;
-//    
-//  for (int i = 0; i < N; ++i) {
-//    double* ptr_pi = p_.ptr<double>(i);
-//    int yi = int( klogitdata_.data_cls_->Y.at<float>(i) );
-//
-//    for (int k = 0; k < K_; ++k) {
-//      double pik = *(ptr_pi+k);
-//      if (yi==k) delta += std::abs( 1-pik );
-//      else       delta += std::abs( -pik );    
-//    }
-//  }
-//  
-//  abs_grad_[t] = delta;
-//  if ( delta < (2*N*K_*1e-3) ) // TODO: make the threshold a constant variable
-//    return true;
-//  else
-//    return false;
-//}
+#if 0
+bool VTTCLogitBoost::should_stop( int t )
+{
+  int N = F_.rows;
+  //double peps = exp(MIN_F-1); // min p <--> MIN_F
+  double delta = 0;
+    
+  for (int i = 0; i < N; ++i) {
+    double* ptr_pi = p_.ptr<double>(i);
+    int yi = int( logitdata_.data_cls_->Y.at<float>(i) );
 
+    for (int k = 0; k < K_; ++k) {
+      double pik = *(ptr_pi+k);
+      if (yi==k) delta += std::abs( 1-pik );
+      else       delta += std::abs( -pik );    
+    }
+  }
+  
+  abs_grad_[t] = delta;
+  if ( delta < (2*N*K_*1e-3) ) // TODO: make the threshold a constant variable
+    return true;
+  else
+    return false;
+}
+#endif
 void VTTCLogitBoost::calc_loss( MLData* _data )
 {
   const double PMIN = 0.0001;
@@ -869,7 +927,7 @@ void VTTCLogitBoost::calc_grad( int t )
     
   for (int i = 0; i < N; ++i) {
     double* ptr_pi = p_.ptr<double>(i);
-    int yi = int( klogitdata_.data_cls_->Y.at<float>(i) );
+    int yi = int( logitdata_.data_cls_->Y.at<float>(i) );
 
     for (int k = 0; k < K_; ++k) {
       double pik = *(ptr_pi+k);
@@ -881,5 +939,19 @@ void VTTCLogitBoost::calc_grad( int t )
   abs_grad_[t] = delta;
 }
 
+void VTTCLogitBoost::update_all_tree_leaves(int t)
+{
+  // at each round, cyclize each tree
+  for (int r = 0; r < param_.TRound; ++r) {
+    // for each tree, update its leaf values
+    for (int itree = t; itree >= 0; --itree) {
+      trees_[itree].fit(&logitdata_);
 
+      // update working variables. note that each node's examples are disjoint, so
+      // we can do the updating late
+      update_F_using_tree(itree);
+      update_p();
+    }
+  }
 
+}

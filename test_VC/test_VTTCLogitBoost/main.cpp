@@ -72,9 +72,9 @@ int main ()
 
   // AOSO Boost
   VTTCLogitBoost ab;
-  ab.param_.J = 4;
-  ab.param_.T = 3000;
-  ab.param_.v = 0.5;
+  ab.param_.J = 6;
+  ab.param_.T = 100;
+  ab.param_.lambda = 0.5;
   ab.param_.ns = 1;
   ab.train(&tr);
 

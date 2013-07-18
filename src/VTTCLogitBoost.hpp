@@ -34,7 +34,7 @@ public:
   double left_node_gain_, right_node_gain_;
 };
 
-// AOSO Node. Vector value
+// Node. Vector value
 struct VTTCLogitNode {
 public:
   VTTCLogitNode (int _K);
@@ -43,7 +43,7 @@ public:
   int calc_dir (float* _psample);
 
 public:
-  std::vector<double> fitvals_;
+  std::vector<double> fitvals_, fitvals_prev_; // current, previous node values
 
   int id_; // node ID. 0 for root node
   VTTCLogitNode *parent_, *left_, *right_; //
@@ -66,9 +66,9 @@ typedef std::priority_queue<VTTCLogitNode*,
                             VTTCLogitNodeLess>
         QueVTTCLogitNode;
 
-// Adaptive One-vs-One Solver
+// Solver (K-vector)
 struct VTTCLogitSolver {
-  static const double MAXGAMMA;
+  //static const double MAXGAMMA;
   //static const double EPS;
 
   VTTCLogitSolver (VTTCLogitData* _data);
@@ -77,7 +77,7 @@ struct VTTCLogitSolver {
   void update_internal_incre (int idx);
   void update_internal_decre (int idx);
   
-  void calc_gamma (double* gamma);
+  void calc_gamma (const double* init_gamma, double lambda, double* gamma);
   void calc_gain (double& gain);
 
 public:
@@ -85,12 +85,13 @@ public:
   VTTCLogitData* data_;
 };
 
-// AOSO Tree
+// Regression Tree
 class VTTCLogitTree {
 public:
   struct Param {
     int max_leaves_; // maximum leaves (terminal nodes)
     int node_size_;   // minimum sample size in leaf
+    double lambda_; // tuning parameter for L1 regularization
     Param ();
   };
   Param param_;
@@ -102,6 +103,9 @@ public:
   VTTCLogitNode* get_node (float* _sample);
   void predict (MLData* _data);
   void predict (float* _sample, float* _score);
+
+  void predict_prev_val (MLData* _data);
+  void predict_prev_val (float* _sample, float* _score);
 
 protected:
   void clear ();
@@ -120,6 +124,8 @@ protected:
   void calc_gain (VTTCLogitNode* _node, VTTCLogitData* _data);
   virtual void fit_node (VTTCLogitNode* _node, VTTCLogitData* _data);
 
+
+
 protected:
   std::list<VTTCLogitNode> nodes_; // all nodes
   QueVTTCLogitNode candidate_nodes_; // priority queue of candidate leaves for splitting
@@ -132,7 +138,7 @@ protected:
 // vector of VTTCLogitTree
 typedef std::vector<VTTCLogitTree> VecVTTCLogitTree;
 
-// AOTO Boost
+// Boost
 class VTTCLogitBoost {
 public:
   static const double EPS_LOSS;
@@ -141,9 +147,10 @@ public:
 public:
   struct Param {
     int T;     // max iterations
-    double v;  // shrinkage
+    double lambda;  // magnitude for L1 regularizer
     int J;     // #terminal nodes
     int ns;    // node size
+    int TRound;     // number of rounds for cyclical coordinate descent
     Param ();
   };
   Param param_;
@@ -160,14 +167,19 @@ public:
   int get_num_iter ();
   //double get_train_loss ();
 
+
 protected:
   void train_init (MLData* _data);
-  void update_F(int t);
+  void update_F_using_tree(int t);
   void update_p();
+
   void calc_loss (MLData* _data);
   void calc_loss_iter (int t);
-  bool should_stop (int t);
   void calc_grad (int t);
+
+  bool should_stop (int t);
+
+  void update_all_tree_leaves (int t);
 
 public:
   std::vector<double> abs_grad_; // total gradient. indicator for stopping.
@@ -178,7 +190,7 @@ protected:
   cv::Mat_<double> L_; // Loss. #samples
   cv::Mat_<double> L_iter_; // Loss. #iteration
   int NumIter_; // actual iteration number
-  VTTCLogitData klogitdata_;
+  VTTCLogitData logitdata_;
   VecVTTCLogitTree trees_;
 
   int Tpre_beg_; // Beginning tree for test data
