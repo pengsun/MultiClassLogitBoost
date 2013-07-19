@@ -65,7 +65,7 @@ int VTTCLogitNode::calc_dir( float* _psample )
 }
 // Implementation of VTTCLogitSolver
 //const double VTTCLogitSolver::EPS = 0.01;
-//const double VTTCLogitSolver::MAXGAMMA = 5.0;
+const double VTTCLogitSolver::MAXGAMMA = 5.0;
 VTTCLogitSolver::VTTCLogitSolver( VTTCLogitData*  _data)
 { 
   data_ = _data;
@@ -140,10 +140,13 @@ void VTTCLogitSolver::calc_gamma( const double* init_gamma, double lambda, doubl
     else
       sgamma = 0;
 
+    // shrinkage
+    //sgamma = 0.1 * sgamma;
+
     // capping
     double cap = sgamma;
-    //if (cap<-MAXGAMMA) cap = -MAXGAMMA;
-    //else if (cap>MAXGAMMA) cap = MAXGAMMA;
+    if (cap<-MAXGAMMA) cap = -MAXGAMMA;
+    else if (cap>MAXGAMMA) cap = MAXGAMMA;
     *(gamma+kk) = cap;
 
   }
@@ -633,10 +636,10 @@ void VTTCLogitTree::predict_prev_val( float* _sample, float* _score )
 VTTCLogitBoost::Param::Param()
 {
   T = 2;
-  lambda = 0.1;
+  lambda = 0.0;
   J = 4;
   ns = 1;
-  TRound = 2;
+  TRound = 6;
 }
 // Implementation of VTTCLogitBoost
 const double VTTCLogitBoost::EPS_LOSS = 1e-14;

@@ -68,7 +68,7 @@ typedef std::priority_queue<VTTCLogitNode*,
 
 // Solver (K-vector)
 struct VTTCLogitSolver {
-  //static const double MAXGAMMA;
+  static const double MAXGAMMA;
   //static const double EPS;
 
   VTTCLogitSolver (VTTCLogitData* _data);

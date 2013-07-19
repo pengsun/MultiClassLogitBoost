@@ -1,14 +1,23 @@
 %%
 % name = 'poker100k';
-% name = 'pendigits';
-name = 'optdigits';
+name = 'pendigits';
+% name = 'optdigits';
 % name = 'M-Basic';
 % name = 'isolet';
 
-dir_root1 = '.\rst\VTLogitBoost';
-fn1 = 'T160_v1.0e-001_J20_ns1.mat';
-dir_root2 = '.\rst\VTTCLogitBoost';
-fn2 = 'T160_lambda145_J20_ns1.mat';
+algoname1 = 'VTLogitBoost';
+dir_root1 = fullfile('.\rst',algoname1);
+fn1 = 'T300_v1.0e-001_J20_ns1.mat';
+
+algoname2 = 'VTTCLogitBoost';
+dir_root2 = fullfile('.\rst',algoname2);
+fn2 = 'T300_lambda0_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-007_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-006_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-005_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-004_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-003_J20_ns1.mat';
+% fn2 = 'T300_lambda1.0e-002_J20_ns1.mat';
 
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
@@ -18,6 +27,7 @@ err_it1 = tmp.err_it;
 abs_grad1 = tmp.abs_grad;
 F1 = tmp.F;
 num_it1 = tmp.num_it;
+clear tmp;
 
 ffn2 = fullfile(dir_root2,name,fn2);
 tmp = load(ffn2);
@@ -31,21 +41,32 @@ num_it2 = tmp.num_it;
 figure('name',name); title error; hold on;
 % plot(it1,err_it1, 'color','r','marker','.');
 % plot(it2,err_it2, 'color','b','marker','.');
-plot(it1,err_it1, 'color','r','lineWidth', 2);
-plot(it2,err_it2, 'color','b','lineWidth', 2);
-legend('VT','VTTC'); grid on; hold off; 
+plot(it1,err_it1, 'color','r','lineWidth', 2, 'marker','s');
+plot(it2,err_it2, 'color','b','lineWidth', 2, 'marker','.');
+h = legend(...
+    [algoname1,'-',fn1],...
+    [algoname2,'-',fn2]);
+set(h,'Interpreter','none'); 
+grid on; hold off; 
 
 % tune the appearence
 ylim = get(gca,'ylim');
-set(gca,'ylim',ylim/2);
+% set(gca,'ylim',ylim/2);
+set(gca, 'ylim', [0,500]);
 
-% %% grad
-% figure('name',name);  title grad; hold on;
-% plot(it1,abs_grad1(it1), 'color','r','marker','.');
-% plot(it2,abs_grad2(it2), 'color','b','marker','.');
-% legend('AOSO','AOSO1'); grid on;  hold off;
-% 
-% % tune the appearence
+%% grad
+figure('name',name);  title grad; hold on;
+% plot(it1, log10( abs_grad1(it1) ), 'color','r','marker','.');
+% plot(it2, log10( abs_grad2(it2) ), 'color','b','marker','.');
+plot(it1, abs_grad1(it1), 'color','r','marker','s');
+plot(it2, abs_grad2(it2), 'color','b','marker','.');
+h = legend(...
+    [algoname1,'-',fn1],...
+    [algoname2,'-',fn2]);
+set(h, 'Interpreter','none'); 
+grid on;  hold off;
+
+% tune the appearence
 % ylim = get(gca,'ylim');
 % set(gca,'ylim',ylim/3);
 % 

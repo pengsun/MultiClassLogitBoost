@@ -1,0 +1,7 @@
+*.obj
+*.manifest
+*.ilk
+*.idb
+*.dep
+*.pdb
+*.ncb

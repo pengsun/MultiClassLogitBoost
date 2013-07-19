@@ -1,18 +1,18 @@
-%% optdigits
-% fn_data = 'D:\Users\sp\data\dataset_mat\optdigits.mat';
-fn_data = '.\dataset\optdigits.mat';
-dir_rst = '.\rst\VTTCLogitBoost\optdigits';
+%% 
+name = 'optdigits';
+fn_data = fullfile('.\dataset',[name,'.mat']);
+dir_rst = fullfile('.\rst\VTLogitBoost',name);
 
 num_Tpre = 2000;
-T = 160;
-clambda  = {145};
+T = 300;
+cv  = {0.1};
 cJ = {20};
 cns = {1};
 
-h = batch_VTTCLogitBoost();
+h = batch_VTLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
-h.clambda = clambda;
+h.cv = cv;
 h.cJ = cJ;
 h.cns = cns;
 run_all_param(h, fn_data, dir_rst);
@@ -35,4 +35,3 @@ clear h;
 % h.cns = cns;
 % run_all_param(h, fn_data, dir_rst);
 % clear h;
-
