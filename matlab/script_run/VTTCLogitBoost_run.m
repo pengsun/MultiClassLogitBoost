@@ -1,11 +1,11 @@
 %% 
-name = 'optdigits';
+name = 'pendigits';
 fn_data = fullfile('.\dataset',[name,'.mat']);
 dir_rst = fullfile('.\rst\VTTCLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 300;
-clambda  = {1e-4};
+T = 700;
+clambda  = {1e-8};
 cJ = {20};
 cns = {1};
 %%

@@ -1,10 +1,10 @@
 %% 
-name = 'optdigits';
+name = 'pendigits';
 fn_data = fullfile('.\dataset',[name,'.mat']);
 dir_rst = fullfile('.\rst\VTLogitBoost',name);
 
 num_Tpre = 2000;
-T = 300;
+T = 700;
 cv  = {0.1};
 cJ = {20};
 cns = {1};

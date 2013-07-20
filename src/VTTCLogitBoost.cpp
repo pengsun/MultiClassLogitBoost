@@ -140,13 +140,15 @@ void VTTCLogitSolver::calc_gamma( const double* init_gamma, double lambda, doubl
     else
       sgamma = 0;
 
-    // shrinkage
-    //sgamma = 0.1 * sgamma;
-
     // capping
     double cap = sgamma;
     if (cap<-MAXGAMMA) cap = -MAXGAMMA;
     else if (cap>MAXGAMMA) cap = MAXGAMMA;
+
+    // shrinkage
+    //cap = 0.1 * cap;
+
+    // do the real updating
     *(gamma+kk) = cap;
 
   }
@@ -642,7 +644,7 @@ VTTCLogitBoost::Param::Param()
   TRound = 1;
 }
 // Implementation of VTTCLogitBoost
-const double VTTCLogitBoost::EPS_LOSS = 1e-14;
+const double VTTCLogitBoost::EPS_LOSS = 1e-16;
 const double VTTCLogitBoost::MAX_F = 100;
 void VTTCLogitBoost::train( MLData* _data )
 {
@@ -790,7 +792,7 @@ void VTTCLogitBoost::train_init( MLData* _data )
   // F, p
   int N = _data->X.rows;
   F_.create(N,K_); 
-  F_ = 1;
+  F_ = 0.0;
   p_.create(N,K_); 
   update_p();
 

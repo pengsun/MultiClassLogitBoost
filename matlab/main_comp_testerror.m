@@ -5,23 +5,43 @@ name = 'optdigits';
 % name = 'M-Basic';
 % name = 'isolet';
 %% algo name
-% algoname1 = 'VTLogitBoost';
-% dir_root1 = fullfile('.\rst',algoname1);
-% fn1 = 'T300_v1.0e-001_J20_ns1.mat';
-algoname1 = 'VTTCLogitBoost_TRound5';
+algoname1 = 'VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T300_lambda0_J20_ns1.mat';
-% fn1 = 'T300_lambda1.0e-004_J20_ns1.mat';
+% fn1 = 'T300_v1.0e-001_J20_ns1.mat';
+fn1 = 'T700_v1.0e-001_J20_ns1.mat';
 
 algoname2 = 'VTTCLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T300_lambda0_J20_ns1.mat';
-% fn2 = 'T300_lambda1.0e-007_J20_ns1.mat';
-% fn2 = 'T300_lambda1.0e-006_J20_ns1.mat';
-% fn2 = 'T300_lambda1.0e-005_J20_ns1.mat';
+% fn2 = 'T700_lambda0_J20_ns1.mat';
+% fn2 = 'T700_lambda1.0e-008_J20_ns1.mat';
+% fn2 = 'T700_lambda1.0e-007_J20_ns1.mat';
+% fn2 = 'T700_lambda1.0e-006_J20_ns1.mat';
+fn2 = 'T700_lambda1.0e-005_J20_ns1.mat';
 % fn2 = 'T300_lambda1.0e-004_J20_ns1.mat';
 % fn2 = 'T300_lambda1.0e-003_J20_ns1.mat';
 % fn2 = 'T300_lambda1.0e-002_J20_ns1.mat';
+% fn2 = 'T700_lambda1.0e-001_J20_ns1.mat';
+
+% algoname2 = 'VTTCLogitBoost';
+% dir_root2 = fullfile('.\rst',algoname2);
+% fn2 = 'T300_lambda0_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-007_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-006_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-005_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-004_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-003_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-002_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-001_J20_ns1.mat';
+
+% algoname2 = 'VTTCLogitBoost_noshrinkage_TRound1';
+% dir_root2 = fullfile('.\rst',algoname2);
+% fn2 = 'T300_lambda0_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-007_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-006_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-005_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-004_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-003_J20_ns1.mat';
+% % fn2 = 'T300_lambda1.0e-002_J20_ns1.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -59,10 +79,10 @@ set(gca, 'ylim', [0,500]);
 
 %% grad
 figure('name',name);  title grad; hold on;
-% plot(it1, log10( abs_grad1(it1) ), 'color','r','marker','.');
-% plot(it2, log10( abs_grad2(it2) ), 'color','b','marker','.');
-plot(it1, abs_grad1(it1), 'color','r','marker','o');
-plot(it2, abs_grad2(it2), 'color','b','marker','.');
+plot(it1, log10( eps + abs_grad1(it1) ), 'color','r','marker','.');
+plot(it2, log10( eps + abs_grad2(it2) ), 'color','b','marker','.');
+% plot(it1, abs_grad1(it1), 'color','r','marker','o');
+% plot(it2, abs_grad2(it2), 'color','b','marker','.');
 h = legend(...
     [algoname1,'-',fn1],...
     [algoname2,'-',fn2]);
