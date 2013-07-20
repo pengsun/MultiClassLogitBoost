@@ -1,6 +1,6 @@
 %%
-% settings_2
-settings
+settings_2
+% settings
 % settings_server
 %%
 name = 'VTTCLogitBoost_mex';

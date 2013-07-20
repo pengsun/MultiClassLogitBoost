@@ -639,7 +639,7 @@ VTTCLogitBoost::Param::Param()
   lambda = 0.0;
   J = 4;
   ns = 1;
-  TRound = 6;
+  TRound = 1;
 }
 // Implementation of VTTCLogitBoost
 const double VTTCLogitBoost::EPS_LOSS = 1e-14;
