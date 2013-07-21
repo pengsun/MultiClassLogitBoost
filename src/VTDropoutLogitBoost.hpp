@@ -12,6 +12,7 @@ struct VTDropoutLogitData {
   MLData* data_cls_;
   cv::Mat_<double> *p_; // #samples * #class
   cv::Mat_<double> *L_; // #samples * 1
+  cv::RNG rng_; // random number generator
 };
 
 // Vector for index

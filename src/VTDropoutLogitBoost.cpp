@@ -136,8 +136,7 @@ void VTDropoutLogitSolver::calc_gamma( double *gamma)
 
     // Dropout: randomly set it to zero...
     const double ratio = 0.1; // ...with probability ratio
-    RNG rng;
-    double num = rng.uniform(0., 1.); // note: explicitlye use the double inputs
+    double num = data_->rng_.uniform(0., 1.); // note: explicitly use the double inputs
     if (num>ratio)
       cap = 0.0;
 
