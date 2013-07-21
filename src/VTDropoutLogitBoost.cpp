@@ -135,9 +135,9 @@ void VTDropoutLogitSolver::calc_gamma( double *gamma)
     else if (cap>MAXGAMMA) cap = MAXGAMMA;
 
     // Dropout: randomly set it to zero...
-    const double ratio = 0.1; // ...with probability ratio
+    const double ratio = 0.5; // ...with probability ratio
     double num = data_->rng_.uniform(0., 1.); // note: explicitly use the double inputs
-    if (num>ratio)
+    if (num < ratio)
       cap = 0.0;
 
     // do the real updating

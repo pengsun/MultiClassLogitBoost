@@ -5,7 +5,7 @@ dir_rst = fullfile('.\rst\VTLogitBoost',name);
 
 num_Tpre = 2000;
 T = 700;
-cv  = {0.1};
+cv  = {1};
 cJ = {20};
 cns = {1};
 
