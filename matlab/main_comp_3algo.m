@@ -7,18 +7,18 @@ name = 'pendigits';
 %% algo name
 algoname1 = 'VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-% fn1 = 'T700_v1.0e-001_J20_ns1.mat';
 fn1 = 'T700_v1_J20_ns1.mat';
 
 algoname2 = 'VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
 fn2 = 'T700_v1.0e-001_J20_ns1.mat';
-% fn2 = 'T700_v1_J20_ns1.mat';
 
-algoname3 = 'VTDropoutLogitBoost';
+algoname3 = 'VTTCLogitBoost';
 dir_root3 = fullfile('.\rst',algoname3);
-% fn3 = 'T700_v1.0e-001_J20_ns1.mat';
-fn3 = 'T700_v1_J20_ns1.mat';
+fn3 = 'T700_lambda1.0e-004_J20_ns1.mat';
+% algoname3 = 'VTDropoutLogitBoost';
+% dir_root3 = fullfile('.\rst',algoname3);
+% fn3 = 'T700_v1_J20_ns1.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
