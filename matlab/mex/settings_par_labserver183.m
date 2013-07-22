@@ -3,17 +3,17 @@
 dir_root = 'E:\Users\sp\WorkStudy\OpenCV-2.2.0';
 % 
 cvinc2 = fullfile(dir_root,'\modules\core\include');
-linkdird = fullfile(dir_root,'\buildmy\lib');
-linkdir = fullfile(dir_root, '\buildmy\lib');
+linkdird = fullfile(dir_root,'\lib\Debug');
+linkdir = fullfile(dir_root, '\lib\Release');
 % 
-lib2d = 'opencv_core243d';
-lib2 = 'opencv_core243';
+lib2d = 'opencv_core220d';
+lib2 = 'opencv_core220';
 %% source codes
 dir_src = '../../src/';
 %% TBB
-dir_tbb = '"D:\Program Files\tbb41"';
+dir_tbb = 'E:\Users\sp\WorkStudy\tbb41';
 dir_tbbinc = fullfile(dir_tbb, '\include');
-dir_tbblib = fullfile(dir_tbb, '\lib\ia32\vc9');
+dir_tbblib = fullfile(dir_tbb, '\lib\intel64\vc9');
 tbblib = 'tbb';
 %% options debug
 % don't forget the HAVE_TBB preprocessor for opencv

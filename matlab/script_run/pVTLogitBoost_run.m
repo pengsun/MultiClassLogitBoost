@@ -1,5 +1,5 @@
 %% 
-name = 'optdigits';
+name = 'pendigits';
 fn_data = fullfile('.\dataset',[name,'.mat']);
 dir_rst = fullfile('.\rst\pVTLogitBoost',name);
 %%
