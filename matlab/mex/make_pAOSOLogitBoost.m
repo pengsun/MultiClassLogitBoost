@@ -1,5 +1,5 @@
 %%
-settings_p
+settings_par
 % settings_server
 %%
 name = 'pAOSOLogitBoost_mex';

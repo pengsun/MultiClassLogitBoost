@@ -1,6 +1,6 @@
 %% OpenCV 
 % root dir
-dir_root = 'E:\Users\sp\WorkStudy\OpenCV-2.2.0';
+dir_root = '"D:\Program Files\opencv"';
 % 
 cvinc2 = fullfile(dir_root,'\modules\core\include');
 linkdird = fullfile(dir_root,'\buildmy\lib');

@@ -3,6 +3,7 @@
 using namespace std;
 using namespace cv;
 
+
 // Implementation of AOSOSplitgain
 AOSOSplitgain::AOSOSplitgain()
 {
@@ -627,8 +628,13 @@ void AOSOTree::fit_node( AOSONodegain* _node, AOSODatagain* _data )
 // Implementation of AOSOLogitBoost
 const double AOSOLogitBoost::EPS_LOSS = 1e-16;
 const double AOSOLogitBoost::MAXF = 100;
+AOSOLogitBoost::AOSOLogitBoost ()
+{
+
+}
 void AOSOLogitBoost::train( MLData* _data )
 {
+  // init for training stage
   train_init(_data);
 
   for (int t = 0; t < param_.T; ++t) {
