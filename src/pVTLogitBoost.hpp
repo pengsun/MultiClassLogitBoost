@@ -8,6 +8,11 @@
 #include <bitset>
 #include <opencv2/core/internal.hpp>
 
+
+// Vector for index
+typedef std::vector<int> VecIdx;
+
+
 // data shared by tree and booster
 struct pVTLogitData {
   MLData* data_cls_;
@@ -15,8 +20,25 @@ struct pVTLogitData {
   cv::Mat_<double> *L_; // #samples * 1
 };
 
-// Vector for index
-typedef std::vector<int> VecIdx;
+
+// Adaptive One-vs-One Solver
+struct pVTLogitSolver {
+  static const double MAXGAMMA;
+  //static const double EPS;
+
+  pVTLogitSolver (pVTLogitData* _data);
+
+  void update_internal (VecIdx& vidx);
+  void update_internal_incre (int idx);
+  void update_internal_decre (int idx);
+
+  void calc_gamma (double* gamma);
+  void calc_gain (double& gain);
+
+public:
+  std::vector<double> mg_, h_;
+  pVTLogitData* data_;
+};
 
 // Split descriptor
 struct pVTLogitSplit {
@@ -66,25 +88,6 @@ typedef std::priority_queue<pVTLogitNode*,
                             std::vector<pVTLogitNode*>, 
                             pVTLogitNodeLess>
         QuepVTLogitNode;
-
-// Adaptive One-vs-One Solver
-struct pVTLogitSolver {
-  static const double MAXGAMMA;
-  //static const double EPS;
-
-  pVTLogitSolver (pVTLogitData* _data);
-
-  void update_internal (VecIdx& vidx);
-  void update_internal_incre (int idx);
-  void update_internal_decre (int idx);
-  
-  void calc_gamma (double* gamma);
-  void calc_gain (double& gain);
-
-public:
-	std::vector<double> mg_, h_;
-  pVTLogitData* data_;
-};
 
 // Best Split Finder (helper class for parallel_reduce) 
 class pVTLogitTree;

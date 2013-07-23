@@ -7,6 +7,9 @@
 #include <queue>
 #include <bitset>
 
+// Vector for index
+typedef std::vector<int> VecIdx;
+
 // data shared by tree and booster
 struct VTLogitData {
   MLData* data_cls_;
@@ -14,8 +17,26 @@ struct VTLogitData {
   cv::Mat_<double> *L_; // #samples * 1
 };
 
-// Vector for index
-typedef std::vector<int> VecIdx;
+// Adaptive One-vs-One Solver
+struct VTLogitSolver {
+  static const double MAXGAMMA;
+  //static const double EPS;
+
+  VTLogitSolver () {};
+  VTLogitSolver (VTLogitData* _data);
+
+  void set_data (VTLogitData* _data);
+  void update_internal (VecIdx& vidx);
+  void update_internal_incre (int idx);
+  void update_internal_decre (int idx);
+
+  void calc_gamma (double* gamma);
+  void calc_gain (double& gain);
+
+public:
+  std::vector<double> mg_, h_;
+  VTLogitData* data_;
+};
 
 // Split descriptor
 struct VTLogitSplit {
@@ -34,6 +55,7 @@ public:
   double left_node_gain_, right_node_gain_;
 };
 
+
 // AOSO Node. Vector value
 struct VTLogitNode {
 public:
@@ -49,8 +71,11 @@ public:
   VTLogitNode *parent_, *left_, *right_; //
   VTLogitSplit split_;
 
-  VecIdx sample_idx_; // for training
+  VecIdx sample_idx_; // for all the examples this node holds
+
+  VTLogitSolver sol_this_; // for all the examples this node holds
 };
+
 
 // Node Comparator: the less the expected gain, the less the node
 struct VTLogitNodeLess {
@@ -66,24 +91,7 @@ typedef std::priority_queue<VTLogitNode*,
                             VTLogitNodeLess>
         QueVTLogitNode;
 
-// Adaptive One-vs-One Solver
-struct VTLogitSolver {
-  static const double MAXGAMMA;
-  //static const double EPS;
 
-  VTLogitSolver (VTLogitData* _data);
-
-  void update_internal (VecIdx& vidx);
-  void update_internal_incre (int idx);
-  void update_internal_decre (int idx);
-  
-  void calc_gamma (double* gamma);
-  void calc_gain (double& gain);
-
-public:
-	std::vector<double> mg_, h_;
-  VTLogitData* data_;
-};
 
 // AOSO Tree
 class VTLogitTree {

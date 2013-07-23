@@ -26,48 +26,14 @@ void pVTLogitSplit::reset()
   left_node_gain_ = right_node_gain_ = -1;
 }
 
-// Implementation of KLogitNode
-pVTLogitNode::pVTLogitNode(int _K)
-{
-  id_ = 0;
-  parent_ = left_ = right_ = 0;
-  
-  fitvals_.assign(_K, 0);
-}
 
-pVTLogitNode::pVTLogitNode( int _id, int _K )
-{
-  id_ = _id;
-  parent_ = left_ = right_ = 0;
-  
-  fitvals_.assign(_K, 0);
-}
-
-int pVTLogitNode::calc_dir( float* _psample )
-{
-  float _val = *(_psample + split_.var_idx_);
-
-  int dir = 0;
-  if (split_.var_type_==VAR_CAT) {
-    // TODO: raise an error
-    /*
-    int tmp = int(_val);
-    dir = ( split_.subset_[tmp] == true ) ? (-1) : (+1);
-    */
-  }
-  else { // split_.var_type_==VAR_NUM
-    dir = (_val < split_.threshold_)? (-1) : (+1); 
-  }
-
-  return dir;
-}
 // Implementation of pVTLogitSolver
 //const double pVTLogitSolver::EPS = 0.01;
 const double pVTLogitSolver::MAXGAMMA = 5.0;
 pVTLogitSolver::pVTLogitSolver( pVTLogitData*  _data)
 { 
   data_ = _data;
-  
+
   int K = data_->data_cls_->get_class_count();
   mg_.assign(K, 0.0);
   h_.assign(K, 0.0);
@@ -123,7 +89,7 @@ void pVTLogitSolver::calc_gamma( double *gamma)
   for (int kk = 0; kk < K; ++kk) {
     double smg = mg_[kk];
     double sh  = h_[kk];
-     //if (sh <= 0) cv::error("pVTLogitSolver::calc_gamma: Invalid Hessian.");
+    //if (sh <= 0) cv::error("pVTLogitSolver::calc_gamma: Invalid Hessian.");
     if (sh == 0) sh = 1;
 
     double sgamma = smg/sh;
@@ -147,6 +113,43 @@ void pVTLogitSolver::calc_gain( double& gain )
     gain += (smg*smg/sh);
   }
   gain = 0.5*gain;
+}
+
+
+// Implementation of KLogitNode
+pVTLogitNode::pVTLogitNode(int _K)
+{
+  id_ = 0;
+  parent_ = left_ = right_ = 0;
+  
+  fitvals_.assign(_K, 0);
+}
+
+pVTLogitNode::pVTLogitNode( int _id, int _K )
+{
+  id_ = _id;
+  parent_ = left_ = right_ = 0;
+  
+  fitvals_.assign(_K, 0);
+}
+
+int pVTLogitNode::calc_dir( float* _psample )
+{
+  float _val = *(_psample + split_.var_idx_);
+
+  int dir = 0;
+  if (split_.var_type_==VAR_CAT) {
+    // TODO: raise an error
+    /*
+    int tmp = int(_val);
+    dir = ( split_.subset_[tmp] == true ) ? (-1) : (+1);
+    */
+  }
+  else { // split_.var_type_==VAR_NUM
+    dir = (_val < split_.threshold_)? (-1) : (+1); 
+  }
+
+  return dir;
 }
 
 // Implementation of pVT_best_split_finder (helper class)

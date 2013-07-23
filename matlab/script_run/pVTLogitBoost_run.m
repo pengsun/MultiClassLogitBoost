@@ -4,7 +4,7 @@ fn_data = fullfile('.\dataset',[name,'.mat']);
 dir_rst = fullfile('.\rst\pVTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 700;
+T = 50;
 cv  = {0.1};
 cJ = {20};
 cns = {1};
