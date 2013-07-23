@@ -26,8 +26,10 @@ struct pVTLogitSolver {
   static const double MAXGAMMA;
   //static const double EPS;
 
+  pVTLogitSolver () {};
   pVTLogitSolver (pVTLogitData* _data);
 
+  void set_data (pVTLogitData* _data);
   void update_internal (VecIdx& vidx);
   void update_internal_incre (int idx);
   void update_internal_decre (int idx);
@@ -72,7 +74,9 @@ public:
   pVTLogitNode *parent_, *left_, *right_; //
   pVTLogitSplit split_;
 
-  VecIdx sample_idx_; // for training
+  VecIdx sample_idx_; // for all the examples this node holds
+
+  pVTLogitSolver sol_this_; // for all the examples this node holds
 };
 
 // Node Comparator: the less the expected gain, the less the node
