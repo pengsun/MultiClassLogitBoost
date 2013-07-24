@@ -72,7 +72,7 @@ int main ()
 
   // AOSO Boost
   VTLogitBoost ab;
-  ab.param_.J = 2;
+  ab.param_.J = 4;
   ab.param_.T = 10;
   ab.param_.v = 1.0;
   ab.param_.ns = 1;

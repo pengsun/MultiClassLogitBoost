@@ -1,4 +1,5 @@
 %% 
+<<<<<<< HEAD
 name = 'M-Image';
 fn_data = fullfile('E:\Users\sp\dataset_mat',[name,'.mat']);
 dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst\pVTLogitBoost',name);
@@ -6,6 +7,11 @@ dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst
 % name = 'pendigits';
 % fn_data = fullfile('.\dataset',[name,'.mat']);
 % dir_rst = fullfile('.\rst\pVTLogitBoost',name);
+=======
+name = 'optdigits';
+fn_data = fullfile('.\dataset',[name,'.mat']);
+dir_rst = fullfile('.\rst\pVTLogitBoost',name);
+>>>>>>> 42006cb018db3629764ff406be19498ab44ccac5
 %%
 num_Tpre = 2000;
 T = 10000;

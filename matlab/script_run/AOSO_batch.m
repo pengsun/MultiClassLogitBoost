@@ -4,11 +4,11 @@ dir_rst = '.\rst\AOSOLogitBoost\optdigits';
 % dir_rst = './';
 %%
 num_Tpre = 2000;
-T = 3;
+T = 300;
 cv = {0.1};
 cJ = {20};
 cns = {1};
-
+%%
 h = batch_AOSOLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;

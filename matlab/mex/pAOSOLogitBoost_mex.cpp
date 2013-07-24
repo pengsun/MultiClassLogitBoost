@@ -5,6 +5,10 @@
 
 using namespace cv;
 
+// init TBB
+const int pnum = 6;
+tbb::task_scheduler_init tbb_init(pnum);
+
 // h = train(dummy, X,Y, var_cat_mask, T,J,v, node_size);
 void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
@@ -44,9 +48,6 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   double* pp = mxGetPr(plhs[0]);
   *pp = (long long) pbooster;
 }
-
-
-
 
 // [NumIter,TrLoss,F,P] = get(dummy, h);
 void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 

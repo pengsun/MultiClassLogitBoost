@@ -9,6 +9,13 @@ std::ofstream os("output.txt");
 using namespace std;
 using namespace cv;
 
+namespace {
+  void release_VecDbl (vector<double> &in) {
+    vector<double> tmp;
+    tmp.swap(in);
+  }
+}
+
 // Implementation of pVTLogitSplit
 pVTLogitSplit::pVTLogitSplit()
 {
@@ -26,52 +33,22 @@ void pVTLogitSplit::reset()
   left_node_gain_ = right_node_gain_ = -1;
 }
 
-// Implementation of KLogitNode
-pVTLogitNode::pVTLogitNode(int _K)
-{
-  id_ = 0;
-  parent_ = left_ = right_ = 0;
-  
-  fitvals_.assign(_K, 0);
-}
 
-pVTLogitNode::pVTLogitNode( int _id, int _K )
-{
-  id_ = _id;
-  parent_ = left_ = right_ = 0;
-  
-  fitvals_.assign(_K, 0);
-}
-
-int pVTLogitNode::calc_dir( float* _psample )
-{
-  float _val = *(_psample + split_.var_idx_);
-
-  int dir = 0;
-  if (split_.var_type_==VAR_CAT) {
-    // TODO: raise an error
-    /*
-    int tmp = int(_val);
-    dir = ( split_.subset_[tmp] == true ) ? (-1) : (+1);
-    */
-  }
-  else { // split_.var_type_==VAR_NUM
-    dir = (_val < split_.threshold_)? (-1) : (+1); 
-  }
-
-  return dir;
-}
 // Implementation of pVTLogitSolver
 //const double pVTLogitSolver::EPS = 0.01;
 const double pVTLogitSolver::MAXGAMMA = 5.0;
 pVTLogitSolver::pVTLogitSolver( pVTLogitData*  _data)
 { 
+  set_data(_data);
+}
+
+void pVTLogitSolver::set_data( pVTLogitData*  _data)
+{ 
   data_ = _data;
-  
+
   int K = data_->data_cls_->get_class_count();
   mg_.assign(K, 0.0);
   h_.assign(K, 0.0);
-
 }
 
 void pVTLogitSolver::update_internal( VecIdx& vidx )
@@ -123,7 +100,7 @@ void pVTLogitSolver::calc_gamma( double *gamma)
   for (int kk = 0; kk < K; ++kk) {
     double smg = mg_[kk];
     double sh  = h_[kk];
-     //if (sh <= 0) cv::error("pVTLogitSolver::calc_gamma: Invalid Hessian.");
+    //if (sh <= 0) cv::error("pVTLogitSolver::calc_gamma: Invalid Hessian.");
     if (sh == 0) sh = 1;
 
     double sgamma = smg/sh;
@@ -147,6 +124,43 @@ void pVTLogitSolver::calc_gain( double& gain )
     gain += (smg*smg/sh);
   }
   gain = 0.5*gain;
+}
+
+
+// Implementation of KLogitNode
+pVTLogitNode::pVTLogitNode(int _K)
+{
+  id_ = 0;
+  parent_ = left_ = right_ = 0;
+  
+  fitvals_.assign(_K, 0);
+}
+
+pVTLogitNode::pVTLogitNode( int _id, int _K )
+{
+  id_ = _id;
+  parent_ = left_ = right_ = 0;
+  
+  fitvals_.assign(_K, 0);
+}
+
+int pVTLogitNode::calc_dir( float* _psample )
+{
+  float _val = *(_psample + split_.var_idx_);
+
+  int dir = 0;
+  if (split_.var_type_==VAR_CAT) {
+    // TODO: raise an error
+    /*
+    int tmp = int(_val);
+    dir = ( split_.subset_[tmp] == true ) ? (-1) : (+1);
+    */
+  }
+  else { // split_.var_type_==VAR_NUM
+    dir = (_val < split_.threshold_)? (-1) : (+1); 
+  }
+
+  return dir;
 }
 
 // Implementation of pVT_best_split_finder (helper class)
@@ -229,8 +243,11 @@ void pVTLogitTree::split( pVTLogitData* _data )
 
     split_node(cur_node,_data);
     VecIdx tmp;
-    tmp.swap(cur_node->sample_idx_); // release memory.
+    tmp.swap(cur_node->sample_idx_); 
+    // release memory.
     // no longer used in later splitting
+    release_VecDbl( cur_node->sol_this_.mg_ );
+    release_VecDbl( cur_node->sol_this_.h_ );
 
     // find best split for the two newly created nodes
     find_best_candidate_split(cur_node->left_, _data);
@@ -260,6 +277,8 @@ void pVTLogitTree::fit( pVTLogitData* _data )
     // no longer used in later splitting
     VecIdx tmp;
     tmp.swap(nd->sample_idx_);
+    release_VecDbl( nd->sol_this_.mg_ );
+    release_VecDbl( nd->sol_this_.h_ );
   }
 }
 
@@ -325,6 +344,10 @@ void pVTLogitTree::creat_root_node( pVTLogitData* _data )
     root->sample_idx_[i] = i;
   }
 
+  // initialize solver
+  root->sol_this_.set_data(_data);
+  root->sol_this_.update_internal(root->sample_idx_);
+
   // loss
   this->calc_gain(root, _data);
 }
@@ -358,8 +381,7 @@ bool pVTLogitTree::find_best_split_num_var(
   CV_Assert(ns >= 1);
 
   // initialize
-  pVTLogitSolver sol_left(_data), sol_right(_data);
-  sol_right.update_internal(node_sample_si);
+  pVTLogitSolver sol_left(_data), sol_right = _node->sol_this_;
 
   // scan each possible split 
   double best_gain = -1, best_gain_left = -1, best_gain_right = -1;
@@ -502,6 +524,12 @@ bool pVTLogitTree::split_node( pVTLogitNode* _node, pVTLogitData* _data )
       _node->right_->sample_idx_.push_back(idx);
   }
 
+  // initialize node sovler
+  _node->left_->sol_this_.set_data(_data);
+  _node->left_->sol_this_.update_internal(_node->left_->sample_idx_);
+  _node->right_->sol_this_.set_data(_data);
+  _node->right_->sol_this_.update_internal(_node->right_->sample_idx_);
+
   // initialize the node gain
   this->calc_gain(_node->left_, _data);
   this->calc_gain(_node->right_, _data);
@@ -522,10 +550,8 @@ bool pVTLogitTree::split_node( pVTLogitNode* _node, pVTLogitData* _data )
 
 void pVTLogitTree::calc_gain(pVTLogitNode* _node, pVTLogitData* _data)
 {
-  pVTLogitSolver sol(_data);
-  sol.update_internal(_node->sample_idx_);
   double gain;
-  sol.calc_gain(gain);
+  _node->sol_this_.calc_gain(gain);
   _node->split_.this_gain_ = gain;
 }
 
@@ -534,11 +560,7 @@ void pVTLogitTree::fit_node( pVTLogitNode* _node, pVTLogitData* _data )
   int nn = _node->sample_idx_.size();
   CV_Assert(nn>0);
 
-  pVTLogitSolver sol(_data);
-
-  sol.update_internal(_node->sample_idx_);
-
-  sol.calc_gamma( &(_node->fitvals_[0]) );
+  _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 
 #ifdef OUTPUT
   //os << "id = " << _node->id_ << "(ter), ";
@@ -605,8 +627,6 @@ void pVTLogitTree::fit_node( pVTLogitNode* _node, pVTLogitData* _data )
   //os << "gamma = " << _node->fit_val_ << endl;
 #endif // OUTPUT
 }
-
-
 
 // Implementation of pVTLogitBoost::Param
 pVTLogitBoost::Param::Param()

@@ -1,7 +1,7 @@
 %% data name
 % name = 'poker100k';
-name = 'pendigits';
-% name = 'optdigits';
+% name = 'pendigits';
+name = 'optdigits';
 % name = 'M-Basic';
 % name = 'isolet';
 %% algo name
