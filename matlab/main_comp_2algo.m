@@ -30,7 +30,7 @@ tmp = load(ffn2);
 it2 = tmp.it;
 err_it2 = tmp.err_it;
 abs_grad2 = tmp.abs_grad;
-F2 = tmp.F;
+% F2 = tmp.F;
 num_it2 = tmp.num_it;
 
 %% plot error
