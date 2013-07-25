@@ -1,18 +1,16 @@
 #include "mex.h"
-#include "MLData.hpp"
-#include "pAOSOLogitBoost.hpp"
+#include "./../../src/MLData.hpp"
+#include "./../../src/pVTLogitBoost.hpp"
 #include "utilCPP.h"
+#include <cstring>
 
-using namespace cv;
-
-// init TBB
-const int pnum = 6;
-tbb::task_scheduler_init tbb_init(pnum);
+// typedef for booster
+typedef pVTLogitBoost booster_t;
 
 // h = train(dummy, X,Y, var_cat_mask, T,J,v, node_size);
 void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
-  /* Input. IMPORTANT: start from index 1 */
+  /* Input */
   MLData tr;
   // training tr X
   set_X(prhs[1], tr.X);
@@ -29,19 +27,16 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   // node_size
   int node_size = (int)mxGetScalar(prhs[7]);
 
-
   /* train */
   tr.problem_type = PROBLEM_CLS;
   tr.preprocess();
 
-  AOSOLogitBoost* pbooster = new AOSOLogitBoost;
+  booster_t* pbooster = new booster_t;
   pbooster->param_.T = T;
   pbooster->param_.v = v;
   pbooster->param_.J = J;
   pbooster->param_.ns = node_size;
   pbooster->train(&tr);
-  
-  pbooster->convertToStorTrees();
 
   /*Output*/
   plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);
@@ -49,33 +44,14 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   *pp = (long long) pbooster;
 }
 
-// [NumIter,TrLoss,F,P] = get(dummy, h);
-void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
-{
-  /* Input. IMPORTANT: start from index 1 */
-  // get pointer
-  double *ptmp = (double*)mxGetData(prhs[1]);
-  long long p = (long long) ptmp[0];
-  AOSOLogitBoost* pbooster = (AOSOLogitBoost*) p;
-
-  /*Output*/
-  plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);
-  double* ptr = mxGetPr(plhs[0]);
-  *ptr = double( pbooster->get_num_iter() );
-
-   plhs[1] = VecDbl_to_mxArray(pbooster->abs_grad_);
-   plhs[2] = cvMatDbl_to_mxArray(pbooster->F_);
-   plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);
-}
-
 // Y = predict(dummy, h, X, T);
 void predict(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
-  /* Input. IMPORTANT: start from index 1 */
+  /* Input */
   // get pointer
   double *ptmp = (double*)mxGetData(prhs[1]);
   long long p = (long long) ptmp[0];
-  AOSOLogitBoost* pbooster = (AOSOLogitBoost*) p;
+  booster_t* pbooster = (booster_t*) p;
   // data X
   MLData te;
   set_X(prhs[2], te.X);
@@ -91,16 +67,37 @@ void predict(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   /* Predict */
   pbooster->predict(&te, T);
 }
+
+// [NumIter,TrLoss,F,P] = get(dummy, h);
+void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
+{
+  /* Input */
+  // get pointer
+  double *ptmp = (double*)mxGetData(prhs[1]);
+  long long p = (long long) ptmp[0];
+  booster_t* pbooster = (booster_t*) p;
+
+  /*Output*/
+  int T = pbooster->get_num_iter();
+  plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);
+  double* ptr = mxGetPr(plhs[0]);
+  *ptr = double( T );
+
+  plhs[1] = VecDbl_to_mxArray(pbooster->abs_grad_);
+  plhs[2] = cvMatDbl_to_mxArray(pbooster->F_);
+  plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);
+}
+
 // delete(dummy, h);
 void del(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
-  /* Input. IMPORTANT: start from 1 index */
+  /* Input */
   double *ptmp = (double*)mxGetData(prhs[1]);
   long long p = (long long) ptmp[0];
-  AOSOLogitBoost* pt = (AOSOLogitBoost*) p;
+  booster_t* pt = (booster_t*) p;
 
   /* Delete */
-  pt->~AOSOLogitBoost();
+  pt->~pVTLogitBoost();
 
   /* Output */
   return;
@@ -113,17 +110,22 @@ void save(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   // get pointer
   double *ptmp = (double*)mxGetData(prhs[1]);
   long long p = (long long) ptmp[0];
-  AOSOLogitBoost* pbooster = (AOSOLogitBoost*) p;  
-  
+  booster_t* pbooster = (booster_t*) p;  
 
-  //get i
-  int i = (int)mxGetScalar(prhs[2]); 
-  i--;
 
-  /*Output*/
-   plhs[0] = cvMatInt_to_mxArray(pbooster->stor_Trees_[i].nodes_);
-   plhs[1] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].splits_);
-   plhs[2] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].leaves_);
+//  //get i
+//  int i = (int)mxGetScalar(prhs[2]); 
+//  i--;
+//
+//  /*Output*/
+//  plhs[0] = cvMatInt_to_mxArray(pbooster->stor_Trees_[i].nodes_);
+//  plhs[1] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].splits_);
+//  plhs[2] = cvMatDbl_to_mxArray(pbooster->stor_Trees_[i].leaves_);
+
+  //  TODO
+  plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);  
+  plhs[1] = mxCreateDoubleMatrix(1,1,mxREAL); 
+  plhs[2] = mxCreateDoubleMatrix(1,1,mxREAL); 
 }
 
 // entry point
@@ -144,10 +146,10 @@ void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   else if ( 0 == strcmp(str,"delete") ) {
     del(nlhs,plhs, nrhs,prhs);
   }
-  else if ( 0 == strcmp(str, "save") ) {
+  else if ( 0 == strcmp(str,"save") ) {
     save(nlhs,plhs, nrhs,prhs);
   }
   else {
-    mexErrMsgTxt("LogitBoost_mex::unknown option.");
+    mexErrMsgTxt("AOSOBoostlog_mex::unknown option.");
   }
 }

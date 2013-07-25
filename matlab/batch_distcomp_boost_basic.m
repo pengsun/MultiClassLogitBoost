@@ -1,5 +1,5 @@
-classdef batch_par_boost_basic
-    %batch_par_boost_basic Summary of this class goes here
+classdef batch_distcomp_boost_basic
+    %batch_distcomp_boost_basic Summary of this class goes here
     %   Detailed explanation goes here
     
     properties

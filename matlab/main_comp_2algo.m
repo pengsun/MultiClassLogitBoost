@@ -1,26 +1,35 @@
 %% data name
 % name = 'poker100k';
 % name = 'pendigits';
-% name = 'optdigits';
+name = 'optdigits';
 % name = 'M-Basic';
-name = 'M-Image';
+% name = 'M-Image';
 % name = 'isolet';
 %% algo name
 algoname1 = 'VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T100000_v1.0e-001_J50_ns1.mat';
-% fn1 = 'T700_v1_J20_ns1.mat';
+% fn1 = 'T100000_v1.0e-001_J50_ns1.mat';
+fn1 = 'T700_v1_J20_ns1.mat';
 
 algoname2 = 'VTDropoutLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T10000_v1_J50_ns1.mat';
+fn2 = 'T700_v1_J20_ns1.mat';
+
+% algoname1 = 'VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% % fn1 = 'T100000_v1.0e-001_J50_ns1.mat';
+% fn1 = 'T700_v1.0e-001_J20_ns1.mat';
+% 
+% algoname2 = 'pVTLogitBoost';
+% dir_root2 = fullfile('.\rst',algoname2);
+% fn2 = 'T700_v1.0e-01_J20_ns1.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
 it1 = tmp.it;
 err_it1 = tmp.err_it;
-% abs_grad1 = tmp.abs_grad;
-abs_grad1 = tmp.loss_tr;
+abs_grad1 = tmp.abs_grad;
+% abs_grad1 = tmp.loss_tr;
 % F1 = tmp.F;
 num_it1 = tmp.num_it;
 clear tmp;

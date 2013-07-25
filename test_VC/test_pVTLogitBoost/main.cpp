@@ -1,4 +1,4 @@
-#include "VTLogitBoost.hpp"
+#include "pVTLogitBoost.hpp"
 #include <opencv2/core/core.hpp>
 #include <iostream>
 
@@ -70,11 +70,11 @@ int main ()
   tr.problem_type = PROBLEM_CLS;
   tr.preprocess();
 
-  // AOSO Boost
-  VTLogitBoost ab;
+  // AOTO Boost
+  pVTLogitBoost ab;
   ab.param_.J = 4;
-  ab.param_.T = 10;
-  ab.param_.v = 1.0;
+  ab.param_.T = 3000;
+  ab.param_.v = 0.1;
   ab.param_.ns = 1;
   ab.train(&tr);
 
@@ -92,7 +92,7 @@ int main ()
   TT = ab.get_num_iter();
   cout << endl;
   cout << "TT = " << TT << endl << endl;
-  //cout << "abs gradient = " << ab.get_train_loss() << endl;
+  //cout << "train loss = " << ab.get_train_loss() << endl;
 
   MLData te3;
   te3.X = tr.X;

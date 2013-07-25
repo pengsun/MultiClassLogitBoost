@@ -178,7 +178,9 @@ public:
     int ns;    // node size
   };
   Param param_;
-  
+
+public:
+  AOSOLogitBoost ();
 public:
   void train (MLData* _data);
 

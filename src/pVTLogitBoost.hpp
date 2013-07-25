@@ -6,26 +6,30 @@
 #include <list>
 #include <queue>
 #include <bitset>
+#include <opencv2/core/internal.hpp>
+
 
 // Vector for index
 typedef std::vector<int> VecIdx;
 
+
 // data shared by tree and booster
-struct VTLogitData {
+struct pVTLogitData {
   MLData* data_cls_;
   cv::Mat_<double> *p_; // #samples * #class
   cv::Mat_<double> *L_; // #samples * 1
 };
 
+
 // Adaptive One-vs-One Solver
-struct VTLogitSolver {
+struct pVTLogitSolver {
   static const double MAXGAMMA;
   //static const double EPS;
 
-  VTLogitSolver () {};
-  VTLogitSolver (VTLogitData* _data);
+  pVTLogitSolver () {};
+  pVTLogitSolver (pVTLogitData* _data);
 
-  void set_data (VTLogitData* _data);
+  void set_data (pVTLogitData* _data);
   void update_internal (VecIdx& vidx);
   void update_internal_incre (int idx);
   void update_internal_decre (int idx);
@@ -35,13 +39,13 @@ struct VTLogitSolver {
 
 public:
   std::vector<double> mg_, h_;
-  VTLogitData* data_;
+  pVTLogitData* data_;
 };
 
 // Split descriptor
-struct VTLogitSplit {
+struct pVTLogitSplit {
 public:
-  VTLogitSplit ();
+  pVTLogitSplit ();
   void reset ();
 
   int var_idx_; // variable for split
@@ -55,12 +59,11 @@ public:
   double left_node_gain_, right_node_gain_;
 };
 
-
 // AOSO Node. Vector value
-struct VTLogitNode {
+struct pVTLogitNode {
 public:
-  VTLogitNode (int _K);
-  VTLogitNode (int _id, int _K);
+  pVTLogitNode (int _K);
+  pVTLogitNode (int _id, int _K);
   // to which side should the sample be sent. -1:left, +1:right
   int calc_dir (float* _psample);
 
@@ -68,33 +71,46 @@ public:
   std::vector<double> fitvals_;
 
   int id_; // node ID. 0 for root node
-  VTLogitNode *parent_, *left_, *right_; //
-  VTLogitSplit split_;
+  pVTLogitNode *parent_, *left_, *right_; //
+  pVTLogitSplit split_;
 
   VecIdx sample_idx_; // for all the examples this node holds
 
-  VTLogitSolver sol_this_; // for all the examples this node holds
+  pVTLogitSolver sol_this_; // for all the examples this node holds
 };
 
-
 // Node Comparator: the less the expected gain, the less the node
-struct VTLogitNodeLess {
-  bool operator () (const VTLogitNode* n1, const VTLogitNode* n2) {
+struct pVTLogitNodeLess {
+  bool operator () (const pVTLogitNode* n1, const pVTLogitNode* n2) {
     return n1->split_.expected_gain_ < 
            n2->split_.expected_gain_;
   }
 };
 
 // Priority queue for aoso node
-typedef std::priority_queue<VTLogitNode*, 
-                            std::vector<VTLogitNode*>, 
-                            VTLogitNodeLess>
-        QueVTLogitNode;
+typedef std::priority_queue<pVTLogitNode*, 
+                            std::vector<pVTLogitNode*>, 
+                            pVTLogitNodeLess>
+        QuepVTLogitNode;
 
+// Best Split Finder (helper class for parallel_reduce) 
+class pVTLogitTree;
+struct pVT_best_split_finder {
+  pVT_best_split_finder (pVTLogitTree *_tree, 
+    pVTLogitNode* _node, pVTLogitData* _data); // customized data
+  pVT_best_split_finder (const pVT_best_split_finder &f, cv::Split); // required
 
+  void operator () (const cv::BlockedRange &r); // required
+  void join (pVT_best_split_finder &rhs); // required
+
+  pVTLogitTree *tree_;
+  pVTLogitNode *node_;
+  pVTLogitData *data_;
+  pVTLogitSplit cb_split_;
+};
 
 // AOSO Tree
-class VTLogitTree {
+class pVTLogitTree {
 public:
   struct Param {
     int max_leaves_; // maximum leaves (terminal nodes)
@@ -104,44 +120,45 @@ public:
   Param param_;
 
 public:
-  void split( VTLogitData* _data );
-  void fit ( VTLogitData* _data );
+  void split( pVTLogitData* _data );
+  void fit ( pVTLogitData* _data );
 
-  VTLogitNode* get_node (float* _sample);
+  pVTLogitNode* get_node (float* _sample);
   void predict (MLData* _data);
   void predict (float* _sample, float* _score);
 
-protected:
+public:
   void clear ();
-  void creat_root_node (VTLogitData* _data);
+  void creat_root_node (pVTLogitData* _data);
 
-  virtual bool find_best_candidate_split (VTLogitNode* _node, VTLogitData* _data);
-  virtual bool find_best_split_num_var (VTLogitNode* _node, VTLogitData* _data, int _ivar);
+  virtual bool find_best_candidate_split (pVTLogitNode* _node, pVTLogitData* _data);
+  virtual bool find_best_split_num_var (pVTLogitNode* _node, pVTLogitData* _data, int _ivar,
+                                        pVTLogitSplit &spl);
 
-  void make_node_sorted_idx(VTLogitNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node);
-  bool set_best_split_num_var ( VTLogitNode* _node, MLData* _data, int _ivar, 
+  void make_node_sorted_idx(pVTLogitNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node);
+  bool set_best_split_num_var ( pVTLogitNode* _node, MLData* _data, int _ivar, 
     VecIdx& node_sample_si,
-    int best_i, double best_gain, double best_gain_left, double best_gain_right);
+    int best_i, double best_gain, double best_gain_left, double best_gain_right,
+    pVTLogitSplit &cb_split);
 
-  bool can_split_node (VTLogitNode* _node);
-  bool split_node (VTLogitNode* _node, VTLogitData* _data);
-  void calc_gain (VTLogitNode* _node, VTLogitData* _data);
-  virtual void fit_node (VTLogitNode* _node, VTLogitData* _data);
+  bool can_split_node (pVTLogitNode* _node);
+  bool split_node (pVTLogitNode* _node, pVTLogitData* _data);
+  void calc_gain (pVTLogitNode* _node, pVTLogitData* _data);
+  virtual void fit_node (pVTLogitNode* _node, pVTLogitData* _data);
 
 protected:
-  std::list<VTLogitNode> nodes_; // all nodes
-  QueVTLogitNode candidate_nodes_; // priority queue of candidate leaves for splitting
+  std::list<pVTLogitNode> nodes_; // all nodes
+  QuepVTLogitNode candidate_nodes_; // priority queue of candidate leaves for splitting
   // cb: current best
   // caching internal data, used by find_best_split*
-  VTLogitSplit cb_split_, cvb_split_;
   int K_; // #classes
 };
 
-// vector of VTLogitTree
-typedef std::vector<VTLogitTree> VecVTLogitTree;
+// vector of pVTLogitTree
+typedef std::vector<pVTLogitTree> VecpVTLogitTree;
 
 // AOTO Boost
-class VTLogitBoost {
+class pVTLogitBoost {
 public:
   static const double EPS_LOSS;
   static const double MAX_F;
@@ -185,8 +202,8 @@ protected:
   cv::Mat_<double> L_; // Loss. #samples
   cv::Mat_<double> L_iter_; // Loss. #iteration
   int NumIter_; // actual iteration number
-  VTLogitData klogitdata_;
-  VecVTLogitTree trees_;
+  pVTLogitData klogitdata_;
+  VecpVTLogitTree trees_;
 
   int Tpre_beg_; // Beginning tree for test data
   cv::Mat_<double> Fpre_; // Score for test data. #samples * #class

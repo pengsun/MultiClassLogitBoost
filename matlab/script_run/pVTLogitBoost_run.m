@@ -1,15 +1,15 @@
 %% 
 name = 'optdigits';
 fn_data = fullfile('.\dataset',[name,'.mat']);
-dir_rst = fullfile('.\rst\VTLogitBoost',name);
+dir_rst = fullfile('.\rst\pVTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 60;
+T = 700;
 cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%
-h = batch_VTLogitBoost();
+h = batch_pVTLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;

@@ -9,6 +9,13 @@ std::ofstream os("output.txt");
 using namespace std;
 using namespace cv;
 
+namespace {
+  void release_VecDbl (vector<double> &in) {
+    vector<double> tmp;
+    tmp.swap(in);
+  }
+}
+
 // Implementation of VTLogitSplit
 VTLogitSplit::VTLogitSplit()
 {
@@ -66,8 +73,13 @@ int VTLogitNode::calc_dir( float* _psample )
 const double VTLogitSolver::MAXGAMMA = 5.0;
 VTLogitSolver::VTLogitSolver( VTLogitData*  _data)
 { 
+  set_data(_data);
+}
+
+void VTLogitSolver::set_data( VTLogitData*  _data)
+{ 
   data_ = _data;
-  
+
   int K = data_->data_cls_->get_class_count();
   mg_.assign(K, 0.0);
   h_.assign(K, 0.0);
@@ -183,9 +195,13 @@ void VTLogitTree::split( VTLogitData* _data )
     }
 
     split_node(cur_node,_data);
-    VecIdx tmp;
-    tmp.swap(cur_node->sample_idx_); // release memory.
+
+    // release memory.
     // no longer used in later splitting
+    VecIdx tmp;
+    tmp.swap(cur_node->sample_idx_); 
+    release_VecDbl( cur_node->sol_this_.mg_ );
+    release_VecDbl( cur_node->sol_this_.h_ );
 
     // find best split for the two newly created nodes
     find_best_candidate_split(cur_node->left_, _data);
@@ -215,6 +231,8 @@ void VTLogitTree::fit( VTLogitData* _data )
     // no longer used in later splitting
     VecIdx tmp;
     tmp.swap(nd->sample_idx_);
+    release_VecDbl( nd->sol_this_.mg_ );
+    release_VecDbl( nd->sol_this_.h_ );
   }
 }
 
@@ -231,6 +249,7 @@ VTLogitNode* VTLogitTree::get_node( float* _sample)
   }
   return cur_node;
 }
+
 void VTLogitTree::predict( MLData* _data )
 {
   int N = _data->X.rows;
@@ -279,6 +298,10 @@ void VTLogitTree::creat_root_node( VTLogitData* _data )
   for (int i = 0; i < N; ++i) {
     root->sample_idx_[i] = i;
   }
+
+  // initialize solver
+  root->sol_this_.set_data(_data);
+  root->sol_this_.update_internal(root->sample_idx_);
 
   // loss
   this->calc_gain(root, _data);
@@ -330,8 +353,7 @@ bool VTLogitTree::find_best_split_num_var(
   CV_Assert(ns >= 1);
 
   // initialize
-  VTLogitSolver sol_left(_data), sol_right(_data);
-  sol_right.update_internal(node_sample_si);
+  VTLogitSolver sol_left(_data), sol_right = _node->sol_this_;
 
   // scan each possible split 
   double best_gain = -1, best_gain_left = -1, best_gain_right = -1;
@@ -472,6 +494,12 @@ bool VTLogitTree::split_node( VTLogitNode* _node, VTLogitData* _data )
       _node->right_->sample_idx_.push_back(idx);
   }
 
+  // initialize node sovler
+  _node->left_->sol_this_.set_data(_data);
+  _node->left_->sol_this_.update_internal(_node->left_->sample_idx_);
+  _node->right_->sol_this_.set_data(_data);
+  _node->right_->sol_this_.update_internal(_node->right_->sample_idx_);
+
   // initialize the node gain
   this->calc_gain(_node->left_, _data);
   this->calc_gain(_node->right_, _data);
@@ -492,10 +520,8 @@ bool VTLogitTree::split_node( VTLogitNode* _node, VTLogitData* _data )
 
 void VTLogitTree::calc_gain(VTLogitNode* _node, VTLogitData* _data)
 {
-  VTLogitSolver sol(_data);
-  sol.update_internal(_node->sample_idx_);
   double gain;
-  sol.calc_gain(gain);
+  _node->sol_this_.calc_gain(gain);
   _node->split_.this_gain_ = gain;
 }
 
@@ -504,11 +530,7 @@ void VTLogitTree::fit_node( VTLogitNode* _node, VTLogitData* _data )
   int nn = _node->sample_idx_.size();
   CV_Assert(nn>0);
 
-  VTLogitSolver sol(_data);
-
-  sol.update_internal(_node->sample_idx_);
-
-  sol.calc_gamma( &(_node->fitvals_[0]) );
+  _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 
 #ifdef OUTPUT
   //os << "id = " << _node->id_ << "(ter), ";
@@ -575,8 +597,6 @@ void VTLogitTree::fit_node( VTLogitNode* _node, VTLogitData* _data )
   //os << "gamma = " << _node->fit_val_ << endl;
 #endif // OUTPUT
 }
-
-
 
 // Implementation of VTLogitBoost::Param
 VTLogitBoost::Param::Param()
