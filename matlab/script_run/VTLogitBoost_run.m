@@ -1,10 +1,10 @@
 %% 
-name = 'optdigits';
-fn_data = fullfile('.\dataset',[name,'.mat']);
+name = 'mnist5cls';
+fn_data = fullfile('D:\Users\sp\data\dataset_mat',[name,'.mat']);
 dir_rst = fullfile('.\rst\VTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 60;
+T = 3;
 cv  = {0.1};
 cJ = {20};
 cns = {1};

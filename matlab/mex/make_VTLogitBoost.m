@@ -1,5 +1,5 @@
 %%
-settings
+settings_labserver185
 % settings_2
 % settings_server
 %%
