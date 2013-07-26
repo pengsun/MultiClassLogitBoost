@@ -1,12 +1,12 @@
 %% 
-name = 'optdigits';
-fn_data = fullfile('.\dataset',[name,'.mat']);
+name = 'mnist';
+fn_data = fullfile('E:\Users\sp\dataset_mat\',[name,'.mat']);
 dir_rst = fullfile('.\rst\VTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 60;
-cv  = {0.1};
-cJ = {20};
+T = 10000;
+cv  = {0.2};
+cJ = {50};
 cns = {1};
 %%
 h = batch_VTLogitBoost();
