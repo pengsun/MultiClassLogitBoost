@@ -1,4 +1,5 @@
 #include "pSampVTLogitBoost.hpp"
+#include <functional>
 
 //#define  OUTPUT
 #ifdef OUTPUT
@@ -27,6 +28,15 @@ namespace {
     }
     if (ind.empty()) ind.push_back(0);
   }
+
+  struct mgGreater {
+    mgGreater (VecDbl *_v) { v_ = _v;};
+
+    bool operator () (int i1, int i2) {
+      return ( v_->at(i1) > v_->at(i2) );
+    };
+    VecDbl *v_;
+  };
 }
 
 // Implementation of pSampVTSplit
@@ -366,6 +376,8 @@ void pSampVTTree::subsample(pSampVTData* _data)
   int NF = _data->data_cls_->X.cols;
   uniform_subsample_ratio(NF,this->param_.ratio_fi_, this->sub_fi_);
 
+  // subsample classes via gradients
+#if 0
   // subsample classes
   int NC = _data->data_cls_->get_class_count();
   uniform_subsample_ratio(NC,this->param_.ratio_ci_, this->sub_ci_);
@@ -378,7 +390,31 @@ void pSampVTTree::subsample(pSampVTData* _data)
       }
     } // while
   } // if
-
+#endif
+  // all sample index
+  VecIdx all_si(NS);
+  for (int i = 0; i < NS; ++i) all_si[i] = i;
+  // all class index
+  int NC = _data->data_cls_->get_class_count();
+  VecIdx all_ci(NC);
+  for (int i = 0; i < NC; ++i) all_ci[i] = i;
+  // get minus gradient via solver
+  pSampVTSolver tmp_sol(_data, &all_ci);
+  tmp_sol.update_internal(all_si);
+  VecDbl absg = tmp_sol.mg_;
+  for (int i = 0; i < absg.size(); ++i) absg[i] = abs((double)absg[i]);
+  // sorting the index in descending order, 
+  VecIdx absgind(absg.size());
+  for (int i = 0; i < absg.size(); ++i) 
+    absgind[i] = i;
+  std::sort (absgind.begin(),absgind.end(), mgGreater(&absg));
+  // select the first #*ratio classes
+  int Nthre = int( double(NC)*this->param_.ratio_ci_ );
+  if (Nthre<2) Nthre = 2;
+  sub_ci_.resize(Nthre);
+  for (int i = 0; i < Nthre; ++i)
+    sub_ci_[i] = absgind[i];
+  
 }
 
 void pSampVTTree::clear()

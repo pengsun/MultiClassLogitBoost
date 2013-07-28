@@ -76,9 +76,9 @@ int main ()
   ab.param_.T = 3000;
   ab.param_.v = 0.1;
   ab.param_.ns = 1;
-  ab.param_.ratio_si_ = 0.6;
-  ab.param_.ratio_fi_ = 0.6;
-  ab.param_.ratio_ci_ = 0.7;
+  ab.param_.ratio_si_ = 1.0;
+  ab.param_.ratio_fi_ = 1.0;
+  ab.param_.ratio_ci_ = 0.8;
   ab.train(&tr);
 
   MLData te;
