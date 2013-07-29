@@ -73,7 +73,7 @@ int main ()
   // AOSO Boost
   SampVTLogitBoost ab;
   ab.param_.J = 4;
-  ab.param_.T = 10;
+  ab.param_.T = 3000;
   ab.param_.v = 1.0;
   ab.param_.ns = 1;
   ab.train(&tr);
