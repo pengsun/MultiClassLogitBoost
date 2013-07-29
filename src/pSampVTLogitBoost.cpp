@@ -377,7 +377,7 @@ void pSampVTTree::subsample(pSampVTData* _data)
   uniform_subsample_ratio(NF,this->param_.ratio_fi_, this->sub_fi_);
 
   // subsample classes via gradients
-#if 0
+#if 1
   // subsample classes
   int NC = _data->data_cls_->get_class_count();
   uniform_subsample_ratio(NC,this->param_.ratio_ci_, this->sub_ci_);
@@ -391,6 +391,7 @@ void pSampVTTree::subsample(pSampVTData* _data)
     } // while
   } // if
 #endif
+#if 0
   // all sample index
   VecIdx all_si(NS);
   for (int i = 0; i < NS; ++i) all_si[i] = i;
@@ -414,6 +415,7 @@ void pSampVTTree::subsample(pSampVTData* _data)
   sub_ci_.resize(Nthre);
   for (int i = 0; i < Nthre; ++i)
     sub_ci_[i] = absgind[i];
+#endif
   
 }
 
