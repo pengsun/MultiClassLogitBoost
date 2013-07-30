@@ -16,8 +16,8 @@ T = 1500;
 cv  = {0.1};
 cJ = {20};
 cns = {1};
-crs = {.75};
-crf = {.75};
+crs = {0.75};
+crf = {0.75};
 crc = {0.5};
 %%
 h = batch_pSampVTLogitBoost();

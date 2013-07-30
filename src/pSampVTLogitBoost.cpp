@@ -29,8 +29,8 @@ namespace {
     if (ind.empty()) ind.push_back(0);
   }
 
-  struct mgGreater {
-    mgGreater (VecDbl *_v) { v_ = _v;};
+  struct IdxGreater {
+    IdxGreater (VecDbl *_v) { v_ = _v;};
 
     bool operator () (int i1, int i2) {
       return ( v_->at(i1) > v_->at(i2) );
@@ -354,12 +354,9 @@ void pSampVTTree::predict( float* _sample, float* _score )
   }
 
   // update all the K classes...
-  // ...by updating a subset of *KK* non-zero classes 
   pSampVTNode* nd = get_node(_sample);
-  int KK = this->sub_ci_.size();
-  for (int kk = 0; kk < KK; ++kk) {
-    float val = static_cast<float>( nd->fitvals_[kk] );
-    int k = sub_ci_[kk];
+  for (int k = 0; k < K_; ++k) {
+    float val = static_cast<float>( nd->fitvals_[k] );
     *(_score + k) = val;
   }
 
@@ -391,6 +388,7 @@ void pSampVTTree::subsample(pSampVTData* _data)
     } // while
   } // if
 #endif
+#if 1
   // all sample index
   VecIdx all_si(NS);
   for (int i = 0; i < NS; ++i) all_si[i] = i;
@@ -407,13 +405,14 @@ void pSampVTTree::subsample(pSampVTData* _data)
   VecIdx absgind(absg.size());
   for (int i = 0; i < absg.size(); ++i) 
     absgind[i] = i;
-  std::sort (absgind.begin(),absgind.end(), mgGreater(&absg));
+  std::sort (absgind.begin(),absgind.end(), IdxGreater(&absg));
   // select the first #*ratio classes
   int Nthre = int( double(NC)*this->param_.ratio_ci_ );
   if (Nthre<2) Nthre = 2;
   sub_ci_.resize(Nthre);
   for (int i = 0; i < Nthre; ++i)
     sub_ci_[i] = absgind[i];
+#endif
   
 }
 
