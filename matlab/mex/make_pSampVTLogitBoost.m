@@ -1,7 +1,7 @@
 %%
-settings_homebj
+% settings_homebj
 % settings_par
-% settings_par_labserver183
+settings_par_labserver183
 % settings_server
 %%
 name = 'pSampVTLogitBoost_mex';
@@ -12,18 +12,18 @@ fn = {...
   fullfile(dir_src,'pSampVTLogitBoost.cpp')...
   };
 %% Debug
-outnamed = sprintf('-output %s', [name,'d']);
-cmdd = sprintf('mex -g -v %s %s %s %s',...
-  fn{:});
-cmdd = sprintf('%s %s',...
-  cmdd, opt_cmdd);
-eval(cmdd);
-copyfile([name,'.',mexext], './../private/');
-%% Release
-% outname = sprintf('-output %s', name);
-% cmd = sprintf('mex -O %s %s %s %s',...
+% outnamed = sprintf('-output %s', [name,'d']);
+% cmdd = sprintf('mex -g -v %s %s %s %s',...
 %   fn{:});
-% cmd = sprintf('%s %s',...
-%   cmd, opt_cmd);
-% eval(cmd);
+% cmdd = sprintf('%s %s',...
+%   cmdd, opt_cmdd);
+% eval(cmdd);
 % copyfile([name,'.',mexext], './../private/');
+%% Release
+outname = sprintf('-output %s', name);
+cmd = sprintf('mex -O %s %s %s %s',...
+  fn{:});
+cmd = sprintf('%s %s',...
+  cmd, opt_cmd);
+eval(cmd);
+copyfile([name,'.',mexext], './../private/');

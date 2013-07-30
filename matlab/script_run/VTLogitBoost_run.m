@@ -1,12 +1,15 @@
 %% 
-name = 'mnist';
-fn_data = fullfile('E:\Users\sp\dataset_mat\',[name,'.mat']);
+% name = 'mnist';
+% fn_data = fullfile('E:\Users\sp\dataset_mat\',[name,'.mat']);
+% dir_rst = fullfile('.\rst\VTLogitBoost',name);
+name = 'mnist0other';
+fn_data = fullfile('.\dataset\',[name,'.mat']);
 dir_rst = fullfile('.\rst\VTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 10000;
-cv  = {0.2};
-cJ = {50};
+T = 50;
+cv  = {0.5};
+cJ = {20};
 cns = {1};
 %%
 h = batch_VTLogitBoost();
