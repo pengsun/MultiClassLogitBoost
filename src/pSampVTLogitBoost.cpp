@@ -735,8 +735,8 @@ void pSampVTLogitBoost::train( MLData* _data )
 #ifdef OUTPUT
     os << "t = " << t << endl;
 #endif // OUTPUT
-    trees_[t].split(&klogitdata_);
-    trees_[t].fit(&klogitdata_);
+    trees_[t].split(&logitdata_);
+    trees_[t].fit(&logitdata_);
 
     update_F(t);
     update_p();
@@ -883,9 +883,9 @@ void pSampVTLogitBoost::train_init( MLData* _data )
   NumIter_ = 0;
 
   // AOTOData
-  klogitdata_.data_cls_ = _data;
-  klogitdata_.p_ = &p_;
-  klogitdata_.L_ = &L_;
+  logitdata_.data_cls_ = _data;
+  logitdata_.p_ = &p_;
+  logitdata_.L_ = &L_;
 
   // trees
   trees_.clear();
@@ -909,11 +909,11 @@ void pSampVTLogitBoost::train_init( MLData* _data )
 
 void pSampVTLogitBoost::update_F(int t)
 {
-  int N = klogitdata_.data_cls_->X.rows;
+  int N = logitdata_.data_cls_->X.rows;
   double v = param_.v;
   vector<float> f(K_);
   for (int i = 0; i < N; ++i) {
-    float *psample = klogitdata_.data_cls_->X.ptr<float>(i);
+    float *psample = logitdata_.data_cls_->X.ptr<float>(i);
     trees_[t].predict(psample,&f[0]);
 
     double* pF = F_.ptr<double>(i);
@@ -958,7 +958,7 @@ void pSampVTLogitBoost::update_p()
 //    
 //  for (int i = 0; i < N; ++i) {
 //    double* ptr_pi = p_.ptr<double>(i);
-//    int yi = int( klogitdata_.data_cls_->Y.at<float>(i) );
+//    int yi = int( logitdata_.data_cls_->Y.at<float>(i) );
 //
 //    for (int k = 0; k < K_; ++k) {
 //      double pik = *(ptr_pi+k);
@@ -1011,7 +1011,7 @@ void pSampVTLogitBoost::calc_grad( int t )
     
   for (int i = 0; i < N; ++i) {
     double* ptr_pi = p_.ptr<double>(i);
-    int yi = int( klogitdata_.data_cls_->Y.at<float>(i) );
+    int yi = int( logitdata_.data_cls_->Y.at<float>(i) );
 
     for (int k = 0; k < K_; ++k) {
       double pik = *(ptr_pi+k);

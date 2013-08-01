@@ -208,7 +208,7 @@ protected:
   cv::Mat_<double> L_; // Loss. #samples
   cv::Mat_<double> L_iter_; // Loss. #iteration
   int NumIter_; // actual iteration number
-  pSampVTData klogitdata_;
+  pSampVTData logitdata_;
   VecpSampVTTree trees_;
 
   int Tpre_beg_; // Beginning tree for test data
