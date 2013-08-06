@@ -9,6 +9,8 @@ std::ofstream os("output.txt");
 using namespace std;
 using namespace cv;
 
+
+
 namespace {
   void release_VecDbl (vector<double> &in) {
     vector<double> tmp;

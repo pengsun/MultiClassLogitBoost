@@ -59,6 +59,7 @@ float Y3[] = {
 
 int main ()
 {
+
   MLData tr;
   //tr.X = Mat(6,2,CV_32FC1,X1);
   //tr.Y = Mat(6,1,CV_32FC1,Y1);
@@ -76,7 +77,8 @@ int main ()
   ab.param_.T = 3000;
   ab.param_.v = 0.1;
   ab.param_.ns = 1;
-  ab.train(&tr);
+  for (int i = 0; i < 50; ++i)
+    ab.train(&tr);
 
   MLData te;
   te.X = tr.X;
