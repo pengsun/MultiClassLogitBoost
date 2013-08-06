@@ -215,6 +215,7 @@ pConsVTTree::Param::Param()
   node_size_ = 5;
 }
 // Implementation of pConsVTTree
+#if 0
 void pConsVTTree::split( pConsVTData* _data )
 {
   // clear
@@ -258,6 +259,44 @@ void pConsVTTree::split( pConsVTData* _data )
     candidate_nodes_.push(cur_node->right_);
     ++nleaves;
   }
+}
+#endif
+void pConsVTTree::split( pConsVTData* _data )
+{
+  // clear
+  clear();
+  K_ = _data->data_cls_->get_class_count();
+
+  // initial candidate nodes: root node
+  creat_root_node(_data);
+  candidate_nodes_.push(&nodes_.front());
+  make_tobe_nodes_from_cand();
+  int nleave = 1;
+
+  // 
+  while (true) {
+    split_nodes(cur_leaves_, _data);
+
+    // make candidate nodes
+    for (int i = 0; i < cur_leaves_.size(); ++i) {
+      pConsVTNode* ptr_node = cur_leaves_[i];
+
+      // having been split, push its children
+      if (ptr_node->left_!=0 && ptr_node->right_!=0) {
+        candidate_nodes_.push(ptr_node->left_);
+        candidate_nodes_.push(ptr_node->right_);
+      }
+      else { // can not be split, skip and leave it as leave
+        candidate_nodes_.push(ptr_node);
+      }
+    } // for
+
+    make_tobe_nodes_from_cand();
+
+    // find a common split for the current nodes
+    find_best_candidate_split();
+
+  } // while true
 }
 
 void pConsVTTree::fit( pConsVTData* _data )
@@ -350,6 +389,14 @@ void pConsVTTree::creat_root_node( pConsVTData* _data )
 
   // loss
   this->calc_gain(root, _data);
+}
+
+
+void pConsVTTree::make_tobe_nodes_from_cand()
+{
+  // TODO
+  // push candidate nodes into to-be-nodes-list
+
 }
 
 bool pConsVTTree::find_best_candidate_split( pConsVTNode* _node, pConsVTData* _data )
@@ -548,6 +595,10 @@ bool pConsVTTree::split_node( pConsVTNode* _node, pConsVTData* _data )
   return true;
 }
 
+void pConsVTTree::split_nodes( VecNodePtr _nodes, pConsVTData* _data )
+{
+
+}
 void pConsVTTree::calc_gain(pConsVTNode* _node, pConsVTData* _data)
 {
   double gain;

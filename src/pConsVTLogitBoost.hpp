@@ -91,6 +91,8 @@ typedef std::priority_queue<pConsVTNode*,
                             std::vector<pConsVTNode*>, 
                             pConsVTNodeLess>
         QuepConsVTNode;
+// node pointer array
+typedef std::vector<pConsVTNode*> VecNodePtr;
 
 // Best Split Finder (helper class for parallel_reduce) 
 class pConsVTTree;
@@ -129,6 +131,7 @@ public:
 public:
   void clear ();
   void creat_root_node (pConsVTData* _data);
+  void make_tobe_nodes_from_cand ();
 
   virtual bool find_best_candidate_split (pConsVTNode* _node, pConsVTData* _data);
   virtual bool find_best_split_num_var (pConsVTNode* _node, pConsVTData* _data, int _ivar,
@@ -142,12 +145,14 @@ public:
 
   bool can_split_node (pConsVTNode* _node);
   bool split_node (pConsVTNode* _node, pConsVTData* _data);
+  void split_nodes (VecNodePtr _nodes, pConsVTData* _data);
   void calc_gain (pConsVTNode* _node, pConsVTData* _data);
   virtual void fit_node (pConsVTNode* _node, pConsVTData* _data);
 
 protected:
   std::list<pConsVTNode> nodes_; // all nodes
   QuepConsVTNode candidate_nodes_; // priority queue of candidate leaves for splitting
+  VecNodePtr cur_leaves_; // nodes to be splitted
   // cb: current best
   // caching internal data, used by find_best_split*
   int K_; // #classes
