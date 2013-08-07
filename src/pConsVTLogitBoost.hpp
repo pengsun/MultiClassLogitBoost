@@ -131,14 +131,20 @@ public:
 public:
   void clear ();
   void creat_root_node (pConsVTData* _data);
-  void make_tobe_nodes_from_cand ();
+  void make_tobe_nodes_from_cand_nodes ();
 
+  virtual bool find_and_set_common_split (VecNodePtr &_nodes, pConsVTData* _data);
+  virtual bool find_best_split_num_var (pConsVTNode* _node, pConsVTData* _data, int _ivar,
+    pConsVTSplit &spl);
+
+#if 0
   virtual bool find_best_candidate_split (pConsVTNode* _node, pConsVTData* _data);
   virtual bool find_best_split_num_var (pConsVTNode* _node, pConsVTData* _data, int _ivar,
                                         pConsVTSplit &spl);
+#endif
 
-  void make_node_sorted_idx(pConsVTNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node);
-  bool set_best_split_num_var ( pConsVTNode* _node, MLData* _data, int _ivar, 
+  void make_node_sorted_idx (pConsVTNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node);
+  bool set_best_split_num_var (pConsVTNode* _node, MLData* _data, int _ivar, 
     VecIdx& node_sample_si,
     int best_i, double best_gain, double best_gain_left, double best_gain_right,
     pConsVTSplit &cb_split);
@@ -152,7 +158,7 @@ public:
 protected:
   std::list<pConsVTNode> nodes_; // all nodes
   QuepConsVTNode candidate_nodes_; // priority queue of candidate leaves for splitting
-  VecNodePtr cur_leaves_; // nodes to be splitted
+  VecNodePtr tobe_nodes_; // nodes to be splitted
   // cb: current best
   // caching internal data, used by find_best_split*
   int K_; // #classes

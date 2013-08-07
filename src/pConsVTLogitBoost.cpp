@@ -267,34 +267,36 @@ void pConsVTTree::split( pConsVTData* _data )
   clear();
   K_ = _data->data_cls_->get_class_count();
 
-  // initial candidate nodes: root node
+  // make initial candidate nodes and current leaves: the root node
   creat_root_node(_data);
   candidate_nodes_.push(&nodes_.front());
-  make_tobe_nodes_from_cand();
+  make_tobe_nodes_from_cand_nodes();
+  // 
+  find_and_set_common_split(tobe_nodes_, _data);
   int nleave = 1;
 
-  // 
+  // recursive splitting
   while (true) {
-    split_nodes(cur_leaves_, _data);
+    split_nodes(tobe_nodes_, _data);
 
     // make candidate nodes
-    for (int i = 0; i < cur_leaves_.size(); ++i) {
-      pConsVTNode* ptr_node = cur_leaves_[i];
+    for (int i = 0; i < tobe_nodes_.size(); ++i) {
+      pConsVTNode* ptr_node = tobe_nodes_[i];
 
       // having been split, push its children
       if (ptr_node->left_!=0 && ptr_node->right_!=0) {
         candidate_nodes_.push(ptr_node->left_);
         candidate_nodes_.push(ptr_node->right_);
       }
-      else { // can not be split, skip and leave it as leave
+      else { // cannot be split, skip and leave it as leave
         candidate_nodes_.push(ptr_node);
       }
     } // for
 
-    make_tobe_nodes_from_cand();
-
-    // find a common split for the current nodes
-    find_best_candidate_split();
+    // update current leaves
+    make_tobe_nodes_from_cand_nodes();
+    // 
+    find_and_set_common_split(tobe_nodes_,_data);
 
   } // while true
 }
@@ -392,13 +394,14 @@ void pConsVTTree::creat_root_node( pConsVTData* _data )
 }
 
 
-void pConsVTTree::make_tobe_nodes_from_cand()
+void pConsVTTree::make_tobe_nodes_from_cand_nodes()
 {
   // TODO
   // push candidate nodes into to-be-nodes-list
 
 }
 
+#if 0
 bool pConsVTTree::find_best_candidate_split( pConsVTNode* _node, pConsVTData* _data )
 {
   bool found_flag = false;
@@ -414,6 +417,74 @@ bool pConsVTTree::find_best_candidate_split( pConsVTNode* _node, pConsVTData* _d
 
   // update node's split
   _node->split_ = bsf.cb_split_;
+  return true; // TODO: Check if this is reasonable
+
+}
+
+bool pConsVTTree::find_best_split_num_var( 
+  pConsVTNode* _node, pConsVTData* _data, int _ivar, pConsVTSplit &cb_split)
+{
+  VecIdx node_sample_si;
+  MLData* data_cls = _data->data_cls_;
+  make_node_sorted_idx(_node,data_cls,_ivar,node_sample_si);
+  int ns = node_sample_si.size();
+  CV_Assert(ns >= 1);
+
+  // initialize
+  pConsVTSolver sol_left(_data), sol_right = _node->sol_this_;
+
+  // scan each possible split 
+  double best_gain = -1, best_gain_left = -1, best_gain_right = -1;
+  int best_i = -1;
+  for (int i = 0; i < ns-1; ++i) {  // ** excluding null and all **
+    int idx = node_sample_si[i];
+    sol_left.update_internal_incre(idx);
+    sol_right.update_internal_decre(idx);
+
+    // skip if overlap
+    int idx1 = idx;
+    float x1 = data_cls->X.at<float>(idx1, _ivar);
+    int idx2 = node_sample_si[i+1];
+    float x2 = data_cls->X.at<float>(idx2, _ivar);
+    if (x1==x2) continue; // overlap
+
+    // check left & right
+    double gL;
+    sol_left.calc_gain(gL);
+    double gR;
+    sol_right.calc_gain(gR);
+
+    double g = gL + gR;
+    if (g > best_gain) {
+      best_i = i;
+      best_gain = g;
+      best_gain_left = gL; best_gain_right = gR;
+    } // if
+  } // for i
+
+  // set output
+  return set_best_split_num_var(
+    _node, data_cls, _ivar,
+    node_sample_si,
+    best_i, best_gain, best_gain_left, best_gain_right,
+    cb_split);
+}
+#endif
+bool pConsVTTree::find_and_set_common_split( VecNodePtr &_nodes, pConsVTData* _data )
+{
+  bool found_flag = false;
+  MLData* data_cls = _data->data_cls_;
+
+  // the range (beginning/ending variable)
+  int nvar = data_cls->X.cols;
+  cv::BlockedRange br(0,nvar);
+
+  // do the search in parallel
+  pConsVT_best_split_finder bsf(this,_nodes,_data);
+  cv::parallel_reduce(br, bsf);
+
+  // update node's split
+  _nodes->split_ = bsf.cb_split_;
   return true; // TODO: Check if this is reasonable
 
 }
@@ -551,7 +622,6 @@ bool pConsVTTree::split_node( pConsVTNode* _node, pConsVTData* _data )
   _node->left_->parent_ = _node;
 
   pConsVTNode tmp2(nodes_.size(), K_);
-  // 
   nodes_.push_back(tmp2);
   _node->right_ = &(nodes_.back());
   _node->right_->parent_ = _node;
@@ -599,6 +669,7 @@ void pConsVTTree::split_nodes( VecNodePtr _nodes, pConsVTData* _data )
 {
 
 }
+
 void pConsVTTree::calc_gain(pConsVTNode* _node, pConsVTData* _data)
 {
   double gain;
