@@ -1,20 +1,20 @@
 %% 
-% name = 'mnist';
-% fn_data = fullfile('E:\Users\sp\dataset_mat',[name,'.mat']);
-% dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst\pVTLogitBoost',name);
+name = 'M-Image';
+fn_data = fullfile('E:\Users\sp\dataset_mat',[name,'.mat']);
+dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst\pGSVTLogitBoost',name);
 
 % name = 'pendigits';
 % fn_data = fullfile('.\dataset',[name,'.mat']);
-% dir_rst = fullfile('.\rst\pVTLogitBoost',name);
+% dir_rst = fullfile('.\rst\pGSVTLogitBoost',name);
 
-name = 'pendigits';
-fn_data = fullfile('.\dataset',[name,'.mat']);
-dir_rst = fullfile('.\rst\pGSVTLogitBoost',name);
+% name = 'pendigits';
+% fn_data = fullfile('.\dataset',[name,'.mat']);
+% dir_rst = fullfile('.\rst\pGSVTLogitBoost',name);
 %%
 num_Tpre = 2000;
-T = 700;
+T = 10000;
 cv  = {0.1};
-cJ = {20};
+cJ = {50};
 cns = {1};
 %%
 h = batch_pGSVTLogitBoost();

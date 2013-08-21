@@ -1,6 +1,6 @@
 %%
-settings_par_baidulaptop
-% settings_par_labserver183
+% settings_par_baidulaptop
+settings_par_labserver183
 % settings_server
 %%
 name = 'pGSVTLogitBoost_mex';

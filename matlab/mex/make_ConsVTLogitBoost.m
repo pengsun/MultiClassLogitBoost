@@ -1,7 +1,7 @@
 
 %%
-settings_baidulaptop
-% settings_labserver183
+% settings_baidulaptop
+settings_labserver183
 % settings_2
 % settings_server
 %%

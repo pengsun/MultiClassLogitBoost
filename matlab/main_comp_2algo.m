@@ -1,19 +1,19 @@
 %% data name
 % name = 'poker100k';
 % name = 'pendigits';
-name = 'optdigits';
+% name = 'optdigits';
 % name = 'M-Basic';
-% name = 'M-Image';
+name = 'M-Image';
 % name = 'isolet';
 %% algo name
-algoname1 = 'VTLogitBoost';
+algoname1 = 'pGSVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-% fn1 = 'T100000_v1.0e-001_J50_ns1.mat';
-fn1 = 'T700_v1_J20_ns1.mat';
+fn1 = 'T10000_v1.0e-01_J50_ns1.mat';
+% fn1 = 'T700_v1_J20_ns1.mat';
 
-algoname2 = 'VTDropoutLogitBoost';
+algoname2 = 'pVTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T700_v1_J20_ns1.mat';
+fn2 = 'T10000_v1.0e-01_J50_ns1.mat';
 
 % algoname1 = 'VTLogitBoost';
 % dir_root1 = fullfile('.\rst',algoname1);
