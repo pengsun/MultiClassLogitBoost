@@ -471,7 +471,7 @@ bool pSampVTTree::find_best_split_num_var(
   CV_Assert(ns >= 1);
 #endif
 #if 1
-  if (ns >= 1) return false;
+  if (ns < 1) return false;
 #endif
 
   // initialize
