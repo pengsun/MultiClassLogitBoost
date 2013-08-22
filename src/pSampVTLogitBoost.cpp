@@ -466,7 +466,13 @@ bool pSampVTTree::find_best_split_num_var(
   MLData* data_cls = _data->data_cls_;
   make_node_sorted_idx(_node,data_cls,_ivar,node_sample_si);
   int ns = node_sample_si.size();
+
+#if 0
   CV_Assert(ns >= 1);
+#endif
+#if 1
+  if (ns >= 1) return false;
+#endif
 
   // initialize
   pSampVTSolver sol_left(_data, &(this->sub_ci_)), sol_right = _node->sol_this_;
