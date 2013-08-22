@@ -651,7 +651,14 @@ void pSampVTTree::calc_gain(pSampVTNode* _node, pSampVTData* _data)
 void pSampVTTree::fit_node( pSampVTNode* _node, pSampVTData* _data )
 {
   int nn = _node->sample_idx_.size();
+
+#if 0
   CV_Assert(nn>0);
+#endif
+#if 1
+  if (nn<=0) return;
+#endif
+  
 
   _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 

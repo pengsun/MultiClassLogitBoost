@@ -615,7 +615,14 @@ void AOSOTree::calc_gain(AOSONodegain* _node, AOSODatagain* _data)
 void AOSOTree::fit_node( AOSONodegain* _node, AOSODatagain* _data )
 {
   int nn = _node->sample_idx_.size();
+
+#if 0
   CV_Assert(nn>0);
+#endif
+#if 1
+  if (nn<=0) return;
+#endif
+  
 
   int cls1, cls2;
   AOSOSolver::find_best_two(_data, _node->sample_idx_, cls1,cls2);
