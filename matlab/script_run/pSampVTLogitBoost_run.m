@@ -3,7 +3,7 @@
 % fn_data = fullfile('E:\Users\sp\dataset_mat',[name,'.mat']);
 % dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst\pSampVTLogitBoost',name);
 
-name = 'optdigits';
+name = 'pendigits';
 fn_data = fullfile('.\dataset',[name,'.mat']);
 dir_rst = fullfile('.\rst\pSampVTLogitBoost',name);
 
@@ -11,14 +11,14 @@ dir_rst = fullfile('.\rst\pSampVTLogitBoost',name);
 % fn_data = fullfile('.\dataset',[name,'.mat']);
 % dir_rst = fullfile('.\rst\pSampVTLogitBoost',name);
 %%
-num_Tpre = 2000;
-T = 7;
+num_Tpre = 6000;
+T = 5000;
 cv  = {0.1};
-cJ = {20};
+cJ = {8};
 cns = {1};
-crs = {0.8};
-crf = {0.8};
-crc = {0.6};
+crs = {1};
+crf = {0.35};
+crc = {1};
 %%
 h = batch_pSampVTLogitBoost();
 h.num_Tpre = num_Tpre;
