@@ -21,12 +21,16 @@ namespace {
   void uniform_subsample_ratio (int N, double ratio, VecIdx &ind) {
     ind.clear();
 
-    
+    // sample without replacement
     for (int i = 0; i < N; ++i) {
       double num = THE_RNG.uniform((double)0.0, (double)1.0);
       if (num < ratio) ind.push_back(i);
     }
-    if (ind.empty()) ind.push_back(0);
+    // pick a random one if empty
+    if (ind.empty()) { 
+      int iii = THE_RNG.uniform((int)0, (int)(N-1));
+      ind.push_back(iii);
+    }
   }
 
   struct IdxGreater {
