@@ -9,3 +9,7 @@ pExtSampVTLogitBoost, but use weight trimming for samples, where weight is simpl
 
 pExtSamp3VTLogitBoost
 pExtSampVTLogitBoost, but use Friedman's weight trimming for samples, i.e. p*(1-p)
+
+
+pExtSamp4VTLogitBoost
+pExtSampVTLogitBoost,  but use weight trimming for samples, where weight is the Newton decrement = (r-p)^2 / (p*(1-p))
