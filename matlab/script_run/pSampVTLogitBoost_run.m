@@ -1,23 +1,16 @@
 %% 
-% name = 'optdigits';
-% fn_data = fullfile('E:\Users\sp\dataset_mat',[name,'.mat']);
-% dir_rst = fullfile('E:\Users\sp\code_work\gitlab\MulticlassLogitBoost\matlab\rst\pSampVTLogitBoost',name);
-
-name = 'pendigits';
-fn_data = fullfile('.\dataset',[name,'.mat']);
+name = 'mnist';
+dir_data = 'D:\Users\sp\data\dataset_mat';
+fn_data = fullfile(dir_data,[name,'.mat']);
 dir_rst = fullfile('.\rst\pSampVTLogitBoost',name);
-
-% name = 'M-Image';
-% fn_data = fullfile('.\dataset',[name,'.mat']);
-% dir_rst = fullfile('.\rst\pSampVTLogitBoost',name);
 %%
-num_Tpre = 6000;
-T = 5000;
+num_Tpre = 3000;
+T = 3000;
 cv  = {0.1};
-cJ = {8};
+cJ = {120};
 cns = {1};
 crs = {1};
-crf = {0.35};
+crf = {0.062};
 crc = {1};
 %%
 h = batch_pSampVTLogitBoost();

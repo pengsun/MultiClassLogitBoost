@@ -1,5 +1,6 @@
 %%
-settings_par
+settings_par_labserver185
+% settings_par
 % settings_server
 %%
 name = 'pAOSOLogitBoost_mex';

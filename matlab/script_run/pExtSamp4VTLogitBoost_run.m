@@ -1,17 +1,17 @@
 %% 
-name = 'pendigits';
-dir_data = 'D:\data\dataset_mat';
+name = 'mnist';
+dir_data = 'D:\Users\sp\data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pExtSamp4VTLogitBoost',name);
 %%
-num_Tpre = 1500;
-T = 1500;
+num_Tpre = 3000;
+T = 3000;
 cv  = {0.1};
-cJ = {8};
+cJ = {70};
 cns = {1};
-crs = {0.1};
-crf = {0.2};
+crs = {0.9};
+crf = {0.031};
 crc = {1};
 %%
 h = batch_pExtSamp4VTLogitBoost();

@@ -1,21 +1,22 @@
 %% data name
 % name = 'poker100k';
-name = 'pendigits';
+% name = 'pendigits';
 % name = 'optdigits';
 % name = 'M-Basic';
 % name = 'M-Image';
 % name = 'isolet';
 % name = 'zipcode';
-% name = 'mnist';
+name = 'mnist';
+% name = 'timit.mfcc.winSz11';
 %% algo name
-algoname1 = 'pExtSampVTLogitBoost';
+algoname1 = 'pExtSamp2VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J8_ns1_rs1_rf2e-01_rc1.mat';
+fn1 = 'T3000_v1.0e-001_J50_ns1_rs6.00e-001_rf3.10e-002_rc1.mat';
 % fn1 = 'T700_v1_J20_ns1.mat';
 
 algoname2 = 'pExtSamp2VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-01_J8_ns1_rs9.00e-01_rf2.00e-01_rc1.mat';
+fn2 = 'T3000_v1.0e-001_J50_ns1_rs6.00e-001_rf6.20e-002_rc1.mat';
 
 % algoname1 = 'VTLogitBoost';
 % dir_root1 = fullfile('.\rst',algoname1);
