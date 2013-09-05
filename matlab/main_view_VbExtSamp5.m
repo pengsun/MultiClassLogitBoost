@@ -8,10 +8,10 @@
 % name = 'mnist';
 % name = 'timit.mfcc.winSz11';
 %% config
-name = 'zipcode';
-algoname1 = 'pVbExtSamp5VTLogitBoost';
-dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T3000_v1.0e-001_J20_ns1_rs9.00e-001_rf5.00e-002_rc1e+000.mat';
+% name = 'zipcode';
+% algoname1 = 'pVbExtSamp5VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T3000_v1.0e-001_J20_ns1_rs9.00e-001_rf5.00e-002_rc1e+000.mat';
 
 % name = 'optdigits';
 % algoname1 = 'pVbExtSamp5VTLogitBoost';
@@ -47,6 +47,11 @@ fn1 = 'T3000_v1.0e-001_J20_ns1_rs9.00e-001_rf5.00e-002_rc1e+000.mat';
 % algoname1 = 'pVbExtSamp5VTLogitBoost';
 % dir_root1 = fullfile('.\rst',algoname1);
 % fn1 = 'T3000_v1.0e-001_J50_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
+
+name = 'M-Noise3';
+algoname1 = 'pVbExtSamp5VTLogitBoost';
+dir_root1 = fullfile('.\rst',algoname1);
+fn1 = 'T3000_v1.0e-001_J50_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
 
 % name = 'letter';
 % algoname1 = 'pVbExtSamp5VTLogitBoost';
