@@ -54,11 +54,15 @@
 % dir_root1 = fullfile('.\rst',algoname1);
 % fn1 = 'T3000_v1.0e-001_J70_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
 
-name = 'cifar-10';
+% name = 'cifar-10';
+% algoname1 = 'pVbExtSamp5VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T3000_v1.0e-001_J120_ns1_rs9.50e-001_rf1.18e-002_rc1e+000.mat';
+%% config
+name = 'optdigits';
 algoname1 = 'pVbExtSamp5VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T3000_v1.0e-001_J120_ns1_rs9.50e-001_rf1.18e-002_rc1e+000.mat';
-
+fn1 = 'T10000_v1.0e-01_J20_ns1_rs6.00e-01_rf2.00e-01_rc1e+00.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
