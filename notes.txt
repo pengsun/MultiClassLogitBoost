@@ -2,7 +2,7 @@ pSampVTLogitBoost
 VTLogitBoost with uniform sampling for samples, features and classes
 
 pExtSampVTLogitBoost
-Extreme sampling for feature: each node uniformly samples features
+VTLogitBoost, but does Extreme Sampling for features: each node uniformly samples features
 
 pExtSamp2VTLogitBoost
 pExtSampVTLogitBoost, but use weight trimming for samples, where weight is simply the absolute value of gradient
@@ -10,6 +10,8 @@ pExtSampVTLogitBoost, but use weight trimming for samples, where weight is simpl
 pExtSamp3VTLogitBoost
 pExtSampVTLogitBoost, but use Friedman's weight trimming for samples, i.e. p*(1-p)
 
-
 pExtSamp4VTLogitBoost
-pExtSampVTLogitBoost,  but use weight trimming for samples, where weight is the Newton decrement = (r-p)^2 / (p*(1-p))
+pExtSampVTLogitBoost, but use weight trimming for samples, where the weight is the Newton decrement = (r-p)^2 / (p*(1-p))
+
+pExtSamp5VTLogitBoostVb
+pExtSampVTLogitBoost, but use weight trimming for both samples and classes, where the weight is simply the absolute value of gradient. Verbose version
