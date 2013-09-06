@@ -13,6 +13,8 @@ using namespace cv;
 
 static cv::RNG THE_RNG;
 
+typedef cv::Mat_<double> MatDbl;
+
 namespace {
   struct IdxGreater {
     IdxGreater (VecDbl *_v) { v_ = _v;};
@@ -113,6 +115,19 @@ namespace {
     } // for j
   }
 
+
+  void subsample_rows(MatDbl& in, const VecIdx& idx, MatDbl& out) {
+    int K = in.cols;
+    out.create(idx.size(),K);
+
+    for (int i = 0; i < idx.size(); ++i) {
+      int ii = idx[i];
+
+      double *pfrom_beg = in.ptr<double>(i);
+      double *pto_beg = out.ptr<double>(i);
+      std::copy(pfrom_beg,pfrom_beg+K, pto_beg);
+    }
+  }
 }
 
 // Implementation of pVbExtSamp5VTSplit
@@ -452,12 +467,19 @@ void pVbExtSamp5VTTree::subsample(pVbExtSamp5VTData* _data)
   this->nr_wts = si_wt.size();
   //
   this->sub_si_ = si_wt;
+  //weight_trim_ratio(g_samp, 1.1, this->sub_si_);
 
   /// subsample classes
-  // class wise
+  // class wise, use the examples after Weight Trimming
+  MatDbl tmp;
+  subsample_rows(*_data->gg_, this->sub_si_, tmp);
   cv::Mat_<double> g_class; 
-  calc_1norm_proj_to_col( *_data->gg_, g_class); // after: K * 1
+  calc_1norm_proj_to_col( tmp, g_class); // after: K * 1
   // 
+  //// class wise
+  //cv::Mat_<double> g_class; 
+  //calc_1norm_proj_to_col( *_data->gg_, g_class); // after: K * 1
+  //// 
   VecIdx ci_wt;
   weight_trim_ratio(g_class, this->param_.ratio_ci_, ci_wt);
   // record it
