@@ -1,12 +1,3 @@
-%% data name
-% name = 'poker100k';
-% name = 'pendigits';
-% name = 'optdigits';
-% name = 'M-Basic';
-% name = 'M-Image';
-% name = 'isolet';
-% name = 'mnist';
-% name = 'timit.mfcc.winSz11';
 %% config
 % name = 'zipcode';
 % algoname1 = 'pVbExtSamp5VTLogitBoost';
@@ -48,15 +39,30 @@
 % dir_root1 = fullfile('.\rst',algoname1);
 % fn1 = 'T3000_v1.0e-001_J50_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
 
-name = 'M-Noise3';
-algoname1 = 'pVbExtSamp5VTLogitBoost';
-dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T3000_v1.0e-001_J50_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
+% name = 'M-Noise3';
+% algoname1 = 'pVbExtSamp5VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T3000_v1.0e-001_J50_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
 
 % name = 'letter';
 % algoname1 = 'pVbExtSamp5VTLogitBoost';
 % dir_root1 = fullfile('.\rst',algoname1);
-% fn1 = 'T3000_v1.0e-001_J20_ns1_rs9.00e-001_rf2.00e-001_rc1e+000.mat';
+% fn1 = 'T10000_v1.0e-001_J20_ns1_rs9.00e-001_rf2.00e-001_rc1e+000.mat';
+
+% name = 'mnist';
+% algoname1 = 'pVbExtSamp5VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T3000_v1.0e-001_J70_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
+
+% name = 'cifar-10';
+% algoname1 = 'pVbExtSamp5VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T3000_v1.0e-001_J120_ns1_rs9.50e-001_rf1.18e-002_rc1e+000.mat';
+%% config
+name = 'optdigits';
+algoname1 = 'pVbExtSamp5VTLogitBoost';
+dir_root1 = fullfile('.\rst',algoname1);
+fn1 = 'T10000_v1.0e-01_J20_ns1_rs6.00e-01_rf2.00e-01_rc1e+00.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -72,22 +78,27 @@ nr_wts = tmp.nr_wts;
 nr_wtc = tmp.nr_wtc;
 clear tmp;
 %%
-figure;
-title nr-s;
-plot(nr_wts,'marker','x','linewidth',4);
+figure('name',name); 
+title('#examples');
+hold on;
+plot(nr_wts,'marker','x','linewidth',2);
+hold off;
 grid on;
 %%
-figure;
-title nr-c;
-plot(nr_wtc,'marker','o','linewidth',4,'color','r');
-grid on;
+% figure;
+% title('nrc');
+% hold on;
+% plot(nr_wtc,'marker','o','linewidth',4,'color','r');
+% hold off;
+% grid on;
 %% plot error
-figure('name',name); title error; hold on;
-% plot(it1,err_it1, 'color','r','marker','.');
-% plot(it2,err_it2, 'color','b','marker','.');
-plot(it1,err_it1, 'color','r','lineWidth', 2, 'marker','.');
-grid on;
+% figure('name',name); title error; hold on;
+% plot(it1,err_it1, 'color','r','lineWidth', 2, 'marker','.');
+% grid on;
 %% plot grad
-figure('name',name);  title grad; hold on;
+figure('name',name);  
+title('||grad||_1'); 
+hold on;
 plot(it1, log10( eps + abs_grad1(it1) ), 'color','r','marker','.');
+hold off;
 grid on;
