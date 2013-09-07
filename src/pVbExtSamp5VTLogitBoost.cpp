@@ -39,6 +39,11 @@ namespace {
     tmp.swap(in);
   }
 
+  void release_VecIdx (VecIdx &in) {
+    VecIdx tmp;
+    tmp.swap(in);
+  }
+
   void uniform_subsample_ratio (int N, double ratio, VecIdx &ind) {
     ind.clear();
     // sample without replacement
@@ -369,10 +374,9 @@ void pVbExtSamp5VTTree::split( pVbExtSamp5VTData* _data )
     }
 
     split_node(cur_node,_data);
-    VecIdx tmp;
-    tmp.swap(cur_node->sample_idx_); 
     // release memory.
     // no longer used in later splitting
+    release_VecIdx(cur_node->sample_idx_);
     release_VecDbl( cur_node->sol_this_.mg_ );
     release_VecDbl( cur_node->sol_this_.h_ );
 
