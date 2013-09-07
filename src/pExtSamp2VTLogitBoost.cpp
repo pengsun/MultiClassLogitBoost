@@ -37,6 +37,11 @@ namespace {
     tmp.swap(in);
   }
 
+  void release_VecIdx (VecIdx &in) {
+    VecIdx tmp;
+    tmp.swap(in);
+  }
+
   void uniform_subsample_ratio (int N, double ratio, VecIdx &ind) {
     ind.clear();
     // sample without replacement
@@ -322,10 +327,9 @@ void pExtSamp2VTTree::split( pExtSamp2VTData* _data )
     }
 
     split_node(cur_node,_data);
-    VecIdx tmp;
-    tmp.swap(cur_node->sample_idx_); 
     // release memory.
     // no longer used in later splitting
+    release_VecIdx( cur_node->sample_idx_);
     release_VecDbl( cur_node->sol_this_.mg_ );
     release_VecDbl( cur_node->sol_this_.h_ );
 
@@ -809,8 +813,13 @@ void pExtSamp2VTLogitBoost::train( MLData* _data )
     calc_grad(t);
 
 #ifdef OUTPUT
-    //os << "loss = " << L_iter_.at<double>(t) << endl;
+    os << "loss = " << L_iter_.at<double>(t) << endl;
 #endif // OUTPUT
+
+    /// release memory: no longer use them
+    release_VecIdx(trees_[t].sub_si_);
+    release_VecIdx(trees_[t].sub_fi_);
+    release_VecIdx(trees_[t].sub_ci_);
 
     NumIter_ = t + 1;
     if ( should_stop(t) ) break;

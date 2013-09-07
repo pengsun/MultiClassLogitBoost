@@ -82,36 +82,36 @@ namespace {
     }
   }
 
-  void calc_1norm_proj_to_row (cv::Mat_<double>& m, cv::Mat_<double>& out) {
-    int nrow = m.rows;
+  void calc_grad_1norm_samp (MatDbl& gg, MatDbl& out) {
+    int nrow = gg.rows;
     out.create(nrow,1);
 
-    int ncol = m.cols;
+    int ncol = gg.cols;
     for (int i = 0; i < nrow; ++i) {
       double s = 0.0;
       for (int j = 0; j < ncol; ++j) {
-        s += std::abs( m.at<double>(i,j) );
+        s += std::abs( gg.at<double>(i,j) );
       } // for j
       
       // update out
       out.at<double>(i) = s;
     } // for i
 
-  } // calc_1norm_proj_to_row
+  } // calc_grad_1norm_samp
 
-  void calc_1norm_proj_to_col (cv::Mat_<double>& m, cv::Mat_<double>& out) {
-    int ncol = m.cols;
+  void calc_grad_1norm_class (MatDbl& gg, MatDbl& out) {
+    int ncol = gg.cols;
     out.create(ncol,1);
 
-    int nrow = m.rows;
+    int nrow = gg.rows;
     for (int j = 0; j < ncol; ++j) {
       double s = 0.0;
       for (int i = 0; i < nrow; ++i) {
-        s += std::abs( m.at<double>(i,j) );
+        s += gg.at<double>(i,j) ;
       } // for i
 
       // update out
-      out.at<double>(j) = s;
+      out.at<double>(j) = std::abs(s);
     } // for j
   }
 
@@ -459,7 +459,7 @@ void pVbExtSamp5VTTree::subsample(pVbExtSamp5VTData* _data)
   /// subsample samples
   // sample wise
   cv::Mat_<double> g_samp;
-  calc_1norm_proj_to_row( *_data->gg_, g_samp); // after: N * 1
+  calc_grad_1norm_samp( *_data->gg_, g_samp); // after: N * 1
   // 
   VecIdx si_wt;
   weight_trim_ratio(g_samp, this->param_.ratio_si_, si_wt);
@@ -474,7 +474,7 @@ void pVbExtSamp5VTTree::subsample(pVbExtSamp5VTData* _data)
   MatDbl tmp;
   subsample_rows(*_data->gg_, this->sub_si_, tmp);
   cv::Mat_<double> g_class; 
-  calc_1norm_proj_to_col( tmp, g_class); // after: K * 1
+  calc_grad_1norm_class( tmp, g_class); // after: K * 1
   // 
   //// class wise
   //cv::Mat_<double> g_class; 
@@ -1123,9 +1123,9 @@ void pVbExtSamp5VTLogitBoost::update_gg()
       double pik = *(ptr_pi+k);
 
       if (yi==k) 
-        gg_.at<double>(i,k) = 1-pik;
+        gg_.at<double>(i,k) = (1-pik);
       else  
-        gg_.at<double>(i,k) = -pik;
+        gg_.at<double>(i,k) = (-pik);
     } // for k
   } // for i
 }
