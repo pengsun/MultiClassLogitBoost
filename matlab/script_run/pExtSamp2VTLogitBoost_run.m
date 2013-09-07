@@ -5,13 +5,13 @@ fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pExtSamp2VTLogitBoost',name);
 %%
-num_Tpre = 1000;
+num_Tpre = 3000;
 T = 1000;
 cv  = {0.1};
 cJ = {120};
 cns = {1};
 crs = {0.9};
-crf = {0.02};
+crf = {0.038};
 crc = {1};
 %%
 h = batch_pExtSamp2VTLogitBoost();

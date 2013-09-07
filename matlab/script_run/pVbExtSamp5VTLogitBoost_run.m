@@ -1,17 +1,17 @@
 %% 
-name = 'zipcode';
-dir_data = 'D:\data\dataset_mat';
+name = 'cifar-10';
+dir_data = 'D:\Users\sp\data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pVbExtSamp5VTLogitBoost',name);
 %%
-num_Tpre = 1000;
-T = 1000;
+num_Tpre = 10000;
+T = 10000;
 cv  = {0.1};
-cJ = {20};
+cJ = {120};
 cns = {1};
-crs = {0.9};
-crf = {0.05};
+crs = {0.95};
+crf = {0.0118};
 crc = {1.2};
 %%
 h = batch_pVbExtSamp5VTLogitBoost();
