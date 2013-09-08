@@ -13,5 +13,12 @@ pExtSampVTLogitBoost, but use Friedman's weight trimming for samples, i.e. p*(1-
 pExtSamp4VTLogitBoost
 pExtSampVTLogitBoost, but use weight trimming for samples, where the weight is the Newton decrement = (r-p)^2 / (p*(1-p))
 
-pExtSamp5VTLogitBoostVb
+pVbExtSamp5VTLogitBoost
 pExtSampVTLogitBoost, but use weight trimming for both samples and classes, where the weight is simply the absolute value of gradient. Verbose version
+
+
+pVbExtSamp6VTLogitBoost
+pVbExtSamp5VTLogitBoost, but the parameter "rs" means ratio of number of examples, instead of weights.
+
+pVbExtSamp7VTLogitBoost
+pVbExtSamp5VTLogitBoost, but the parameter "rs" means ratio of number of examples, instead of weights. Also, use unbiased sampling, instead of weight trimming (tzhang's idea)
