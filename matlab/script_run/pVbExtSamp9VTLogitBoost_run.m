@@ -1,19 +1,18 @@
 %% 
-name = 'optdigits';
+name = 'mnist';
 dir_data = 'E:\Users\sp\data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pVbExtSamp9VTLogitBoost',name);
 %%
-
 num_Tpre = 10000;
-T = 10000;
+T = 5000;
 cv  = {0.1};
-cJ = {20};
+cJ = {70};
 cns = {1};
-crs = {0.2};
-crf = {0.2};
-crc = {1.1};
+crs = {0.2351};
+crf = {0.031};
+crc = {0.71};
 %%
 h = batch_pVbExtSamp9VTLogitBoost();
 h.num_Tpre = num_Tpre;

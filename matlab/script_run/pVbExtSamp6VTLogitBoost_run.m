@@ -6,11 +6,11 @@ dir_rst = fullfile('.\',...
   'rst\pVbExtSamp6VTLogitBoost',name);
 %%
 num_Tpre = 10000;
-T = 10000;
+T = 3000;
 cv  = {0.1};
 cJ = {70};
 cns = {1};
-crs = {0.2};
+crs = {0.2351};
 crf = {0.031};
 crc = {1.1};
 %%

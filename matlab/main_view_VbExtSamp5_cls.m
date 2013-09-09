@@ -1,8 +1,8 @@
 %% config
-name = 'optdigits';
+name = 'letter4k';
 algoname1 = 'pVbExtSamp5VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-001_J20_ns1_rs9.00e-001_rf2.00e-001_rc9e-001.mat';
+fn1 = 'T10000_v1.0e-01_J20_ns1_rs9.00e-01_rf2.00e-01_rc9e-01.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -28,7 +28,7 @@ grid on;
 figure;
 title([name, ': #classes']);
 hold on;
-plot(nr_wtc,'marker','o','linewidth',4,'color','r');
+plot(nr_wtc,'marker','o','linewidth',2,'color','r');
 hold off;
 grid on;
 %% plot error
