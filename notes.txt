@@ -22,3 +22,6 @@ pVbExtSamp5VTLogitBoost, but the parameter "rs" means ratio of number of example
 pVbExtSamp7VTLogitBoost
 pVbExtSamp3VTLogitBoost (i.e. Friedman's weight trimming where weight is p*(1-p) ), but the parameter "rs" means ratio of number of examples, 
 instead of weights. 
+
+pVbExtSamp8VTLogitBoost
+pVbExtSamp6VTLogitBoost, but do the Class Weight Trimming for each node.
