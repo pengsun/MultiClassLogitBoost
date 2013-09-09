@@ -25,3 +25,6 @@ instead of weights.
 
 pVbExtSamp8VTLogitBoost
 pVbExtSamp6VTLogitBoost, but do the Class Weight Trimming for each node.
+
+pVbExtSamp9VTLogitBoost
+pVbExtSamp8VTLogitBoost, but use all classes when fitting node values.
