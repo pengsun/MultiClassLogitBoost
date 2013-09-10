@@ -801,7 +801,7 @@ bool pVbExtSamp10VTTree::split_node( pVbExtSamp10VTNode* _node, pVbExtSamp10VTDa
   subsample_classes_for_node(_node->left_, _data);
   this->node_cc_.push_back( _node->left_->sub_ci_.size() );
   subsample_classes_for_node(_node->right_, _data);
-  this->node_cc_.push_back( _node->left_->sub_ci_.size() );
+  this->node_cc_.push_back( _node->right_->sub_ci_.size() );
 
   // initialize node sovler
   _node->left_->sol_this_.set_data(_data, &(_node->left_->sub_ci_));
