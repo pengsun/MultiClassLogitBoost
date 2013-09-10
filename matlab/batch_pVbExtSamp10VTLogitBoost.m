@@ -1,4 +1,4 @@
-classdef batch_pVbExtSamp10VTLogitBoost < batch_vb_sampboost_basic
+classdef batch_pVbExtSamp10VTLogitBoost < batch_vb2_sampboost_basic
   %batch_pSampVTLogitBoost Summary of this class goes here
   %   Detailed explanation goes here
   
