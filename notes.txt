@@ -28,3 +28,6 @@ pVbExtSamp6VTLogitBoost, but do the Class Weight Trimming for each node.
 
 pVbExtSamp9VTLogitBoost
 pVbExtSamp8VTLogitBoost, but use all classes when fitting node values.
+
+pVbExtSamp10VTLogitBoost
+pVbExtSamp9VTLogitBoost, but rc is the class count ratio (instead of weight sum ratio). The selected class count is recorded for each node.
