@@ -1,8 +1,8 @@
 %% config
-name = 'letter4k';
+name = 'mnist';
 algoname1 = 'pVbExtSamp5VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-01_J20_ns1_rs9.00e-01_rf2.00e-01_rc1.10e+00.mat';
+fn1 = 'T3000_v1.0e-001_J70_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
