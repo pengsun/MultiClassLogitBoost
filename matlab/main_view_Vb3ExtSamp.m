@@ -7,7 +7,7 @@ fn1 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc9.00e-01.mat';
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';
 
-it_ind = [100, 200];
+it_ind = [1000, 2000,3000,4000,4700];
 % it_ind = round( linspace(1200,2000,12) );
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);

@@ -1,10 +1,10 @@
 %% config
-name = 'pendigits';
+name = 'cifar-10';
 algoname1 = 'pVbExtSamp11VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-01_J20_ns1_rs2.41e-01_rf2.00e-01_rc6.00e-01.mat';
-fn2 = 'T10000_v1.0e-001_J20_ns1_rs2.41e-001_rf2.00e-001_rc9.00e-001.mat';
-fn3 = 'T10000_v1.0e-001_J20_ns1_rs2.41e-001_rf2.00e-001_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J70_ns1_rs9.00e-001_rf1.80e-002_rc6.00e-001.mat';
+fn2 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc9.00e-01.mat';
+fn3 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc1.10e+00.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';
@@ -48,15 +48,15 @@ tree_node_cc3 = tmp.tree_node_cc;
 tree_node_sc3 = tmp.tree_node_sc;
 clear tmp;
 %% info
-tmp_fn = fullfile(dir_data, [name,'.mat']);
-tmp = load(tmp_fn);
-ntr = size(tmp.Xtr,2);
-nclass = max(tmp.Ytr)+1;
-clear tmp;
+% tmp_fn = fullfile(dir_data, [name,'.mat']);
+% tmp = load(tmp_fn);
+% ntr = size(tmp.Xtr,2);
+% nclass = max(tmp.Ytr)+1;
+% clear tmp;
 
-% ntr = 50000;
-% nclass = 10;
-%% number of operations(split searching)
+ntr = 50000;
+nclass = 10;
+%% print number of operations(split searching)
 nop1 = 0;
 for i = 1 : numel(tree_node_sc1)
   nop1 = nop1 + sum(tree_node_cc1{i}.*tree_node_sc1{i});
@@ -75,6 +75,13 @@ fprintf('number of operations (split searching):\n');
 fprintf('nop1 = %d\n',nop1);
 fprintf('nop2 = %d\n',nop2);
 fprintf('nop3 = %d\n',nop3);
+fprintf('\n');
+%% print last error
+fprintf('last error:\n');
+fprintf('%s: %d @ %d\n', fn1, err_it1(end), it1(end));
+fprintf('%s: %d @ %d\n', fn2, err_it2(end), it2(end));
+fprintf('%s: %d @ %d\n', fn3, err_it3(end), it3(end));
+fprintf('\n');
 %% plot nop v.s. error
 for i = 1 : numel(tree_node_sc1)
   vnop1(i) = sum(tree_node_cc1{i}.*tree_node_sc1{i});
