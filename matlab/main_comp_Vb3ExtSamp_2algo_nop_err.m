@@ -1,9 +1,9 @@
 %% config
-name = 'mnist';
+name = 'pendigits';
 algoname1 = 'pVbExtSamp11VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-001_J70_ns1_rs4.00e-001_rf3.10e-002_rc9.00e-001.mat';
-fn2 = 'T10000_v1.0e-001_J70_ns1_rs4.00e-001_rf3.10e-002_rc1.10e+000.mat';
+fn1 = 'T10000_v1.0e-001_J20_ns1_rs2.41e-001_rf2.00e-001_rc9.00e-001.mat';
+fn2 = 'T10000_v1.0e-001_J20_ns1_rs2.41e-001_rf2.00e-001_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';
@@ -39,6 +39,9 @@ tmp = load(tmp_fn);
 ntr = size(tmp.Xtr,2);
 nclass = max(tmp.Ytr)+1;
 clear tmp;
+
+% ntr = 50000;
+% nclass = 10;
 %% number of operations(split searching)
 nop1 = 0;
 for i = 1 : numel(tree_node_sc1)
@@ -65,8 +68,22 @@ end
 figure('name',name); 
 title( sprintf('nop v.s. error') );
 hold on;
-plot(cumsum(vnop1),err_it1, 'marker','x','linewidth',2,'color','r');
-plot(cumsum(vnop2),err_it2, 'marker','.','linewidth',2,'color','b');
+plot(cumsum(vnop1(it1)),err_it1(it1), 'marker','x','linewidth',2,'color','r');
+plot(cumsum(vnop2(it2)),err_it2(it2), 'marker','.','linewidth',2,'color','b');
+set(gca,'xscale','log');
 hold off;
-legend(fn1,fn2);
+h = legend(fn1,fn2);
+set(h,'Interpreter','none');
+grid on;
+%% plot nop v.s. gradient
+figure('name',name); 
+title( sprintf('nop v.s. grad') );
+hold on;
+plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',2,'color','r');
+plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',2,'color','b');
+% set(gca,'xscale','log','yscale','log');
+set(gca,'xscale','log');
+hold off;
+h = legend(fn1,fn2);
+set(h,'Interpreter','none');
 grid on;
