@@ -1,8 +1,11 @@
 %% config
 name = 'mnist';
-algoname1 = 'pVbExtSamp5VTLogitBoost';
+algoname1 = 'pVbExtSamp9VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T3000_v1.0e-001_J70_ns1_rs9.00e-001_rf3.10e-002_rc1e+000.mat';
+fn1 = 'T5000_v1.0e-01_J70_ns1_rs2.35e-01_rf3.10e-02_rc8.00e-01.mat';
+
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -28,7 +31,6 @@ navg = mean(nr_wts);
 fprintf(name);fprintf('\n');
 fprintf('avg examples = %d\n',navg);
 
-dir_data = 'E:\Users\sp\data\dataset_mat';
 tmp_fn = fullfile(dir_data, [name,'.mat']);
 tmp = load(tmp_fn);
 ntr = size(tmp.Xtr,2);
@@ -37,12 +39,12 @@ clear tmp;
 fprintf('ntr = %d\n', ntr);
 fprintf('rs = %d\n\n', navg/ntr);
 %%
-% figure;
-% title('nrc');
-% hold on;
-% plot(nr_wtc,'marker','o','linewidth',4,'color','r');
-% hold off;
-% grid on;
+figure('name',name); 
+title('#classes');
+hold on;
+plot(nr_wtc,'marker','o','linewidth',4,'color','r');
+hold off;
+grid on;
 %% print last result
 fprintf('last result:\n');
 fprintf('%s: %d @ %d\n', algoname1, err_it1(end), it1(end));

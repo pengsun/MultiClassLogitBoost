@@ -5,8 +5,8 @@ dir_root1 = fullfile('.\rst',algoname1);
 fn1 = 'T10000_v1.0e-001_J70_ns1_rs4.00e-001_rf3.10e-002_rc9.00e-001.mat';
 fn2 = 'T10000_v1.0e-001_J70_ns1_rs4.00e-001_rf3.10e-002_rc1.10e+000.mat';
 
-dir_data = 'D:\Users\sp\data\dataset_mat';
-% dir_data = 'D:\data\dataset_mat';
+% dir_data = 'D:\Users\sp\data\dataset_mat';
+dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);

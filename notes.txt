@@ -1,3 +1,15 @@
+batch_vb_samp_boost
+num_it, abs_grad,  F, P, Trees, nr_wts, nr_wtc
+
+
+batch_vb2_samp_boost
+num_it, abs_grad,  F, P, Trees, nr_wts, nr_wtc, tree_node_cc
+
+
+batch_vb3_samp_boost
+num_it, abs_grad,  F, P, Trees, nr_wts, nr_wtc, tree_node_cc, tree_node_sc
+
+
 pSampVTLogitBoost
 VTLogitBoost with uniform sampling for samples, features and classes
 
@@ -24,13 +36,13 @@ pVbExtSamp3VTLogitBoost (i.e. Friedman's weight trimming where weight is p*(1-p)
 instead of weights. 
 
 pVbExtSamp8VTLogitBoost
-pVbExtSamp6VTLogitBoost, but do the Class Weight Trimming for each node.
+pVbExtSamp6VTLogitBoost, but do the Class Weight Trimming for each node. rc is the class count ratio.
 
 pVbExtSamp9VTLogitBoost
 pVbExtSamp8VTLogitBoost, but use all classes when fitting node values.
 
 pVbExtSamp10VTLogitBoost
-pVbExtSamp9VTLogitBoost, but rc is the class count ratio (instead of weight sum ratio). The selected class count is recorded for each node.
+pVbExtSamp9VTLogitBoost, but rc is the weight sum ratio (instead of class count ratio). The selected class count is recorded for each node.
 
 pVbExtSamp11VTLogitBoost
 pVbExtSamp10VTLogitBoost, but record also #examples for each node (to see the actual computation needed)

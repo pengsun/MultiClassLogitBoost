@@ -1,11 +1,13 @@
 %% config
-name = 'pendigits';
+name = 'mnist';
 algoname1 = 'pVbExtSamp11VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-001_J20_ns1_rs2.41e-001_rf2.00e-001_rc9.00e-001.mat';
+fn1 = 'T10000_v1.0e-001_J70_ns1_rs4.00e-001_rf3.10e-002_rc9.00e-001.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';
+
+it_ind = [100, 200];
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -27,6 +29,8 @@ tmp = load(tmp_fn);
 ntr = size(tmp.Xtr,2);
 nclass = max(tmp.Ytr)+1;
 clear tmp;
+% ntr = 50000;
+% nclass = 10;
 %% print examples
 navg = mean(nr_wts);
 fprintf(name);fprintf('\n\n');
@@ -37,6 +41,17 @@ fprintf('rs = %d\n\n', navg/ntr);
 fprintf('last result:\n');
 fprintf('%s: %d @ %d\n', algoname1, err_it1(end), it1(end));
 fprintf('\n');
+%% print number of operations(split searching)
+nop = 0;
+nop_orig = 0;
+for i = 1 : numel(tree_node_sc)
+  nop = nop + sum(tree_node_cc{i}.*tree_node_sc{i});
+  nop_orig = nop_orig + nclass*sum(tree_node_sc{i});
+end
+fprintf('number of operations (split searching):\n');
+fprintf('nop = %d\n',nop);
+fprintf('nop without class sampling = %d\n', nop_orig);
+fprintf('ratio = %d\n\n', nop/nop_orig);
 %% plot examples
 % figure('name',name); 
 % title('#examples');
@@ -44,7 +59,7 @@ fprintf('\n');
 % plot(nr_wts,'marker','x','linewidth',2);
 % hold off;
 % grid on;
-%% classes - MinMax
+%% plot classes - MinMax
 for i = 1 : numel(tree_node_cc)
   Mcc(i) = max( tree_node_cc{i} ); %#ok<SAGROW>
   mcc(i) = min( tree_node_cc{i} ); %#ok<SAGROW>
@@ -57,7 +72,7 @@ plot(mcc,'marker','.','linewidth',2,'color','b');
 hold off;
 legend('Max cc', 'Min cc');
 grid on;
-%% classes: average of average
+%% plot classes: average of average
 for i = 1 : numel(tree_node_cc)
   avg_cc(i) = mean( tree_node_cc{i} ); %#ok<SAGROW>
 end
@@ -67,17 +82,20 @@ hold on;
 plot(avg_cc, 'marker','.','linewidth',2,'color','b');
 hold off;
 grid on;
-%% number of operations(split searching)
-nop = 0;
-nop_orig = 0;
-for i = 1 : numel(tree_node_sc)
-  nop = nop + sum(tree_node_cc{i}.*tree_node_sc{i});
-  nop_orig = nop_orig + nclass*sum(tree_node_sc{i});
+%% plot class distribution
+for i = 1 : numel(it_ind)
+  ii = it_ind(i);
+  cc = tree_node_cc{ii};
+  
+  figure;
+  hold on;
+  title( sprintf('iter %d of %d',ii,numel(it1)) );
+  hist(cc, (1:nclass) );
+  set(gca, 'xlim', [0.5, nclass+0.5]);
+  set(gca, 'ylim', [0,numel(cc)+1]);
+  xlabel('#classes'); ylabel('#nodes');
+  hold off;
 end
-fprintf('number of operations (split searching):\n');
-fprintf('nop = %d\n',nop);
-fprintf('nop without class sampling = %d\n', nop_orig);
-fprintf('ratio = %d\n\n', nop/nop_orig);
 %% plot error
 figure('name',name); 
 title('error'); 

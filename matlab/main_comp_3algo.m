@@ -1,31 +1,29 @@
 %% data name
 % name = 'poker100k';
-name = 'pendigits';
+% name = 'pendigits';
 % name = 'optdigits';
 % name = 'M-Basic';
 % name = 'isolet';
+name = 'mnist';
 %% algo name
-algoname1 = 'pExtSampVTLogitBoost';
+algoname1 = 'pVbExtSamp9VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J8_ns1_rs1_rf2e-01_rc1.mat';
+fn1 = 'T5000_v1.0e-01_J70_ns1_rs2.35e-01_rf3.10e-02_rc6.00e-01.mat';
 
-algoname2 = 'pSampVTLogitBoost';
+algoname2 = 'pVbExtSamp8VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-01_J8_ns1_rs1_rf2e-01_rc1.mat';
+fn2 = 'T5000_v1.0e-01_J70_ns1_rs2.35e-01_rf3.10e-02_rc6.00e-01.mat';
 
-algoname3 = 'pSampVTLogitBoost';
+algoname3 = 'pVbExtSamp6VTLogitBoost';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J8_ns1_rs1_rf1_rc1.mat';
-% algoname3 = 'VTDropoutLogitBoost';
-% dir_root3 = fullfile('.\rst',algoname3);
-% fn3 = 'T700_v1_J20_ns1.mat';
+fn3 = 'T3000_v1.0e-01_J70_ns1_rs2.35e-01_rf3.10e-02_rc1.10e+00.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
 it1 = tmp.it;
 err_it1 = tmp.err_it;
 abs_grad1 = tmp.abs_grad;
-F1 = tmp.F;
+% F1 = tmp.F;
 num_it1 = tmp.num_it;
 time_tr1 = tmp.time_tr;
 clear tmp;
@@ -35,7 +33,7 @@ tmp = load(ffn2);
 it2 = tmp.it;
 err_it2 = tmp.err_it;
 abs_grad2 = tmp.abs_grad;
-F2 = tmp.F;
+% F2 = tmp.F;
 num_it2 = tmp.num_it;
 time_tr2 = tmp.time_tr;
 
@@ -44,7 +42,7 @@ tmp = load(ffn3);
 it3 = tmp.it;
 err_it3 = tmp.err_it;
 abs_grad3 = tmp.abs_grad;
-F3 = tmp.F;
+% F3 = tmp.F;
 num_it3 = tmp.num_it;
 time_tr3 = tmp.time_tr;
 %% plot error

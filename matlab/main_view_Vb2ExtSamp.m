@@ -1,8 +1,8 @@
 %% config
-name = 'letter';
+name = 'letter4k';
 algoname1 = 'pVbExtSamp10VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T10000_v1.0e-001_J20_ns1_rs6.00e-001_rf2.00e-001_rc9.00e-001.mat';
+fn1 = 'T10000_v1.0e-001_J20_ns1_rs5.10e-001_rf2.00e-001_rc9.00e-001.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';
