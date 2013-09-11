@@ -2,8 +2,8 @@
 name = 'cifar-10';
 algoname1 = 'pVbExtSamp11VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J70_ns1_rs9.00e-001_rf1.80e-002_rc6.00e-001.mat';
-fn2 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc9.00e-01.mat';
+fn1 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc9.00e-01.mat';
+fn2 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc6.00e-01.mat';
 fn3 = 'T5000_v1.0e-01_J70_ns1_rs9.00e-01_rf1.80e-02_rc1.10e+00.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset_mat';
@@ -96,9 +96,9 @@ end
 figure('name',name); 
 title( sprintf('nop v.s. error') );
 hold on;
-plot(cumsum(vnop1(it1)),err_it1(it1), 'marker','x','linewidth',2,'color','m');
-plot(cumsum(vnop2(it2)),err_it2(it2), 'marker','.','linewidth',2,'color','r');
-plot(cumsum(vnop3(it3)),err_it3(it3), 'marker','*','linewidth',2,'color','b');
+plot(cumsum(vnop1(it1)),err_it1(it1), 'marker','x','linewidth',1,'color','m');
+plot(cumsum(vnop2(it2)),err_it2(it2), 'marker','.','linewidth',1,'color','r');
+plot(cumsum(vnop3(it3)),err_it3(it3), 'marker','*','linewidth',1,'color','b');
 set(gca,'xscale','log');
 hold off;
 h = legend(fn1,fn2,fn3);
@@ -108,9 +108,9 @@ grid on;
 figure('name',name); 
 title( sprintf('nop v.s. grad') );
 hold on;
-plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',2,'color','m');
-plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',2,'color','r');
-plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',2,'color','b');
+plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
+plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
+plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
 % set(gca,'xscale','log','yscale','log');
 set(gca,'xscale','log');
 hold off;
