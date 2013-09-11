@@ -105,7 +105,7 @@ namespace {
       int ii = wind[i];
       sum += (w.at<double>(ii)+eps)/(Z+eps); // prevent numeric problem
 
-      if (sum < ratio) ind.push_back(ii);
+      if ( sum < ratio) ind.push_back(ii);
     }
 
     // pick a random one if empty
@@ -114,6 +114,37 @@ namespace {
       ind.push_back(iii);
     }
   }
+
+
+  void weight_trim_ratio2 (cv::Mat_<double>& w, double ratio, VecIdx &ind, int Nmin) {
+    int N = w.rows;
+
+    // sorting the index in descending order,
+    VecIdx wind(N);
+    for (int i = 0; i < N; ++i) wind[i] = i;
+    std::sort (wind.begin(),wind.end(), IdxMatGreater(&w));
+
+    // normalization factor
+    double Z = std::accumulate(w.begin(),w.end(), 0.0);
+
+    // trim
+    ind.clear();
+    double sum = 0.0;
+    const double eps = 1e-11;
+    for (int i = 0; i < N; ++i) {
+      int ii = wind[i];
+      sum += (w.at<double>(ii)+eps)/(Z+eps); // prevent numeric problem
+
+      if ( (sum<ratio) || (ind.size()<Nmin) ) ind.push_back(ii);
+    }
+
+    // pick a random one if empty
+    if (ind.empty()) { 
+      int iii = THE_RNG.uniform((int)0, (int)(N-1));
+      ind.push_back(iii);
+    }
+  }
+
 
 
   void calc_grad_1norm_samp (MatDbl& gg, MatDbl& out) {
@@ -575,6 +606,8 @@ void pVbExtSamp11VTTree::subsample(pVbExtSamp11VTData* _data)
 void pVbExtSamp11VTTree::subsample_classes_for_node( pVbExtSamp11VTNode* _node, pVbExtSamp11VTData* _data )
 {
   /// subsample classes
+  const int MIN_CLASS = 2;
+
   // class wise, use the examples that the node holds
   MatDbl tmp;
   subsample_rows(*_data->gg_, _node->sample_idx_, tmp);
@@ -582,7 +615,7 @@ void pVbExtSamp11VTTree::subsample_classes_for_node( pVbExtSamp11VTNode* _node, 
   calc_grad_1norm_class(tmp, g_class); // after: K * 1
 
   VecIdx ci_wt;
-  weight_trim_ratio(g_class, this->param_.ratio_ci_, ci_wt);
+  weight_trim_ratio2(g_class, this->param_.ratio_ci_, ci_wt, MIN_CLASS);
   // set it
   _node->sub_ci_ = ci_wt;
 }
