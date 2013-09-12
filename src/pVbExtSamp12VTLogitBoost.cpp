@@ -81,6 +81,7 @@ namespace {
       if ( ind.size()>=Nmin ) break;
       //
       sum += (w.at<double>(ii)+eps)/(Z+eps); // prevent numeric problem
+      if (ratio>1.0) continue; // never >= ratio...
       if ( sum>ratio ) break;
     } // for i
   }
@@ -1213,6 +1214,13 @@ void pVbExtSamp12VTLogitBoost::calc_loss_iter( int t )
 
 bool pVbExtSamp12VTLogitBoost::should_stop( int t )
 {
+  // stop if too small #classes subsampled
+  if ( ! (trees_[t].node_cc_.empty()) ) {
+    if (trees_[t].node_cc_[0] == 1) // only one class selected for root node
+      return true;
+  }
+
+  // stop if loss is small enough
   double loss = L_iter_.at<double>(t);
   return ( (loss<EPS_LOSS) ? true : false );
 }

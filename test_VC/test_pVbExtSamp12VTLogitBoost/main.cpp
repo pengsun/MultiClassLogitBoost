@@ -73,7 +73,7 @@ int main ()
   // AOTO Boost
   pVbExtSamp12VTLogitBoost ab;
   ab.param_.J = 3;
-  ab.param_.T = 50;
+  ab.param_.T = 500;
   ab.param_.v = 0.1;
   ab.param_.ns = 1;
   ab.param_.ratio_si_ = 0.8;
