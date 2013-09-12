@@ -1,11 +1,11 @@
 %% config
-name = 'mnist';
-algoname1 = 'pVbExtSamp9VTLogitBoost';
+name = 'optdigits';
+algoname1 = 'pVbExtSamp5VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J70_ns1_rs2.35e-01_rf3.10e-02_rc8.00e-01.mat';
+fn1 = 'T10000_v1.0e-01_J20_ns1_rs9.00e-01_rf2.00e-01_rc1.10e+00.mat';
 
-% dir_data = 'E:\Users\sp\data\dataset_mat';
-dir_data = 'D:\data\dataset_mat';
+dir_data = 'E:\Users\sp\data\dataset_mat';
+% dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);

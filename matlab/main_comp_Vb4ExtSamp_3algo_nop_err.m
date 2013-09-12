@@ -1,5 +1,5 @@
 %% config
-name = 'letter4k';
+name = 'letter';
 algoname1 = 'pVbExtSamp12VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
 fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc2.10e-01.mat';
