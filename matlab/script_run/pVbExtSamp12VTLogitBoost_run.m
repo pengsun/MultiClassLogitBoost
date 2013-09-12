@@ -1,6 +1,7 @@
 %% 
-name = 'letter';
-dir_data = 'E:\Users\sp\data\dataset_mat';
+name = 'letter4k';
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pVbExtSamp12VTLogitBoost',name);
@@ -11,13 +12,13 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-cwrs = {0.95};
+cwrs = {0.9};
 crs = {1.1};
 %%% feature
 crf = {0.2};
 %%% class
 cwrc = {1.1};
-crc = {0.21, 0.51, 1.1};
+crc = {0.21,0.51,1.1};
 %%
 h = batch_pVbExtSamp12VTLogitBoost();
 h.num_Tpre = num_Tpre;

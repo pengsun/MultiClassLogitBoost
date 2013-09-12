@@ -1,13 +1,13 @@
 %% config
-name = 'letter';
+name = 'letter4k';
 algoname1 = 'pVbExtSamp12VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc2.10e-01.mat';
-fn2 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc5.10e-01.mat';
-fn3 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc2.10e-001.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc5.10e-001.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-dir_data = 'E:\Users\sp\data\dataset_mat';
-% dir_data = 'D:\data\dataset_mat';
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
