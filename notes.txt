@@ -21,7 +21,7 @@ pExtSampVTLogitBoost
 VTLogitBoost, but does Extreme Sampling for features: each node uniformly samples features
 
 pExtSamp2VTLogitBoost
-pExtSampVTLogitBoost, but use weight trimming for samples, where weight is simply the absolute value of gradient
+pExtSampVTLogitBoost, but use weight trimming for samples, where weight is simply the absolute value of gradient. rs is weight ratio
 
 pExtSamp3VTLogitBoost
 pExtSampVTLogitBoost, but use Friedman's weight trimming for samples, i.e. p*(1-p)
