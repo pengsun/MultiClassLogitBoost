@@ -868,7 +868,7 @@ pVbExtSamp12VTLogitBoost::Param::Param()
   weight_ratio_ci_ = weight_ratio_si_ = 0.6;
 }
 // Implementation of pVbExtSamp12VTLogitBoost
-const double pVbExtSamp12VTLogitBoost::EPS_LOSS = 1e-14;
+const double pVbExtSamp12VTLogitBoost::EPS_LOSS = 1e-6;
 const double pVbExtSamp12VTLogitBoost::MAX_F = 100;
 void pVbExtSamp12VTLogitBoost::train( MLData* _data )
 {
