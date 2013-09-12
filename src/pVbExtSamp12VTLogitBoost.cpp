@@ -486,7 +486,7 @@ void pVbExtSamp12VTTree::subsample_samples(pVbExtSamp12VTData* _data)
   int Nmin = int( double(N)*double(this->param_.ratio_si_) );
 
   VecIdx si_wt;
-  weight_trim_ratio2(g_samp, this->param_.weight_ratio_ci_, si_wt, Nmin);
+  weight_trim_ratio2(g_samp, this->param_.weight_ratio_si_, si_wt, Nmin);
   // record & set it
   this->sub_si_ = si_wt;
 
