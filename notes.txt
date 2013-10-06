@@ -51,3 +51,6 @@ pVbExtSamp9VTLogitBoost, but rc is the weight sum ratio (instead of class count 
 pVbExtSamp11VTLogitBoost
 pVbExtSamp10VTLogitBoost, but record also #examples for each node (to see the actual computation needed); set minimum #classes after sampling to 2.
 parameters: rs,wrs, rf, rc,wrc
+
+pVbExtSamp12VTLogitBoost
+see batch_vb4_samp_boost for its parameters
