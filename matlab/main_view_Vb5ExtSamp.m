@@ -1,8 +1,8 @@
 %% config
-name = 'optdigits';
+name = 'zipcode_eqcls';
 algoname1 = 'pVbExtSamp13VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.00e-01_rs1.10e+00_rf5.00e-02_wrc1.10e+00_rc1.10e+00.mat';
 
 dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -38,7 +38,7 @@ figure('name',name);
 title('class loss'); 
 hold on;
 plot(it1, loss_cls(:,it1));
-set(gca,'yscale','log');
+% set(gca,'yscale','log');
 hold off;
 grid on;
 %% plot class loss ratio Max Min
@@ -78,120 +78,39 @@ clear temp;
 % hold off;
 % grid on;
 %% plot class grad
-figure('name',name);  
-title('class ||grad||_1'); 
-hold on;
-plot(it1, grad_cls(:,it1));
-set(gca,'yscale','log');
-hold off;
-grid on;
-%% plot class grad ratio Max Min
-temp = grad_cls(:,it1);
-gm = min(temp);
-gM = max(temp);
-clear temp;
-
-figure('name',name);  
-title('class ||grad||_1 min max ratio'); 
-hold on;
-plot(it1, gm./(gM+eps),'linewidth',4);
+% figure('name',name);  
+% title('class ||grad||_1'); 
+% hold on;
+% plot(it1, grad_cls(:,it1));
 % set(gca,'yscale','log');
-hold off;
-grid on;
-%% print class grad top-bottom
-% it_ind = round( linspace(1,it1(end),30) );
-it_ind = [1:10, round( linspace(11,it1(end),10) )];
-temp = grad_cls(:,it_ind);
-fprintf('Top-Bottom Grad classes:\n');
-for i = 1 : size(temp,2)
-  fprintf('iter %d: ',it_ind(i));
-  gi = temp(:,i);
-  [gs,ind] = sort(gi,'descend');
-  fprintf('(%d, %d, %d)  ',...
-    ind(1),ind(2),ind(3));
-  fprintf('(%d, %d, %d)\n',...
-    ind(end-2),ind(end-1),ind(end));
-end
-fprintf('\n');
-clear temp;
-%% print examples
-% for i = 1 : numel(tree_node_sc)
-%   sc = tree_node_sc{i};
-%   nr(i) = sc(1); %#ok<SAGROW>
-% end
+% hold off;
+% grid on;
+%% plot class grad ratio Max Min
+% temp = grad_cls(:,it1);
+% gm = min(temp);
+% gM = max(temp);
+% clear temp;
 % 
-% navg = mean(nr);
-% fprintf(name);fprintf('\n\n');
-% fprintf('avg examples = %d\n',navg);
-% fprintf('ntr = %d\n', ntr);
-% fprintf('rs = %d\n\n', navg/ntr);
-%% print last result
-% fprintf('last result:\n');
-% fprintf('%s: %d @ %d\n', algoname1, err_it1(end), it1(end));
+% figure('name',name);  
+% title('class ||grad||_1 min max ratio'); 
+% hold on;
+% plot(it1, gm./(gM+eps),'linewidth',4);
+% % set(gca,'yscale','log');
+% hold off;
+% grid on;
+%% print class grad top-bottom
+% % it_ind = round( linspace(1,it1(end),30) );
+% it_ind = [1:10, round( linspace(11,it1(end),10) )];
+% temp = grad_cls(:,it_ind);
+% fprintf('Top-Bottom Grad classes:\n');
+% for i = 1 : size(temp,2)
+%   fprintf('iter %d: ',it_ind(i));
+%   gi = temp(:,i);
+%   [gs,ind] = sort(gi,'descend');
+%   fprintf('(%d, %d, %d)  ',...
+%     ind(1),ind(2),ind(3));
+%   fprintf('(%d, %d, %d)\n',...
+%     ind(end-2),ind(end-1),ind(end));
+% end
 % fprintf('\n');
-%% print best result
-% [tmp,tmp_ind] = min(err_it1);
-% fprintf('best result:\n');
-% fprintf('%s: %d @ %d\n', algoname1, tmp, it1(tmp_ind));
-% fprintf('\n');
-%% print number of operations(split searching)
-% nop = 0;
-% nop_orig = 0;
-% for i = 1 : numel(tree_node_sc)
-%   nop = nop + sum(tree_node_cc{i}.*tree_node_sc{i});
-%   nop_orig = nop_orig + nclass*sum(tree_node_sc{i});
-% end
-% fprintf('number of operations (split searching):\n');
-% fprintf('nop = %d\n',nop);
-% fprintf('nop without class sampling = %d\n', nop_orig);
-% fprintf('ratio = %d\n\n', nop/nop_orig);
-%% plot examples
-% figure('name',name); 
-% title('#examples');
-% hold on;
-% plot(nr_wts,'marker','x','linewidth',2);
-% hold off;
-% grid on;
-%% plot classes - MinMax
-% for i = 1 : numel(tree_node_cc)
-%   Mcc(i) = max( tree_node_cc{i} ); %#ok<SAGROW>
-%   mcc(i) = min( tree_node_cc{i} ); %#ok<SAGROW>
-% end
-% figure('name',name); 
-% title( sprintf('#classes (K = %d)',nclass) );
-% hold on;
-% plot(Mcc,'marker','s','linewidth',2,'color','r','markersize',8);
-% plot(mcc,'marker','.','linewidth',2,'color','b');
-% hold off;
-% legend('Max cc', 'Min cc');
-% grid on;
-%% plot classes: average of average
-% for i = 1 : numel(tree_node_cc)
-%   avg_cc(i) = mean( tree_node_cc{i} ); %#ok<SAGROW>
-% end
-% figure('name',name); 
-% title( sprintf('average #classes (K = %d)',nclass) );
-% hold on;
-% plot(avg_cc, 'marker','.','linewidth',2,'color','b');
-% hold off;
-% grid on;
-%% plot class distribution
-% for i = 1 : numel(it_ind)
-%   ii = it_ind(i);
-%   cc = tree_node_cc{ii};
-%   
-%   figure;
-%   hold on;
-%   title( sprintf('iter %d of %d',ii,numel(it1)) );
-%   hist(cc, (1:nclass) );
-%   set(gca, 'xlim', [0.5, nclass+0.5]);
-%   set(gca, 'ylim', [0,numel(cc)+1]);
-%   xlabel('#classes'); ylabel('#nodes');
-%   hold off;
-% end
-%% plot error
-% figure('name',name); 
-% title('error'); 
-% hold on;
-% plot(it1,err_it1, 'color','r','lineWidth', 2, 'marker','.');
-% grid on;
+% clear temp;

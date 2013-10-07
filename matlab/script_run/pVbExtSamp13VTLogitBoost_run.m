@@ -1,5 +1,5 @@
 %% 
-name = 'zipcode';
+name = 'zipcode_eqcls';
 dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
