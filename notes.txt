@@ -54,3 +54,6 @@ parameters: rs,wrs, rf, rc,wrc
 
 pVbExtSamp12VTLogitBoost
 see batch_vb4_samp_boost for its parameters
+
+pVbExtSamp12VTLogitBoost
+pVbExtSamp12VTLogitBoost, but record the loss of each class
