@@ -21,8 +21,9 @@ classdef pVbExtSamp13VTLogitBoost
         rs,rf,rc, wrs,wrc);
     end
     
-    function [NumIter, TrLoss,F,P,tree, GradCls] = get (obj)
-      [NumIter, TrLoss, F,P, GradCls] =...
+    function [NumIter, TrLoss,F,P,tree,...
+        GradCls,LossCls] = get (obj)
+      [NumIter, TrLoss, F,P, GradCls,LossCls] =...
         pVbExtSamp13VTLogitBoost_mex('get',obj.ptr);
       tree = 0;
     end

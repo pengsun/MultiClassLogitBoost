@@ -888,6 +888,7 @@ void pVbExtSamp13VTLogitBoost::train( MLData* _data )
 
     calc_loss(_data);
     calc_loss_iter(t);
+    calc_loss_class(_data,t);
     calc_grad(t);
 
 #ifdef OUTPUT
@@ -1066,6 +1067,10 @@ void pVbExtSamp13VTLogitBoost::train_init( MLData* _data )
   calc_loss(_data);
   L_iter_.create(param_.T,1);
 
+  // class loss
+  loss_class_.create(param_.T, K_);
+  loss_class_ = 0.0;
+
   // iteration for training
   NumIter_ = 0;
 
@@ -1232,6 +1237,20 @@ void pVbExtSamp13VTLogitBoost::calc_loss_iter( int t )
   L_iter_.at<double>(t) = sum;
 }
 
+void pVbExtSamp13VTLogitBoost::calc_loss_class(MLData* _data,  int t )
+{
+  const double PMIN = 0.0001;
+  int N = _data->X.rows;
+  for (int i = 0; i < N; ++i) {
+    int yi = int( _data->Y.at<float>(i) );
+    double* ptr = p_.ptr<double>(i);
+    double pik = *(ptr + yi);
+
+    if (pik<PMIN) pik = PMIN;
+    loss_class_.at<double>(t,yi) += (-log(pik));
+  }
+}
+
 bool pVbExtSamp13VTLogitBoost::should_stop( int t )
 {
   // stop if too small #classes subsampled
@@ -1267,6 +1286,8 @@ void pVbExtSamp13VTLogitBoost::calc_grad( int t )
 
   abs_grad_[t] = delta;
 }
+
+
 
 
 

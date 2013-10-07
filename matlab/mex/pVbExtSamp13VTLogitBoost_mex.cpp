@@ -90,7 +90,7 @@ void predict(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   pbooster->predict(&te, T);
 }
 
-// [NumIter,TrLoss,F,P,GradCls] = get(dummy, h);
+// [NumIter,TrLoss,F,P,GradCls,LossCls] = get(dummy, h);
 void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
   /* Input */
@@ -109,6 +109,7 @@ void get(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   plhs[2] = cvMatDbl_to_mxArray(pbooster->F_);
   plhs[3] = cvMatDbl_to_mxArray(pbooster->p_);
   plhs[4] = cvMatDbl_to_mxArray(pbooster->abs_grad_class_);
+  plhs[5] = cvMatDbl_to_mxArray(pbooster->loss_class_);
 
 }
 

@@ -209,6 +209,7 @@ public:
   std::vector<double> abs_grad_; // total gradient. indicator for stopping. 
   cv::Mat_<double> F_, p_; // Score and Probability. #samples * #class
   cv::Mat_<double> abs_grad_class_; // #iteration * #classes
+  cv::Mat_<double> loss_class_;
 
 
 protected:
@@ -220,6 +221,8 @@ protected:
 
   void calc_loss (MLData* _data);
   void calc_loss_iter (int t);
+  void calc_loss_class (MLData* _data, int t);
+
   bool should_stop (int t);
   void calc_grad( int t );
 
