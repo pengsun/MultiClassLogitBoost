@@ -884,6 +884,7 @@ void pVbExtSamp13VTLogitBoost::train( MLData* _data )
     update_F(t);
     update_p();
     update_gg();
+    update_abs_grad_class(t);
 
     calc_loss(_data);
     calc_loss_iter(t);
@@ -1097,6 +1098,10 @@ void pVbExtSamp13VTLogitBoost::train_init( MLData* _data )
   abs_grad_.clear();
   abs_grad_.resize(param_.T);
 
+  // class gradient
+  abs_grad_class_.create(param_.T, K_);
+  abs_grad_class_ = 0.0;
+
   // for prediction
   Tpre_beg_ = 0;
 }
@@ -1162,6 +1167,21 @@ void pVbExtSamp13VTLogitBoost::update_gg()
         gg_.at<double>(i,k) = (-pik);
     } // for k
   } // for i
+}
+
+void pVbExtSamp13VTLogitBoost::update_abs_grad_class(int t)
+{
+  int N = F_.rows;
+
+  for (int k = 0; k < K_; ++k) {
+    double sum = 0;
+    
+    for (int i = 0; i < N; ++i) {
+      sum += abs( gg_.at<double>(i,k) );
+    }
+    
+    abs_grad_class_.at<double>(t,k) = sum;
+  }
 }
 
 //bool pVbExtSamp13VTLogitBoost::should_stop( int t )

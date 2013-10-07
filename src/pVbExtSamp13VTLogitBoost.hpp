@@ -205,20 +205,25 @@ public:
   void get_sc (int itree, VecInt& node_sc);
   void get_is_leaf (int itree, VecInt& is_leaf);
 
+public:
+  std::vector<double> abs_grad_; // total gradient. indicator for stopping. 
+  cv::Mat_<double> F_, p_; // Score and Probability. #samples * #class
+  cv::Mat_<double> abs_grad_class_; // #iteration * #classes
+
+
 protected:
   void train_init (MLData* _data);
   void update_F(int t);
   void update_p();
   void update_gg ();
+  void update_abs_grad_class (int t);
 
   void calc_loss (MLData* _data);
   void calc_loss_iter (int t);
   bool should_stop (int t);
   void calc_grad( int t );
 
-public:
-  std::vector<double> abs_grad_; // total gradient. indicator for stopping. 
-  cv::Mat_<double> F_, p_; // Score and Probability. #samples * #class
+
 protected:
   int K_; // class count
   cv::Mat_<double> L_; // Loss. #samples

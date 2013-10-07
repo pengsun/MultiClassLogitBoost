@@ -1,26 +1,26 @@
 %% 
-name = 'timit.mfcc.winSz11';
-dir_data = 'E:\Users\sp\data\dataset3_mat';
+name = 'optdigits';
+dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pVbExtSamp12VTLogitBoost',name);
+  'rst\pVbExtSamp13VTLogitBoost',name);
 %%
-num_Tpre = 1000;
-T = 1000;
+num_Tpre = 5000;
+T = 5000;
 cv  = {0.1};
-cJ = {70};
+cJ = {20};
 cns = {1};
 %%% sample
 cwrs = {0.9};
 crs = {1.1};
 %%% feature
-crf = {0.02};
+crf = {0.2};
 %%% class
 cwrc = {1.1};
 crc = {1.1};
 %%
-h = batch_pVbExtSamp12VTLogitBoost();
+h = batch_pVbExtSamp13VTLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;
