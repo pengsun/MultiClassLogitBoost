@@ -1,11 +1,11 @@
 %% config
-name = 'letter_eqcls_01';
+name = 'optdigits';
 algoname1 = 'pVbExtSamp13VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-dir_data = 'E:\Users\sp\data\dataset_mat';
-% dir_data = 'D:\data\dataset_mat';
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\data\dataset_mat';
 
 % it_ind = [];
 % it_ind = [1000, 2000,3000,4000,4700];
@@ -38,20 +38,23 @@ figure('name',name);
 title('class loss'); 
 hold on;
 plot(it1, loss_cls(:,it1));
-% set(gca,'yscale','log');
+set(gca,'yscale','log');
 hold off;
 grid on;
 %% plot class loss ratio Max Min
 temp = loss_cls(:,it1);
-gm = min(temp);
-gM = max(temp);
+tt = sort(temp,'ascend');
+gm = tt(1,:);
+gM = tt(end-1,:);
+% clear tt;
+% gm = min(temp);
+% gM = max(temp);
 clear temp;
 
 figure('name',name);  
 title('class loss min max ratio'); 
 hold on;
 plot(it1, gm./(gM+eps), 'color','r', 'linewidth',4);
-% set(gca,'yscale','log');
 hold off;
 grid on;
 %% print class loss top-bottom
@@ -87,15 +90,18 @@ hold off;
 grid on;
 %% plot class grad ratio Max Min
 temp = grad_cls(:,it1);
-gm = min(temp);
-gM = max(temp);
+tt = sort(temp,'ascend');
+gm = tt(1,:);
+gM = tt(end,:);
+% clear tt;
+% gm = min(temp);
+% gM = max(temp);
 clear temp;
 
 figure('name',name);  
 title('class ||grad||_1 min max ratio'); 
 hold on;
 plot(it1, gm./(gM+eps),'linewidth',4);
-% set(gca,'yscale','log');
 hold off;
 grid on;
 %% print class grad top-bottom

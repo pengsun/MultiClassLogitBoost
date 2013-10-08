@@ -889,7 +889,7 @@ void pVbExtSamp11VTTree::fit_node( pVbExtSamp11VTNode* _node, pVbExtSamp11VTData
 #endif
 
 #if 0
-  _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
+  //_node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
 #ifdef OUTPUT

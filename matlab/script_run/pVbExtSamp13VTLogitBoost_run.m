@@ -1,7 +1,7 @@
 %% 
-name = 'letter_eqcls_012';
-dir_data = 'E:\Users\sp\data\dataset_mat';
-% dir_data = 'D:\Data\dataset_mat';
+name = 'optdigits';
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pVbExtSamp13VTLogitBoost',name);
@@ -12,7 +12,7 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-cwrs = {0.9};
+cwrs = {1.1};
 crs = {1.1};
 %%% feature
 crf = {0.2};
