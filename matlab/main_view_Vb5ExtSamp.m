@@ -1,8 +1,8 @@
 %% config
-name = 'zipcode_eqcls';
+name = 'letter_eqcls_01';
 algoname1 = 'pVbExtSamp13VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.00e-01_rs1.10e+00_rf5.00e-02_wrc1.10e+00_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-01_J20_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-01_wrc1.10e+00_rc1.10e+00.mat';
 
 dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -55,21 +55,21 @@ plot(it1, gm./(gM+eps), 'color','r', 'linewidth',4);
 hold off;
 grid on;
 %% print class loss top-bottom
-% it_ind = round( linspace(1,it1(end),30) );
-it_ind = [1:10, round( linspace(11,it1(end),10) )];
-temp = loss_cls(:,it_ind);
-fprintf('Top-Bottom Loss classes:\n');
-for i = 1 : size(temp,2)
-  fprintf('iter %d: ',it_ind(i));
-  gi = temp(:,i);
-  [gs,ind] = sort(gi,'descend');
-  fprintf('(%d, %d, %d)  ',...
-    ind(1),ind(2),ind(3));
-  fprintf('(%d, %d, %d)\n',...
-    ind(end-2),ind(end-1),ind(end));
-end
-fprintf('\n');
-clear temp;
+% % it_ind = round( linspace(1,it1(end),30) );
+% it_ind = [1:10, round( linspace(11,it1(end),10) )];
+% temp = loss_cls(:,it_ind);
+% fprintf('Top-Bottom Loss classes:\n');
+% for i = 1 : size(temp,2)
+%   fprintf('iter %d: ',it_ind(i));
+%   gi = temp(:,i);
+%   [gs,ind] = sort(gi,'descend');
+%   fprintf('(%d, %d, %d)  ',...
+%     ind(1),ind(2),ind(3));
+%   fprintf('(%d, %d, %d)\n',...
+%     ind(end-2),ind(end-1),ind(end));
+% end
+% fprintf('\n');
+% clear temp;
 %% plot grad
 % figure('name',name);  
 % title('||grad||_1'); 
@@ -78,26 +78,26 @@ clear temp;
 % hold off;
 % grid on;
 %% plot class grad
-% figure('name',name);  
-% title('class ||grad||_1'); 
-% hold on;
-% plot(it1, grad_cls(:,it1));
-% set(gca,'yscale','log');
-% hold off;
-% grid on;
+figure('name',name);  
+title('class ||grad||_1'); 
+hold on;
+plot(it1, grad_cls(:,it1));
+set(gca,'yscale','log');
+hold off;
+grid on;
 %% plot class grad ratio Max Min
-% temp = grad_cls(:,it1);
-% gm = min(temp);
-% gM = max(temp);
-% clear temp;
-% 
-% figure('name',name);  
-% title('class ||grad||_1 min max ratio'); 
-% hold on;
-% plot(it1, gm./(gM+eps),'linewidth',4);
-% % set(gca,'yscale','log');
-% hold off;
-% grid on;
+temp = grad_cls(:,it1);
+gm = min(temp);
+gM = max(temp);
+clear temp;
+
+figure('name',name);  
+title('class ||grad||_1 min max ratio'); 
+hold on;
+plot(it1, gm./(gM+eps),'linewidth',4);
+% set(gca,'yscale','log');
+hold off;
+grid on;
 %% print class grad top-bottom
 % % it_ind = round( linspace(1,it1(end),30) );
 % it_ind = [1:10, round( linspace(11,it1(end),10) )];

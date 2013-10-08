@@ -6,7 +6,7 @@ load(fn);
 %%
 cls = 5;
 ind = find(Ytr==cls);
-ii = ind(333);
+ii = ind(111);
 %% 
 fprintf('#class %d: %d \n\n',cls, numel(ind));
 %%

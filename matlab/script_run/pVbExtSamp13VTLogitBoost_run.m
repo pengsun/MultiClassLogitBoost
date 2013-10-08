@@ -1,5 +1,5 @@
 %% 
-name = 'zipcode_eqcls';
+name = 'letter_eqcls_012';
 dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -15,7 +15,7 @@ cns = {1};
 cwrs = {0.9};
 crs = {1.1};
 %%% feature
-crf = {0.05};
+crf = {0.2};
 %%% class
 cwrc = {1.1};
 crc = {1.1};
