@@ -32,11 +32,11 @@ void train(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   // node_size
   int node_size = (int)mxGetScalar(prhs[7]);
 
-  // rb
-  double rb = (double)mxGetScalar(prhs[8]);
   // rf
-  double rf = (double)mxGetScalar(prhs[9]);
-  // weight ratio sample
+  double rf = (double)mxGetScalar(prhs[8]);
+  // rb
+  double rb = (double)mxGetScalar(prhs[9]);
+  // wrb
   double wrb = (double)mxGetScalar(prhs[10]);
 
   /* train */
