@@ -1,5 +1,5 @@
 %% 
-name = 'zipcode';
+name = 'letter4k';
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -12,9 +12,9 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% feature
-crf = {0.05};
+crf = {0.2};
 %%% budget
-crb = {0.01};
+crb = {.01};
 cwrb = {1.1};
 %%
 h = batch_pCoSampVTLogitBoost();

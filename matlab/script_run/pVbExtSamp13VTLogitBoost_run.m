@@ -1,5 +1,5 @@
 %% 
-name = 'zipcode';
+name = 'optdigits';
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -12,10 +12,10 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-crs = {1.1};
+crs = {0.01};
 cwrs = {1.1};
 %%% feature
-crf = {0.05};
+crf = {0.2};
 %%% class
 crc = {1.1};
 cwrc = {1.1};

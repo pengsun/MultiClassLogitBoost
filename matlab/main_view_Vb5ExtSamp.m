@@ -1,8 +1,13 @@
 %% config
 name = 'optdigits';
-algoname1 = 'pVbExtSamp13VTLogitBoost';
+algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb5.00e-002_wrb1.10e+000.mat';
+
+% name = 'optdigits';
+% algoname1 = 'pVbExtSamp13VTLogitBoost';
+% dir_root1 = fullfile('.\rst',algoname1);
+% fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset_mat';

@@ -919,7 +919,7 @@ void pCoSampVTTree::fit_node( pCoSampVTNode* _node, pCoSampVTData* _data )
   int nn = _node->sample_idx_.size();
   if (nn<=0) return;
 
-#if 1
+#if 0
   // Use all the classes to update node values
   VecIdx ci(this->K_);
   for (int k = 0; k < this->K_; ++k)
@@ -929,8 +929,8 @@ void pCoSampVTTree::fit_node( pCoSampVTNode* _node, pCoSampVTData* _data )
   sol.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
-#if 0
-  //_node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
+#if 1
+  _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
 #ifdef OUTPUT
