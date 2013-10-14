@@ -1,23 +1,23 @@
 %% 
-name = 'c300f1n50';
-dir_data = 'D:\Users\sp\data\dataset2_mat';
-% dir_data = 'D:\Data\dataset_mat';
+name = 'zipcode';
+% dir_data = 'D:\Users\sp\data\dataset2_mat';
+dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pVbExtSamp13VTLogitBoost_Comp_CoSamp',name);
+  'rst\pVbExtSamp13VTLogitBoost_2cls',name);
 %%
-num_Tpre = 600;
-T = 600;
-cv  = {0.01};
-cJ = {8};
+num_Tpre = 5000;
+T = 5000;
+cv  = {0.1};
+cJ = {20};
 cns = {1};
 %%% sample
-crs = {0.1};
+crs = {0.05};
 cwrs = {1.1};
 %%% feature
-crf = {1.2};
+crf = {0.05};
 %%% class
-crc = {0.1};
+crc = {0.21};
 cwrc = {1.1};
 %%
 h = batch_pVbExtSamp13VTLogitBoost();

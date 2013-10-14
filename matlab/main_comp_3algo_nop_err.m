@@ -1,19 +1,19 @@
 %% config
-name = 'timit.mfcc.winSz11';
+name = 'zipcode';
 
 algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-001_J70_ns1_rf2.00e-002_rb3.86e-001_wrb1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_rf5.00e-002_rb1.00e-002_wrb1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp12VTLogitBoost';
+algoname2 = 'pVbExtSamp13VTLogitBoost_Comp_CoSamp';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T1000_v1.0e-001_J70_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-002_wrc1.10e+000_rc5.00e-001.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf5.00e-002_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp12VTLogitBoost';
+algoname3 = 'pVbExtSamp13VTLogitBoost_2cls';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T1000_v1.0e-001_J70_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-002_wrc1.10e+000_rc1.00e-001.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-002_rf5.00e-002_wrc1.10e+000_rc2.10e-001.mat';
 
-dir_data = 'D:\Users\sp\data\dataset3_mat';
+% dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
@@ -55,8 +55,8 @@ clear tmp;
 % nclass = max(tmp.Ytr)+1;
 % clear tmp;
 
-ntr = 1124588;
-nclass = 183;
+% ntr = 1124588;
+% nclass = 183;
 %% print number of operations(split searching)
 nop1 = 0;
 for i = 1 : numel(tree_node_sc1)
