@@ -1,17 +1,17 @@
 %% config
-name = 'zipcode';
+name = 'mnist10k';
 
 algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_rf5.00e-002_rb1.00e-002_wrb1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_rf3.10e-002_rb1.00e-002_wrb1.10e+000.mat';
 
 algoname2 = 'pVbExtSamp13VTLogitBoost_Comp_CoSamp';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf5.00e-002_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf3.10e-002_wrc1.10e+000_rc1.10e+000.mat';
 
 algoname3 = 'pVbExtSamp13VTLogitBoost_2cls';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-002_rf5.00e-002_wrc1.10e+000_rc2.10e-001.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-002_rf3.10e-002_wrc1.10e+000_rc2.10e-001.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -122,7 +122,8 @@ plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
 plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
 plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
 % set(gca,'xscale','log','yscale','log');
-set(gca,'xscale','log');
+% set(gca,'xscale','log');
+set(gca,'yscale','log');
 hold off;
 h = legend(ffn1,ffn2,ffn3);
 set(h,'Interpreter','none');
