@@ -49,14 +49,14 @@ tree_node_cc3 = tmp.tree_node_cc;
 tree_node_sc3 = tmp.tree_node_sc;
 clear tmp;
 %% info
-tmp_fn = fullfile(dir_data, [name,'.mat']);
-tmp = load(tmp_fn);
-ntr = size(tmp.Xtr,2);
-nclass = max(tmp.Ytr)+1;
-clear tmp;
+% tmp_fn = fullfile(dir_data, [name,'.mat']);
+% tmp = load(tmp_fn);
+% ntr = size(tmp.Xtr,2);
+% nclass = max(tmp.Ytr)+1;
+% clear tmp;
 
-% ntr = 50000;
-% nclass = 10;
+ntr = 1124588;
+nclass = 183;
 %% print number of operations(split searching)
 nop1 = 0;
 for i = 1 : numel(tree_node_sc1)
