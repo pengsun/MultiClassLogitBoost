@@ -1,20 +1,20 @@
 %% config
-name = 'letter4k';
+name = 'timit.mfcc.winSz11';
 
 algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb1.00e-002_wrb1.10e+000.mat';
+fn1 = 'T1000_v1.0e-001_J70_ns1_rf2.00e-002_rb3.86e-001_wrb1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_Comp_CoSamp';
+algoname2 = 'pVbExtSamp12VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T1000_v1.0e-001_J70_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-002_wrc1.10e+000_rc5.00e-001.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_Comp_CoSamp';
+algoname3 = 'pVbExtSamp12VTLogitBoost';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn3 = 'T1000_v1.0e-001_J70_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-002_wrc1.10e+000_rc1.00e-001.mat';
 
-% dir_data = 'E:\Users\sp\data\dataset_mat';
-dir_data = 'D:\data\dataset_mat';
+dir_data = 'D:\Users\sp\data\dataset3_mat';
+% dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);

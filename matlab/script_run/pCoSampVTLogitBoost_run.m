@@ -1,18 +1,18 @@
 %% 
-name = 'letter4k';
-% dir_data = 'E:\Users\sp\data\dataset_mat';
-dir_data = 'D:\Data\dataset_mat';
+name = 'c300f1n50';
+dir_data = 'D:\Users\sp\data\dataset2_mat';
+% dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pCoSampVTLogitBoost',name);
 %%
-num_Tpre = 5000;
-T = 5000;
+num_Tpre = 600;
+T = 600;
 cv  = {0.1};
-cJ = {20};
+cJ = {8};
 cns = {1};
 %%% feature
-crf = {0.2};
+crf = {1.1};
 %%% budget
 crb = {.01};
 cwrb = {1.1};

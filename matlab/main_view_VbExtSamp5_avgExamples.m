@@ -4,7 +4,7 @@ algoname1 = 'pVbExtSamp12VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
 fn1 = 'T1000_v1.0e-001_J70_ns1_wrs9.00e-001_rs1.10e+000_rf2.00e-002_wrc1.10e+000_rc5.00e-001.mat';
 
-% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\Users\sp\data\dataset3_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);

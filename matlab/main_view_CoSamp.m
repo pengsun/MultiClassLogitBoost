@@ -1,11 +1,11 @@
 %% config
-name = 'letter4k';
+name = 'c300f1n50';
 algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb1.00e-002_wrb1.10e+000.mat';
+fn1 = 'T600_v1.0e-001_J8_ns1_rf1.10e+000_rb1.00e-002_wrb1.10e+000.mat';
 
-% dir_data = 'E:\Users\sp\data\dataset_mat';
-dir_data = 'D:\data\dataset_mat';
+dir_data = 'D:\Users\sp\data\dataset2_mat';
+% dir_data = 'D:\data\dataset_mat';
 
 % it_ind = [];
 % it_ind = [1000, 2000,3000,4000,4700];
