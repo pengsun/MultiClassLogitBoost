@@ -1,10 +1,10 @@
 %% 
-name = 'zipcode';
+name = 'mnist';
 % dir_data = 'D:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pVbExtSamp13VTLogitBoost_2cls',name);
+  'rst\pVbExtSamp13VTLogitBoost_allcls',name);
 %%
 num_Tpre = 5000;
 T = 5000;
@@ -12,10 +12,10 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-crs = {0.05};
-cwrs = {1.1};
+crs = {1.1};
+cwrs = {0.95};
 %%% feature
-crf = {0.05};
+crf = {0.031};
 %%% class
 crc = {0.21};
 cwrc = {1.1};

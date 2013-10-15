@@ -1,17 +1,17 @@
 %% config
-name = 'mnist10k';
+name = 'letter4k';
 
-algoname1 = 'pCoSampVTLogitBoost';
+algoname1 = 'pCoSampVTLogitBoost_wrb0.95';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_rf3.10e-002_rb1.00e-002_wrb1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb1.10e+000_wrb9.50e-001.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_Comp_CoSamp';
+algoname2 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf3.10e-002_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_2cls';
+algoname3 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-002_rf3.10e-002_wrc1.10e+000_rc2.10e-001.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -121,6 +121,32 @@ hold on;
 plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
 plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
 plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
+% set(gca,'xscale','log','yscale','log');
+% set(gca,'xscale','log');
+set(gca,'yscale','log');
+hold off;
+h = legend(ffn1,ffn2,ffn3);
+set(h,'Interpreter','none');
+grid on;
+%% plot iter v.s. error
+figure('name',name); 
+title( sprintf('iter v.s. error') );
+hold on;
+plot(it1,err_it1(it1), 'marker','x','linewidth',1,'color','m');
+plot(it2,err_it2(it2), 'marker','.','linewidth',1,'color','r');
+plot(it3,err_it3(it3), 'marker','*','linewidth',1,'color','b');
+set(gca,'xscale','log');
+hold off;
+h = legend(ffn1,ffn2,ffn3);
+set(h,'Interpreter','none');
+grid on;
+%% plot iter v.s. gradient
+figure('name',name); 
+title( sprintf('iter v.s. grad') );
+hold on;
+plot(it1,abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
+plot(it2,abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
+plot(it3,abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
 % set(gca,'xscale','log','yscale','log');
 % set(gca,'xscale','log');
 set(gca,'yscale','log');
