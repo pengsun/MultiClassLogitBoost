@@ -1,10 +1,8 @@
 batch_vb_samp_boost
 num_it, abs_grad,  F, P, Trees, nr_wts (number remained after Weight Trimming for samples), nr_wtc (... after ... classes)
 
-
 batch_vb2_samp_boost
 num_it, abs_grad,  F, P, Trees, nr_wts, nr_wtc, tree_node_cc
-
 
 batch_vb3_samp_boost
 num_it, abs_grad,  F, P, Trees, nr_wts, nr_wtc, tree_node_cc, tree_node_sc (cc: class count, sc: sample count)
@@ -13,10 +11,13 @@ batch_vb4_samp_boost
 output: num_it, abs_grad,  F, P, Trees, tree_node_cc, tree_node_sc (nr_xxx can be infered from tree_node_xxx), tree_is_leaf, GradCls, LossCls
 input: rs,wrs, rf, rc,wrc (rs: ratio sample, wrs: weight ratio sample, rf: ratio feature, rc: ratio classes, wrc: weight ratio classes )
 
-
 batch_vb5_samp_boost
 output: num_it, abs_grad,  F, P, Trees, tree_node_cc, tree_node_sc (nr_xxx can be infered from tree_node_xxx), tree_is_leaf
 input: rs,wrs, rf, rc,wrc (rs: ratio sample, wrs: weight ratio sample, rf: ratio feature, rc: ratio classes, wrc: weight ratio classes )
+
+batch_CoSampboost_basic
+output: num_it, abs_grad,  F, P, Trees, tree_node_cc, tree_node_sc (nr_xxx can be infered from tree_node_xxx), tree_is_leaf
+input: rb, wrb, rf  (rb: ratio budget, wrb: weight ratio budget, rf: ratio feature)
 
 
 pSampVTLogitBoost
@@ -62,3 +63,7 @@ see batch_vb4_samp_boost for its parameters
 
 pVbExtSamp13VTLogitBoost
 pVbExtSamp12VTLogitBoost, but record the loss & the gradients of each class. See batch_vb5_samp_boost.
+
+pCoSampVTLogitBoost
+Sample-Class co-sampling. see batch_CoSampboost_basic.
+

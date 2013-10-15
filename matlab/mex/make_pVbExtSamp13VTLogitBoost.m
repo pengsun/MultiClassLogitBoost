@@ -1,8 +1,8 @@
 %%
 % settings_homebj
-% settings_par_baidulaptop
+settings_par_baidulaptop
 % settings_par_labserver183
-settings_par_labserver185
+% settings_par_labserver185
 % settings_par_labpc
 % settings_server
 %%
