@@ -12,8 +12,8 @@ cv  = {0.1};
 cJ = {70};
 cns = {1};
 %%% sample
-cwrs = {0.9};
-crs = {1.1};
+cwrs = {1.1};
+crs = {0.01};
 %%% feature
 crf = {0.02};
 %%% class
