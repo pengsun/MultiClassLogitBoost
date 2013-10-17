@@ -113,7 +113,7 @@ namespace {
     for (int j = 0; j < ncol; ++j) {
       double s = 0.0;
       for (int i = 0; i < nrow; ++i) {
-        s += gg.at<double>(i,j);
+        s += std::abs( gg.at<double>(i,j) );
       } // for i
 
       // update out

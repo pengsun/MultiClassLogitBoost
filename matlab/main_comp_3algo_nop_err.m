@@ -1,17 +1,17 @@
 %% config
-name = 'mnist10k';
+name = 'letter4k';
 
-algoname1 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname1 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.95_wrs1.1';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc9.50e-001_rc1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.81_wrs0.95';
+algoname2 = 'pVbExtSamp13VTLogitBoost_temp_wrc1.1_wrs1.1';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc8.10e-001_rc1.10e+000.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.95_wrs0.95';
+algoname3 = 'pVbExtSamp13VTLogitBoost_temp_wrc1.1_wrs1.1';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc9.50e-001_rc1.10e+000.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -128,6 +128,21 @@ hold off;
 h = legend(ffn1,ffn2,ffn3);
 set(h,'Interpreter','none');
 grid on;
+%% plot iter v.s. nop
+figure('name',name); 
+title( sprintf('iter v.s. nop') );
+hold on;
+plot(it1,vnop1(it1), 'marker','x','linewidth',1,'color','m');
+plot(it2,vnop2(it2), 'marker','.','linewidth',1,'color','r');
+plot(it3,vnop3(it3), 'marker','*','linewidth',1,'color','b');
+% set(gca,'xscale','log','yscale','log');
+% set(gca,'xscale','log');
+% set(gca,'yscale','log');
+hold off;
+h = legend(ffn1,ffn2,ffn3);
+set(h,'Interpreter','none');
+grid on;
+
 %% plot iter v.s. error
 figure('name',name); 
 title( sprintf('iter v.s. error') );
