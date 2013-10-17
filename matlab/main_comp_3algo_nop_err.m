@@ -1,17 +1,17 @@
 %% config
-name = 'letter4k';
+name = 'mnist10k';
 
-algoname1 = 'pCoSampVTLogitBoost_wrb0.95';
+algoname1 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb1.10e+000_wrb9.50e-001.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname2 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.81_wrs0.95';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc8.10e-001_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname3 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.95_wrs0.95';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc9.50e-001_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';

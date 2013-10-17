@@ -1,10 +1,10 @@
 %% 
-name = 'mnist';
+name = 'mnist10k';
 % dir_data = 'D:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pVbExtSamp13VTLogitBoost_allcls',name);
+  'rst\pVbExtSamp13VTLogitBoost_temp_wrc0.95_wrs0.95',name);
 %%
 num_Tpre = 5000;
 T = 5000;
@@ -17,8 +17,8 @@ cwrs = {0.95};
 %%% feature
 crf = {0.031};
 %%% class
-crc = {0.21};
-cwrc = {1.1};
+crc = {1.1};
+cwrc = {0.95};
 %%
 h = batch_pVbExtSamp13VTLogitBoost();
 h.num_Tpre = num_Tpre;

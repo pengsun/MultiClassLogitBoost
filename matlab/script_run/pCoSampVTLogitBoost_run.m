@@ -1,5 +1,5 @@
 %% 
-name = 'isolet';
+name = 'mnist10k';
 % dir_data = 'D:\Users\sp\data\dataset_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -12,7 +12,7 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% feature
-crf = {0.0514};
+crf = {0.031};
 %%% budget
 crb = {1.1};
 cwrb = {0.95};
