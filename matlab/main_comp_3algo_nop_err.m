@@ -1,17 +1,17 @@
 %% config
-name = 'letter4k';
+name = 'timit.mfcc.winSz11';
 
-algoname1 = 'pVbExtSamp13VTLogitBoost_temp_wrc0.95_wrs1.1';
+algoname1 = 'pVbExtSamp12VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc9.50e-001_rc1.10e+000.mat';
+fn1 = 'T1000_v1.0e-01_J70_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-02_wrc1.10e+00_rc1.10e+00.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_temp_wrc1.1_wrs1.1';
+algoname2 = 'pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T1000_v1.0e-01_J70_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-02_wrc1.10e+00_rc2.10e-01.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_temp_wrc1.1_wrs1.1';
+algoname3 = 'pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn3 = 'T1000_v1.0e-01_J70_ns1_wrs9.00e-01_rs1.10e+00_rf2.00e-02_wrc1.10e+00_rc2.10e-01.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -57,6 +57,12 @@ clear tmp;
 
 % ntr = 1124588;
 % nclass = 183;
+%% print info
+fprintf('%s:\n',name);
+fprintf('#1: %s\n',ffn1);
+fprintf('#2: %s\n',ffn2);
+fprintf('#3: %s\n',ffn3);
+fprintf('\n');
 %% print number of operations(split searching)
 nop1 = 0;
 for i = 1 : numel(tree_node_sc1)
@@ -71,7 +77,6 @@ for i = 1 : numel(tree_node_sc3)
   nop3 = nop3 + sum(tree_node_cc3{i}.*tree_node_sc3{i});
 end
 
-fprintf('%s:\n',name);
 fprintf('number of operations (split searching):\n');
 fprintf('nop1 = %d\n',nop1);
 fprintf('nop2 = %d\n',nop2);
@@ -80,17 +85,23 @@ fprintf('\n');
 %% print best error
 fprintf('best error:\n');
 [tmp1,tmp1_ind] = min(err_it1);
-fprintf('%s: %d @ %d\n', ffn1, tmp1, it1(tmp1_ind));
+fprintf('#1: %d @ %d\n',  tmp1, it1(tmp1_ind));
 [tmp2,tmp2_ind] = min(err_it2);
-fprintf('%s: %d @ %d\n', ffn2, tmp2, it2(tmp2_ind));
+fprintf('#2: %d @ %d\n', tmp2, it2(tmp2_ind));
 [tmp3,tmp3_ind] = min(err_it3);
-fprintf('%s: %d @ %d\n', ffn3, tmp3, it3(tmp3_ind));
+fprintf('#3: %d @ %d\n', tmp3, it3(tmp3_ind));
 fprintf('\n');
 %% print last error
 fprintf('last error:\n');
-fprintf('%s: %d @ %d\n', ffn1, err_it1(end), it1(end));
-fprintf('%s: %d @ %d\n', ffn2, err_it2(end), it2(end));
-fprintf('%s: %d @ %d\n', ffn3, err_it3(end), it3(end));
+fprintf('#1: %d @ %d\n', err_it1(end), it1(end));
+fprintf('#2: %d @ %d\n', err_it2(end), it2(end));
+fprintf('#3: %d @ %d\n',  err_it3(end), it3(end));
+fprintf('\n');
+%% print raw training time
+fprintf('raw training time:\n');
+fprintf('#1: %d\n', time_tr1);
+fprintf('#2: %d\n', time_tr2);
+fprintf('#3: %d\n', time_tr3);
 fprintf('\n');
 %% plot nop v.s. error
 for i = 1 : numel(tree_node_sc1)
