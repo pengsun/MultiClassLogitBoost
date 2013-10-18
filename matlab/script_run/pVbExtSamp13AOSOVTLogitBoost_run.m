@@ -1,21 +1,21 @@
 %% 
-name = 'timit.mfcc.winSz11';
-dir_data = 'E:\Users\sp\data\dataset3_mat';
+name = 'cifar-10';
+dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95',name);
 %%
-num_Tpre = 1000;
-T = 1000;
+num_Tpre = 10000;
+T = 10000;
 cv  = {0.1};
 cJ = {120};
 cns = {1};
 %%% sample
 crs = {1.1};
-cwrs = {0.9};
+cwrs = {0.95};
 %%% feature
-crf = {0.038};
+crf = {0.0118};
 %%% class
 crc = {0.21};
 cwrc = {1.1};
