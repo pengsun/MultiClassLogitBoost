@@ -67,3 +67,6 @@ pVbExtSamp12VTLogitBoost, but record the loss & the gradients of each class. See
 pCoSampVTLogitBoost
 Sample-Class co-sampling. see batch_CoSampboost_basic.
 
+
+pVbExtSamp12SkimVTLogitBoost
+Skim version of pVbExtSamp12VTLogitBoost. tight memory.
