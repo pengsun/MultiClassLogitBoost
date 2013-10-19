@@ -21,7 +21,7 @@ classdef pVbExtSamp12SkimVTLogitBoost
         rs,rf,rc, wrs,wrc);
     end
     
-    function [NumIter, TrLoss,] = get (obj)
+    function [NumIter, TrLoss] = get (obj)
       [NumIter, TrLoss] =...
         pVbExtSamp12SkimVTLogitBoost_mex('get',obj.ptr);
     end

@@ -18,9 +18,9 @@ crs = {1.1};
 crf = {0.2};
 %%% class
 cwrc = {1.1};
-crc = {0.21};
+crc = {1.1};
 %%
-h = batch_pVbExtSamp12VTLogitBoost();
+h = batch_pVbExtSamp12SkimVTLogitBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;
