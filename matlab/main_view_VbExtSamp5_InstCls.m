@@ -1,8 +1,8 @@
 %% config
-name = 'mnist';
-algoname1 = 'pVbExtSamp13VTLogitBoost_2cls_wrs0.95';
+name = 'ocr.eng.94.fea';
+algoname1 = 'pVbExtSamp12SkimVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs9.50e-001_rs1.10e+000_rf3.10e-002_wrc1.10e+000_rc2.10e-001.mat';
+fn1 = 'T1000_v1.0e-001_J50_ns1_wrs9.00e-001_rs1.10e+000_rf2.10e-002_wrc1.10e+000_rc1.10e+000.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -35,40 +35,17 @@ plot(it1, cc, 'marker','x');
 title('Cls Count, root node');
 grid on;
 %% examples & class
-% for i = 1 : numel(tree_node_sc)
-%   sc(i) = tree_node_sc{i}(1);
-% end
-% for i = 1 : numel(tree_node_cc)
-%   cc(i) = tree_node_cc{i}(1);
-% end
-%% 
-%%
-% figure('name',name); 
-% title('#examples');
-% hold on;
-% plot(sc,'marker','x','linewidth',2);
-% hold off;
-% grid on;
-%% print examples & class
-% navg = mean(sc);
-% cavg = mean(cc);
-% fprintf(name);fprintf('\n');
-% fprintf('avg examples = %d\n',navg);
-% 
-% tmp_fn = fullfile(dir_data, [name,'.mat']);
-% tmp = load(tmp_fn);
-% ntr = size(tmp.Xtr,2);
-% clear tmp;
-% fprintf('ntr = %d\n', ntr);
-% fprintf('rs = %d\n', navg/ntr);
-%% class 
-%%
-% figure;
-% title('nrc');
-% hold on;
-% plot(nr_wtc,'marker','o','linewidth',4,'color','r');
-% hold off;
-% grid on;
+for i = 1 : numel(tree_node_sc)
+  sc(i) = tree_node_sc{i}(1);
+end
+for i = 1 : numel(tree_node_cc)
+  cc(i) = tree_node_cc{i}(1);
+end
+% print examples & class
+navg = mean(sc);
+cavg = mean(cc);
+fprintf(name);fprintf('\n');
+fprintf('avg examples = %d\n',navg);
 %% plot error
 % figure('name',name); title error; hold on;
 % plot(it1,err_it1, 'color','r','lineWidth', 2, 'marker','.');
