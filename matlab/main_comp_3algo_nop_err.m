@@ -1,17 +1,17 @@
 %% config
-name = 'c300f1n50';
+name = 'pendigits';
 
-algoname1 = 'pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95';
+algoname1 = 'pVbExtSamp13VTLogitBoost_rssmall';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc8.00e-03_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-001_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95';
+algoname2 = 'pVbExtSamp13VTLogitBoost_rssmall';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc1.10e+00_rc1.10e+00.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname3 = 'pVbExtSamp13VTLogitBoost_rssmall';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc1.10e+00_rc1.10e+00.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-003_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -162,6 +162,7 @@ plot(it1,err_it1(it1), 'marker','x','linewidth',1,'color','m');
 plot(it2,err_it2(it2), 'marker','.','linewidth',1,'color','r');
 plot(it3,err_it3(it3), 'marker','*','linewidth',1,'color','b');
 set(gca,'xscale','log');
+% set(gca,'yscale','log');
 hold off;
 h = legend(ffn1,ffn2,ffn3);
 set(h,'Interpreter','none');
