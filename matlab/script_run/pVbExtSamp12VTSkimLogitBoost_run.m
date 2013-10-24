@@ -1,6 +1,6 @@
 %% 
 name = 'optdigits';
-dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
@@ -12,8 +12,8 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-cwrs = {0.9};
-crs = {1.1};
+cwrs = {1.1};
+crs = {0.5};
 %%% feature
 crf = {0.2};
 %%% class
