@@ -1,4 +1,4 @@
-#include "pVbExtSamp14VTLogitBoost.hpp"
+#include "pAvgSampVTLogitBoost.hpp"
 #include <opencv2/core/core.hpp>
 #include <iostream>
 
@@ -40,6 +40,23 @@ float Y2[] = {
   2.0f  
 };
 
+float X22[] = {
+  0.1f, 0.2f,
+  0.6f, 0.3f,
+  0.1f, 0.4f,
+  0.2f, 0.3f,
+  0.7f, 0.2f,
+  0.2f, 0.6f
+};
+float Y22[] = {
+  0.0f,
+  1.0f,
+  2.0f,
+  0.0f,
+  1.0f,
+  2.0f  
+};
+
 float X3[] = {
   0.1f,  0.0f,
   0.41f, 0.0f,
@@ -71,16 +88,17 @@ int main ()
   tr.preprocess();
 
   // AOTO Boost
-  pVbExtSamp14VTLogitBoost ab;
+  pAvgSampVTLogitBoost ab;
   ab.param_.J = 3;
   ab.param_.T = 500;
   ab.param_.v = 0.1;
   ab.param_.ns = 1;
-  ab.param_.ratio_si_ = 0.99;
+  ab.param_.ratio_si_ = 0.6;
   ab.param_.ratio_fi_ = 0.8;
   ab.param_.ratio_ci_ = 0.8;
   ab.param_.weight_ratio_si_ = 0.9;
   ab.param_.weight_ratio_ci_ = 0.9;
+  ab.param_.Tdot = 1;
 
   ab.train(&tr);
 

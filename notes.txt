@@ -26,6 +26,16 @@ output: num_it, abs_grad,  F, P, Trees, tree_node_cc, ...
         tree_leaf_gain, tree_leaf_allsample_gain
 input: rs,wrs, rf, rc,wrc (rs: ratio sample, wrs: weight ratio sample, rf: ratio feature, rc: ratio classes, wrc: weight ratio classes )
 
+batch_avgsamp_boost
+output: num_it, abs_grad,  
+        tree_node_cc, ...
+        tree_node_sc (nr_xxx can be infered from tree_node_xxx), tree_node_all_sc,...
+        tree_is_leaf,...
+        tree_leaf_gain, tree_leaf_allsample_gain
+input: Tdot, rs,wrs, rf, rc,wrc (rs: ratio sample, wrs: weight ratio sample, rf: ratio feature, rc: ratio classes, wrc: weight ratio classes )
+
+
+
 pSampVTLogitBoost
 VTLogitBoost with uniform sampling for samples, features and classes
 
@@ -67,15 +77,17 @@ parameters: rs,wrs, rf, rc,wrc
 pVbExtSamp12VTLogitBoost
 see batch_vb4_samp_boost for its parameters
 
-pVbExtSamp13VTLogitBoost
+pVbExtSamp13VTLogitBoost (Stable, verbose)
 pVbExtSamp12VTLogitBoost, but record the loss & the gradients of each class. See batch_vb5_samp_boost.
 
 pCoSampVTLogitBoost
 Sample-Class co-sampling. see batch_CoSampboost_basic.
 
-pVbExtSamp12SkimVTLogitBoost
+pVbExtSamp12SkimVTLogitBoost (Stable)
 Skim version of pVbExtSamp12VTLogitBoost. tight memory.
 
-
 pVbExtSamp14VTLogitBoost
-pVbExtSamp13VTLogitBoost, but record the the node gain. See batch_vb6_samp_boost.
+pVbExtSamp13VTLogitBoost, but record the the node gain. For parameters see batch_vb6_samp_boost.
+
+pAvgSampVTLogitBoost
+pVbExtSamp14VTLogitBoost. Estimate w matrix by averaging. For parameters see batch_avgsamp_boost

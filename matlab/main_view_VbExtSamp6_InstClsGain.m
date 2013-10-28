@@ -1,8 +1,8 @@
 %% config
-name = 'pendigits';
-algoname1 = 'pVbExtSamp14VTLogitBoost_rssmall';
+name = 'optdigits';
+algoname1 = 'pAvgSampVTLogitBoost_rssmall';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_Tdot3_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -14,7 +14,7 @@ abs_grad1 = tmp.abs_grad;
 num_it1 = tmp.num_it;
 time_tr1 = tmp.time_tr;
 
-tree_node_cc = tmp.tree_node_cc;
+tree_node_cc= tmp.tree_node_cc;
 tree_node_sc = tmp.tree_node_sc;
 tree_node_all_sc = tmp.tree_node_all_sc;
 tree_leaf_gain = tmp.tree_leaf_gain;
