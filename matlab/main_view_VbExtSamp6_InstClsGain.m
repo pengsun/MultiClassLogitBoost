@@ -1,8 +1,8 @@
 %% config
-name = 'optdigits';
+name = 'pendigits';
 algoname1 = 'pVbExtSamp14VTLogitBoost_rssmall';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-001_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -56,7 +56,6 @@ cavg = mean(cc);
 fprintf(name);fprintf('\n');
 fprintf('avg examples = %d\n',navg);
 %% plot avarage gain
-
 figure('name',name); title('average gain'); hold on;
 plot(it1,gain(it1), 'color','r','lineWidth', 2, 'marker','+');
 plot(it1,allsample_gain(it1), 'color','b','lineWidth', 2, 'marker','O');

@@ -1,17 +1,17 @@
 %% config
-name = 'pendigits';
+name = 'optdigits';
 
-algoname1 = 'pVbExtSamp13VTLogitBoost_rssmall';
+algoname1 = 'pVbExtSamp14VTLogitBoost_rssmall';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-001_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_rssmall';
+algoname2 = 'pVbExtSamp14VTLogitBoost_rssmall';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn2 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-001_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_rssmall';
+algoname3 = 'pVbExtSamp14VTLogitBoost_rssmall';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs5.00e-003_rf4.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn3 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 
 % dir_data = 'D:\Users\sp\data\dataset3_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -104,55 +104,55 @@ fprintf('#2: %d\n', time_tr2);
 fprintf('#3: %d\n', time_tr3);
 fprintf('\n');
 %% plot nop v.s. error
-for i = 1 : numel(tree_node_sc1)
-  vnop1(i) = sum(tree_node_cc1{i}.*tree_node_sc1{i});
-end
-for i = 1 : numel(tree_node_sc2)
-  vnop2(i) = sum(tree_node_cc2{i}.*tree_node_sc2{i});
-end
-for i = 1 : numel(tree_node_sc3)
-  vnop3(i) = sum(tree_node_cc3{i}.*tree_node_sc3{i});
-end
-
-figure('name',name); 
-title( sprintf('nop v.s. error') );
-hold on;
-plot(cumsum(vnop1(it1)),err_it1(it1), 'marker','x','linewidth',1,'color','m');
-plot(cumsum(vnop2(it2)),err_it2(it2), 'marker','.','linewidth',1,'color','r');
-plot(cumsum(vnop3(it3)),err_it3(it3), 'marker','*','linewidth',1,'color','b');
-set(gca,'xscale','log');
-hold off;
-h = legend(ffn1,ffn2,ffn3);
-set(h,'Interpreter','none');
-grid on;
+% for i = 1 : numel(tree_node_sc1)
+%   vnop1(i) = sum(tree_node_cc1{i}.*tree_node_sc1{i});
+% end
+% for i = 1 : numel(tree_node_sc2)
+%   vnop2(i) = sum(tree_node_cc2{i}.*tree_node_sc2{i});
+% end
+% for i = 1 : numel(tree_node_sc3)
+%   vnop3(i) = sum(tree_node_cc3{i}.*tree_node_sc3{i});
+% end
+% 
+% figure('name',name); 
+% title( sprintf('nop v.s. error') );
+% hold on;
+% plot(cumsum(vnop1(it1)),err_it1(it1), 'marker','x','linewidth',1,'color','m');
+% plot(cumsum(vnop2(it2)),err_it2(it2), 'marker','.','linewidth',1,'color','r');
+% plot(cumsum(vnop3(it3)),err_it3(it3), 'marker','*','linewidth',1,'color','b');
+% set(gca,'xscale','log');
+% hold off;
+% h = legend(ffn1,ffn2,ffn3);
+% set(h,'Interpreter','none');
+% grid on;
 %% plot nop v.s. gradient
-figure('name',name); 
-title( sprintf('nop v.s. grad') );
-hold on;
-plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
-plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
-plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
-% set(gca,'xscale','log','yscale','log');
-% set(gca,'xscale','log');
-set(gca,'yscale','log');
-hold off;
-h = legend(ffn1,ffn2,ffn3);
-set(h,'Interpreter','none');
-grid on;
-%% plot iter v.s. nop
-figure('name',name); 
-title( sprintf('iter v.s. nop') );
-hold on;
-plot(it1,vnop1(it1), 'marker','x','linewidth',1,'color','m');
-plot(it2,vnop2(it2), 'marker','.','linewidth',1,'color','r');
-plot(it3,vnop3(it3), 'marker','*','linewidth',1,'color','b');
-% set(gca,'xscale','log','yscale','log');
-% set(gca,'xscale','log');
+% figure('name',name); 
+% title( sprintf('nop v.s. grad') );
+% hold on;
+% plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
+% plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
+% plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
+% % set(gca,'xscale','log','yscale','log');
+% % set(gca,'xscale','log');
 % set(gca,'yscale','log');
-hold off;
-h = legend(ffn1,ffn2,ffn3);
-set(h,'Interpreter','none');
-grid on;
+% hold off;
+% h = legend(ffn1,ffn2,ffn3);
+% set(h,'Interpreter','none');
+% grid on;
+%% plot iter v.s. nop
+% figure('name',name); 
+% title( sprintf('iter v.s. nop') );
+% hold on;
+% plot(it1,vnop1(it1), 'marker','x','linewidth',1,'color','m');
+% plot(it2,vnop2(it2), 'marker','.','linewidth',1,'color','r');
+% plot(it3,vnop3(it3), 'marker','*','linewidth',1,'color','b');
+% % set(gca,'xscale','log','yscale','log');
+% % set(gca,'xscale','log');
+% % set(gca,'yscale','log');
+% hold off;
+% h = legend(ffn1,ffn2,ffn3);
+% set(h,'Interpreter','none');
+% grid on;
 
 %% plot iter v.s. error
 figure('name',name); 
