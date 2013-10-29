@@ -1,8 +1,8 @@
 %% config
 name = 'optdigits';
-algoname1 = 'pAvgSampVTLogitBoost_rssmall';
+algoname1 = 'pVbExtSamp14VTLogitBoost_rssmall_temp';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-001_J20_ns1_Tdot3_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_wrs1.10e+000_rs1.00e-002_rf2.00e-001_wrc1.10e+000_rc1.10e+000.mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);

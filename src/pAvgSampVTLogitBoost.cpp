@@ -376,6 +376,13 @@ void pAvgSampVTInstSampler::sample( VecIdx& idx )
   ++Tinner_;
 }
 
+void pAvgSampVTInstSampler::sample_uniform( VecIdx &idx )
+{
+  int N = w_.rows;
+  double ratio = double(n_)/double(N);
+  uniform_subsample_ratio (N, ratio, idx);
+}
+
 // Implementation of pAvgSampVTTree::Param
 pAvgSampVTTree::Param::Param()
 {
@@ -1348,6 +1355,7 @@ void pAvgSampVTLogitBoost::subsample_inst(VecIdx& ind)
   
   // do the subsampling
   sampler_.sample(ind);
+  //sampler_.sample_uniform(ind);
 }
 
 void pAvgSampVTLogitBoost::calc_loss( MLData* _data )

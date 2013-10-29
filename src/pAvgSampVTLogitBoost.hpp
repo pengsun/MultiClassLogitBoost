@@ -118,7 +118,8 @@ struct pAvgSampVTInstSampler {
 
   void reset (MatDbl _w, int _n);
   int get_Tinner ();
-  void sample (VecIdx& idx);
+  void sample (VecIdx &idx);
+  void sample_uniform (VecIdx &idx);
 
 private:
   MatDbl w_; // weights

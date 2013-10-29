@@ -1,5 +1,5 @@
 %% 
-name = 'pendigits';
+name = 'optdigits';
 % dir_data = 'E:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -12,7 +12,7 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-crs = {0.01};
+crs = {1.1};
 cwrs = {1.1};
 %%% feature
 crf = {0.2};

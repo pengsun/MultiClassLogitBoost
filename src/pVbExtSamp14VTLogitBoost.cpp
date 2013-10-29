@@ -819,7 +819,7 @@ void pVbExtSamp14VTTree::fit_node( pVbExtSamp14VTNode* _node, pVbExtSamp14VTData
   for (int k = 0; k < this->K_; ++k)
     ci[k] = k;
   pVbExtSamp14VTSolver sol(_data, &ci);
-  sol.update_internal(_node->sample_idx_);
+  sol.update_internal(_node->allsample_idx_);
   sol.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
