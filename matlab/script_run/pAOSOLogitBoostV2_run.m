@@ -1,6 +1,6 @@
 %%
-name = 'optdigits';
-dir_data = 'D:\Data\dataset_mat';
+name = 'mnist';
+dir_data = 'E:\Users\sp\data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pAOSOLogitBoostV2',name);
@@ -14,7 +14,7 @@ cns = {1};
 crs = {0.1};
 cwrs = {0.95};
 %%% feature
-crf = {0.2};
+crf = {0.031};
 %%
 h = batch_pAOSOLogitBoostV2();
 h.num_Tpre = num_Tpre;
