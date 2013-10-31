@@ -1,20 +1,20 @@
 %% 
-name = 'mnist10k';
+name = 'easy1hard2';
 % dir_data = 'D:\Users\sp\data\dataset_mat';
-dir_data = 'D:\Data\dataset_mat';
+dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pCoSampVTLogitBoost_wrb0.95',name);
+  'rst\pCoSampVTLogitBoost',name);
 %%
-num_Tpre = 5000;
-T = 5000;
+num_Tpre = 500;
+T = 500;
 cv  = {0.1};
-cJ = {20};
+cJ = {2};
 cns = {1};
 %%% feature
-crf = {0.031};
+crf = {1.1};
 %%% budget
-crb = {1.1};
+crb = {0.15};
 cwrb = {0.95};
 %%
 h = batch_pCoSampVTLogitBoost();

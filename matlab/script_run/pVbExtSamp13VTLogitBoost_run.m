@@ -1,23 +1,23 @@
 %% 
-name = 'pendigits';
+name = 'easy1hard2';
 % dir_data = 'E:\Users\sp\data\dataset2_mat';
-dir_data = 'D:\Data\dataset_mat';
+dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pVbExtSamp13VTLogitBoost_rssmall',name);
+  'rst\pVbExtSamp13VTLogitBoost',name);
 %%
-num_Tpre = 5000;
-T = 5000;
+num_Tpre = 500;
+T = 500;
 cv  = {0.1};
-cJ = {20};
+cJ = {2};
 cns = {1};
 %%% sample
-crs = {0.005};
+crs = {1.1};
 cwrs = {1.1};
 %%% feature
-crf = {0.4};
+crf = {1.1};
 %%% class
-crc = {1.1};
+crc = {0.70};
 cwrc = {1.1};
 %%
 h = batch_pVbExtSamp13VTLogitBoost();
