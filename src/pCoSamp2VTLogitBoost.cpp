@@ -1,4 +1,4 @@
-#include "pCoSampVTLogitBoost.hpp"
+#include "pCoSamp2VTLogitBoost.hpp"
 #include <functional>
 #include <numeric>
 
@@ -181,17 +181,17 @@ namespace {
     }
 
     if (cc==0) cc = 1;
-    return double(cc)/double(cc);
+    return (double(cc)/double(cc));
   }
 }
 
-// Implementation of pCoSampVTSplit
-pCoSampVTSplit::pCoSampVTSplit()
+// Implementation of pCoSampVT2Split
+pCoSampVT2Split::pCoSampVT2Split()
 {
   reset();
 }
 
-void pCoSampVTSplit::reset()
+void pCoSampVT2Split::reset()
 {
   var_idx_ = -1;
   threshold_ = FLT_MAX;
@@ -203,14 +203,14 @@ void pCoSampVTSplit::reset()
 }
 
 
-// Implementation of pCoSampVTSolver
-const double pCoSampVTSolver::MAXGAMMA = 5.0;
-pCoSampVTSolver::pCoSampVTSolver( pCoSampVTData* _data, VecVecIdx* _sitoci)
+// Implementation of pCoSamp2VT2Solver
+const double pCoSamp2VT2Solver::MAXGAMMA = 5.0;
+pCoSamp2VT2Solver::pCoSamp2VT2Solver( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
 { 
   set_data(_data, _sitoci);
 }
 
-void pCoSampVTSolver::set_data( pCoSampVTData* _data, VecVecIdx* _sitoci)
+void pCoSamp2VT2Solver::set_data( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
 { 
   data_ = _data;
   sitoci_ = _sitoci;
@@ -222,7 +222,7 @@ void pCoSampVTSolver::set_data( pCoSampVTData* _data, VecVecIdx* _sitoci)
   cur_gain_ = 0.0;
 }
 
-void pCoSampVTSolver::update_internal( VecIdx& vidx )
+void pCoSamp2VT2Solver::update_internal( VecIdx& vidx )
 {
   for (VecIdx::iterator it = vidx.begin(); it!=vidx.end(); ++it  ) {
     int idx = *it;
@@ -230,7 +230,7 @@ void pCoSampVTSolver::update_internal( VecIdx& vidx )
   } // for it
 }
 
-void pCoSampVTSolver::update_internal_incre( int idx )
+void pCoSamp2VT2Solver::update_internal_incre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -239,7 +239,7 @@ void pCoSampVTSolver::update_internal_incre( int idx )
   // update mg, h, cur_gain
   int KK = ci.size();
   for (int kk = 0; kk < KK; ++kk) {
-    int k = this->ci_->at(kk);
+    int k = ci[kk];
     double pik = *(ptr_pi + k);
 
     // mg
@@ -264,7 +264,7 @@ void pCoSampVTSolver::update_internal_incre( int idx )
   }
 }
 
-void pCoSampVTSolver::update_internal_decre( int idx )
+void pCoSamp2VT2Solver::update_internal_decre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -273,7 +273,7 @@ void pCoSampVTSolver::update_internal_decre( int idx )
   // update mg, h, cur_gain
   int KK = ci.size();
   for (int kk = 0; kk < KK; ++kk) {
-    int k = this->ci_->at(kk);
+    int k = ci[kk];
     double pik = *(ptr_pi + k);
 
     // mg
@@ -298,13 +298,13 @@ void pCoSampVTSolver::update_internal_decre( int idx )
   }
 }
 
-void pCoSampVTSolver::calc_gamma( double *gamma)
+void pCoSamp2VT2Solver::calc_gamma( double *gamma)
 {
   int K = mg_.size();
   for (int k = 0; k < K; ++k) {
     double smg = mg_[k];
     double sh  = h_[k];
-    //if (sh <= 0) cv::error("pCoSampVTSolver::calc_gamma: Invalid Hessian.");
+    //if (sh <= 0) cv::error("pCoSamp2VT2Solver::calc_gamma: Invalid Hessian.");
     if (sh == 0) sh = 1;
 
     double sgamma = smg/sh;
@@ -313,19 +313,18 @@ void pCoSampVTSolver::calc_gamma( double *gamma)
     else if (cap>MAXGAMMA) cap = MAXGAMMA;
 
     // do the real updating
-    int k = this->ci_->at(k);
     *(gamma+k) = cap;
   }
 }
 
-void pCoSampVTSolver::calc_gain( double& gain )
+void pCoSamp2VT2Solver::calc_gain( double& gain )
 {
   gain = 0.5*cur_gain_;
 }
 
 
 // Implementation of pVbExtSamp12VTNode
-pCoSampVTNode::pCoSampVTNode(int _K)
+pCoSampVT2Node::pCoSampVT2Node(int _K)
 {
   id_ = 0;
   parent_ = left_ = right_ = 0;
@@ -333,7 +332,7 @@ pCoSampVTNode::pCoSampVTNode(int _K)
   fitvals_.assign(_K, 0);
 }
 
-pCoSampVTNode::pCoSampVTNode( int _id, int _K )
+pCoSampVT2Node::pCoSampVT2Node( int _id, int _K )
 {
   id_ = _id;
   parent_ = left_ = right_ = 0;
@@ -341,7 +340,7 @@ pCoSampVTNode::pCoSampVTNode( int _id, int _K )
   fitvals_.assign(_K, 0);
 }
 
-int pCoSampVTNode::calc_dir( float* _psample )
+int pCoSampVT2Node::calc_dir( float* _psample )
 {
   float _val = *(_psample + split_.var_idx_);
 
@@ -361,8 +360,8 @@ int pCoSampVTNode::calc_dir( float* _psample )
 }
 
 // Implementation of pCoSampVT_best_split_finder (helper class)
-pCoSampVT_best_split_finder::pCoSampVT_best_split_finder(pCoSampVTTree *_tree, 
-  pCoSampVTNode *_node, pCoSampVTData *_data)
+pCoSampVT_best_split_finder::pCoSampVT_best_split_finder(pCoSampVT2Tree *_tree, 
+  pCoSampVT2Node *_node, pCoSampVT2Data *_data)
 {
   this->tree_ = _tree;
   this->node_ = _node;
@@ -386,7 +385,7 @@ void pCoSampVT_best_split_finder::operator() (const cv::BlockedRange &r)
   for (int ii = r.begin(); ii != r.end(); ++ii) {
     int vi = this->tree_->sub_fi_[ii];
 
-    pCoSampVTSplit the_split;
+    pCoSampVT2Split the_split;
     the_split.reset();
     bool ret;
     ret = tree_->find_best_split_num_var(node_, data_, vi, 
@@ -407,8 +406,8 @@ void pCoSampVT_best_split_finder::join (pCoSampVT_best_split_finder &rhs)
   }
 }
 
-// Implementation of pCoSampVTTree::Param
-pCoSampVTTree::Param::Param()
+// Implementation of pCoSampVT2Tree::Param
+pCoSampVT2Tree::Param::Param()
 {
   max_leaves_ = 2;
   node_size_ = 5;
@@ -416,8 +415,8 @@ pCoSampVTTree::Param::Param()
   rb_ = 0.8;
 }
 
-// Implementation of pCoSampVTTree
-void pCoSampVTTree::split( pCoSampVTData* _data )
+// Implementation of pCoSampVT2Tree
+void pCoSampVT2Tree::split( pCoSampVT2Data* _data )
 {
   // clear
   clear();
@@ -429,7 +428,7 @@ void pCoSampVTTree::split( pCoSampVTData* _data )
   // root node
   creat_root_node(_data);
   candidate_nodes_.push(&nodes_.front());
-  pCoSampVTNode* root = candidate_nodes_.top(); 
+  pCoSampVT2Node* root = candidate_nodes_.top(); 
   find_best_candidate_split(root, _data);
   int nleaves = 1;
 
@@ -437,7 +436,7 @@ void pCoSampVTTree::split( pCoSampVTData* _data )
   while ( nleaves < param_.max_leaves_ &&
           !candidate_nodes_.empty() )
   {
-    pCoSampVTNode* cur_node = candidate_nodes_.top(); // the most prior node
+    pCoSampVT2Node* cur_node = candidate_nodes_.top(); // the most prior node
     candidate_nodes_.pop();
     --nleaves;
 
@@ -464,12 +463,12 @@ void pCoSampVTTree::split( pCoSampVTData* _data )
   }
 }
 
-void pCoSampVTTree::fit( pCoSampVTData* _data )
+void pCoSampVT2Tree::fit( pCoSampVT2Data* _data )
 {
   // fitting node data for each leaf
-  std::list<pCoSampVTNode>::iterator it;
+  std::list<pCoSampVT2Node>::iterator it;
   for (it = nodes_.begin(); it != nodes_.end(); ++it) {
-    pCoSampVTNode* nd = &(*it);
+    pCoSampVT2Node* nd = &(*it);
 
     if (nd->left_!=0) { // not a leaf
       continue;
@@ -486,26 +485,26 @@ void pCoSampVTTree::fit( pCoSampVTData* _data )
 }
 
 
-pCoSampVTNode* pCoSampVTTree::get_node( float* _sample)
+pCoSampVT2Node* pCoSampVT2Tree::get_node( float* _sample)
 {
-  pCoSampVTNode* cur_node = &(nodes_.front());
+  pCoSampVT2Node* cur_node = &(nodes_.front());
   while (true) {
     if (cur_node->left_==0) break; // leaf reached 
 
     int dir = cur_node->calc_dir(_sample);
-    pCoSampVTNode* next = (dir==-1) ? (cur_node->left_) : (cur_node->right_);
+    pCoSampVT2Node* next = (dir==-1) ? (cur_node->left_) : (cur_node->right_);
     cur_node = next;
   }
   return cur_node;
 }
 
 
-void pCoSampVTTree::get_is_leaf( VecInt& is_leaf )
+void pCoSampVT2Tree::get_is_leaf( VecInt& is_leaf )
 {
   is_leaf.clear();
   is_leaf.resize(nodes_.size());
 
-  std::list<pCoSampVTNode>::iterator it = nodes_.begin();
+  std::list<pCoSampVT2Node>::iterator it = nodes_.begin();
   for (int i = 0; it!=nodes_.end(); ++it, ++i) {
     if (it->left_==0 && it->right_==0)
       is_leaf[i] = 1;
@@ -514,7 +513,7 @@ void pCoSampVTTree::get_is_leaf( VecInt& is_leaf )
   } // for i
 }
 
-void pCoSampVTTree::predict( MLData* _data )
+void pCoSampVT2Tree::predict( MLData* _data )
 {
   int N = _data->X.rows;
   int K = K_;
@@ -528,7 +527,7 @@ void pCoSampVTTree::predict( MLData* _data )
   }
 }
 
-void pCoSampVTTree::predict( float* _sample, float* _score )
+void pCoSampVT2Tree::predict( float* _sample, float* _score )
 {
   // initialize all the *K* classes
   for (int k = 0; k < K_; ++k) {
@@ -536,7 +535,7 @@ void pCoSampVTTree::predict( float* _sample, float* _score )
   }
 
   // update all the K classes...
-  pCoSampVTNode* nd = get_node(_sample);
+  pCoSampVT2Node* nd = get_node(_sample);
   for (int k = 0; k < K_; ++k) {
     float val = static_cast<float>( nd->fitvals_[k] );
     *(_score + k) = val;
@@ -684,13 +683,14 @@ void pCoSampVTTree::subsample_budget( pCoSampVTData* _data )
 }
 #endif // 0
 
-void pCoSampVTTree::subsample_budget( pCoSampVTData* _data )
+void pCoSampVT2Tree::subsample_budget( pCoSampVT2Data* _data )
 {
   /// set sub_si_, si_to_ci_
-
+  
+  // sorting 
 }
 
-void pCoSampVTTree::clear()
+void pCoSampVT2Tree::clear()
 {
   nodes_.clear();
   candidate_nodes_.~priority_queue();
@@ -699,10 +699,10 @@ void pCoSampVTTree::clear()
   node_sc_.clear();
 }
 
-void pCoSampVTTree::creat_root_node( pCoSampVTData* _data )
+void pCoSampVT2Tree::creat_root_node( pCoSampVT2Data* _data )
 {
-  nodes_.push_back(pCoSampVTNode(0,K_));
-  pCoSampVTNode* root = &(nodes_.back());
+  nodes_.push_back(pCoSampVT2Node(0,K_));
+  pCoSampVT2Node* root = &(nodes_.back());
 
   // samples in node
   int NN = this->sub_si_.size();
@@ -726,7 +726,7 @@ void pCoSampVTTree::creat_root_node( pCoSampVTData* _data )
   this->calc_gain(root, _data);
 }
 
-bool pCoSampVTTree::find_best_candidate_split( pCoSampVTNode* _node, pCoSampVTData* _data )
+bool pCoSampVT2Tree::find_best_candidate_split( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
 {
   // subsample the features for the current node (node level)
   int NF = _data->data_cls_->X.cols;
@@ -746,8 +746,8 @@ bool pCoSampVTTree::find_best_candidate_split( pCoSampVTNode* _node, pCoSampVTDa
 
 }
 
-bool pCoSampVTTree::find_best_split_num_var( 
-  pCoSampVTNode* _node, pCoSampVTData* _data, int _ivar, pCoSampVTSplit &cb_split)
+bool pCoSampVT2Tree::find_best_split_num_var( 
+  pCoSampVT2Node* _node, pCoSampVT2Data* _data, int _ivar, pCoSampVT2Split &cb_split)
 {
   VecIdx node_sample_si;
   MLData* data_cls = _data->data_cls_;
@@ -762,8 +762,8 @@ bool pCoSampVTTree::find_best_split_num_var(
 #endif
 
   // initialize
-  pCoSampVTSolver sol_left(_data, _node->sol_this_.ci_), 
-                      sol_right = _node->sol_this_;
+  pCoSamp2VT2Solver sol_left(_data, &(this->si_to_ci_) ), 
+                    sol_right = _node->sol_this_;
 
   // scan each possible split 
   double best_gain = -1, best_gain_left = -1, best_gain_right = -1;
@@ -802,7 +802,7 @@ bool pCoSampVTTree::find_best_split_num_var(
     cb_split);
 }
 
-void pCoSampVTTree::make_node_sorted_idx( pCoSampVTNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node )
+void pCoSampVT2Tree::make_node_sorted_idx( pCoSampVT2Node* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node )
 {
   VecIdx16 sam_idx16;
   VecIdx32 sam_idx32;
@@ -838,11 +838,11 @@ void pCoSampVTTree::make_node_sorted_idx( pCoSampVTNode* _node, MLData* _data, i
   }  
 }
 
-bool pCoSampVTTree::set_best_split_num_var( 
-  pCoSampVTNode* _node, MLData* _data, int _ivar, 
+bool pCoSampVT2Tree::set_best_split_num_var( 
+  pCoSampVT2Node* _node, MLData* _data, int _ivar, 
   VecIdx& node_sample_si, 
   int best_i, double best_gain, double best_gain_left, double best_gain_right,
-  pCoSampVTSplit &cb_split)
+  pCoSampVT2Split &cb_split)
 {
   if (best_i==-1) return false; // fail to find...
 
@@ -868,7 +868,7 @@ bool pCoSampVTTree::set_best_split_num_var(
   return true;  
 }
 
-bool pCoSampVTTree::can_split_node( pCoSampVTNode* _node )
+bool pCoSampVT2Tree::can_split_node( pCoSampVT2Node* _node )
 {
   bool flag = true;
   int nn = _node->sample_idx_.size();
@@ -877,15 +877,15 @@ bool pCoSampVTTree::can_split_node( pCoSampVTNode* _node )
           idx != -1);                  // has candidate split  
 }
 
-bool pCoSampVTTree::split_node( pCoSampVTNode* _node, pCoSampVTData* _data )
+bool pCoSampVT2Tree::split_node( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
 {
   // create left and right node
-  pCoSampVTNode tmp1(nodes_.size(), K_);
+  pCoSampVT2Node tmp1(nodes_.size(), K_);
   nodes_.push_back(tmp1);
   _node->left_ = &(nodes_.back());
   _node->left_->parent_ = _node;
 
-  pCoSampVTNode tmp2(nodes_.size(), K_);
+  pCoSampVT2Node tmp2(nodes_.size(), K_);
   nodes_.push_back(tmp2);
   _node->right_ = &(nodes_.back());
   _node->right_->parent_ = _node;
@@ -942,14 +942,14 @@ bool pCoSampVTTree::split_node( pCoSampVTNode* _node, pCoSampVTData* _data )
   return true;
 }
 
-void pCoSampVTTree::calc_gain(pCoSampVTNode* _node, pCoSampVTData* _data)
+void pCoSampVT2Tree::calc_gain(pCoSampVT2Node* _node, pCoSampVT2Data* _data)
 {
   double gain;
   _node->sol_this_.calc_gain(gain);
   _node->split_.this_gain_ = gain;
 }
 
-void pCoSampVTTree::fit_node( pCoSampVTNode* _node, pCoSampVTData* _data )
+void pCoSampVT2Tree::fit_node( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
 {
   int nn = _node->sample_idx_.size();
   if (nn<=0) return;
@@ -1035,8 +1035,8 @@ void pCoSampVTTree::fit_node( pCoSampVTNode* _node, pCoSampVTData* _data )
 }
 
 
-// Implementation of pCoSampVTLogitBoost::Param
-pCoSampVTLogitBoost::Param::Param()
+// Implementation of pCoSamp2VTLogitBoost::Param
+pCoSamp2VTLogitBoost::Param::Param()
 {
   T = 2;
   v = 0.1;
@@ -1045,10 +1045,10 @@ pCoSampVTLogitBoost::Param::Param()
   rb_ = rf_ = .6;
   wrb_ = .85;
 }
-// Implementation of pCoSampVTLogitBoost
-const double pCoSampVTLogitBoost::EPS_LOSS = 1e-6;
-const double pCoSampVTLogitBoost::MAX_F = 100;
-void pCoSampVTLogitBoost::train( MLData* _data )
+// Implementation of pCoSamp2VTLogitBoost
+const double pCoSamp2VTLogitBoost::EPS_LOSS = 1e-6;
+const double pCoSamp2VTLogitBoost::MAX_F = 100;
+void pCoSamp2VTLogitBoost::train( MLData* _data )
 {
   train_init(_data);
 
@@ -1079,7 +1079,7 @@ void pCoSampVTLogitBoost::train( MLData* _data )
 
 }
 
-void pCoSampVTLogitBoost::predict( MLData* _data )
+void pCoSamp2VTLogitBoost::predict( MLData* _data )
 {
   int N = _data->X.rows;
   int K = K_;
@@ -1093,7 +1093,7 @@ void pCoSampVTLogitBoost::predict( MLData* _data )
   }
 }
 
-void pCoSampVTLogitBoost::predict( float* _sapmle, float* _score )
+void pCoSamp2VTLogitBoost::predict( float* _sapmle, float* _score )
 {
   // initialize
   for (int k = 0; k < K_; ++k) {
@@ -1112,7 +1112,7 @@ void pCoSampVTLogitBoost::predict( float* _sapmle, float* _score )
   } // for t
 }
 
-void pCoSampVTLogitBoost::predict( MLData* _data, int _Tpre )
+void pCoSamp2VTLogitBoost::predict( MLData* _data, int _Tpre )
 {
   // trees to be used
   if (_Tpre > NumIter_) _Tpre = NumIter_;
@@ -1149,7 +1149,7 @@ void pCoSampVTLogitBoost::predict( MLData* _data, int _Tpre )
   Tpre_beg_ = _Tpre;
 }
 
-void pCoSampVTLogitBoost::predict( float* _sapmle, float* _score, int _Tpre )
+void pCoSamp2VTLogitBoost::predict( float* _sapmle, float* _score, int _Tpre )
 {
   // IMPORTANT: caller should assure the validity of _Tpre
 
@@ -1171,17 +1171,17 @@ void pCoSampVTLogitBoost::predict( float* _sapmle, float* _score, int _Tpre )
 }
 
 
-int pCoSampVTLogitBoost::get_class_count()
+int pCoSamp2VTLogitBoost::get_class_count()
 {
   return K_;
 }
 
-int pCoSampVTLogitBoost::get_num_iter()
+int pCoSamp2VTLogitBoost::get_num_iter()
 {
   return NumIter_;
 }
 
-void pCoSampVTLogitBoost::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
+void pCoSamp2VTLogitBoost::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
 {
   nr_wts.resize(this->NumIter_);
   nr_wtc.resize(this->NumIter_);
@@ -1193,7 +1193,7 @@ void pCoSampVTLogitBoost::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
 
 }
 
-void pCoSampVTLogitBoost::get_cc( int itree, VecDbl& node_cc )
+void pCoSamp2VTLogitBoost::get_cc( int itree, VecDbl& node_cc )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1203,7 +1203,7 @@ void pCoSampVTLogitBoost::get_cc( int itree, VecDbl& node_cc )
 }
 
 
-void pCoSampVTLogitBoost::get_sc( int itree, VecInt& node_sc )
+void pCoSamp2VTLogitBoost::get_sc( int itree, VecInt& node_sc )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1212,13 +1212,13 @@ void pCoSampVTLogitBoost::get_sc( int itree, VecInt& node_sc )
   node_sc = trees_[itree].node_sc_;
 }
 
-//double pCoSampVTLogitBoost::get_train_loss()
+//double pCoSamp2VTLogitBoost::get_train_loss()
 //{
 //  if (NumIter_<1) return DBL_MAX;
 //  return L_iter_.at<double>(NumIter_-1);
 //}
 
-void pCoSampVTLogitBoost::get_is_leaf( int itree, VecInt& is_leaf )
+void pCoSamp2VTLogitBoost::get_is_leaf( int itree, VecInt& is_leaf )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1227,7 +1227,7 @@ void pCoSampVTLogitBoost::get_is_leaf( int itree, VecInt& is_leaf )
   trees_[itree].get_is_leaf(is_leaf);
 }
 
-void pCoSampVTLogitBoost::train_init( MLData* _data )
+void pCoSamp2VTLogitBoost::train_init( MLData* _data )
 {
   // class count
   K_ = _data->get_class_count();
@@ -1286,7 +1286,7 @@ void pCoSampVTLogitBoost::train_init( MLData* _data )
   Tpre_beg_ = 0;
 }
 
-void pCoSampVTLogitBoost::update_F(int t)
+void pCoSamp2VTLogitBoost::update_F(int t)
 {
   int N = logitdata_.data_cls_->X.rows;
   double v = param_.v;
@@ -1304,7 +1304,7 @@ void pCoSampVTLogitBoost::update_F(int t)
   } // for i
 }
 
-void pCoSampVTLogitBoost::update_p()
+void pCoSamp2VTLogitBoost::update_p()
 {
   int N = F_.rows;
   int K = K_;
@@ -1329,7 +1329,7 @@ void pCoSampVTLogitBoost::update_p()
   }// for n  
 }
 
-void pCoSampVTLogitBoost::update_ww()
+void pCoSamp2VTLogitBoost::update_ww()
 {
   int N = F_.rows;
   double delta = 0;
@@ -1345,7 +1345,7 @@ void pCoSampVTLogitBoost::update_ww()
   } // for i
 }
 
-void pCoSampVTLogitBoost::update_abs_grad_class(int t)
+void pCoSamp2VTLogitBoost::update_abs_grad_class(int t)
 {
   int N = F_.rows;
 
@@ -1361,7 +1361,7 @@ void pCoSampVTLogitBoost::update_abs_grad_class(int t)
 }
 
 
-void pCoSampVTLogitBoost::calc_loss( MLData* _data )
+void pCoSamp2VTLogitBoost::calc_loss( MLData* _data )
 {
   const double PMIN = 0.0001;
   int N = _data->X.rows;
@@ -1375,7 +1375,7 @@ void pCoSampVTLogitBoost::calc_loss( MLData* _data )
   }
 }
 
-void pCoSampVTLogitBoost::calc_loss_iter( int t )
+void pCoSamp2VTLogitBoost::calc_loss_iter( int t )
 {
   double sum = 0;
   int N = L_.rows;
@@ -1385,7 +1385,7 @@ void pCoSampVTLogitBoost::calc_loss_iter( int t )
   L_iter_.at<double>(t) = sum;
 }
 
-void pCoSampVTLogitBoost::calc_loss_class(MLData* _data,  int t )
+void pCoSamp2VTLogitBoost::calc_loss_class(MLData* _data,  int t )
 {
   const double PMIN = 0.0001;
   int N = _data->X.rows;
@@ -1399,7 +1399,7 @@ void pCoSampVTLogitBoost::calc_loss_class(MLData* _data,  int t )
   }
 }
 
-bool pCoSampVTLogitBoost::should_stop( int t )
+bool pCoSamp2VTLogitBoost::should_stop( int t )
 {
   // stop if too small #classes subsampled
   if ( ! (trees_[t].node_cc_.empty()) ) {
@@ -1412,7 +1412,7 @@ bool pCoSampVTLogitBoost::should_stop( int t )
   return ( (loss<EPS_LOSS) ? true : false );
 }
 
-void pCoSampVTLogitBoost::calc_grad( int t )
+void pCoSamp2VTLogitBoost::calc_grad( int t )
 {
   int N = F_.rows;
   double delta = 0;

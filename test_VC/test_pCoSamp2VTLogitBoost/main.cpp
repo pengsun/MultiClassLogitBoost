@@ -1,4 +1,4 @@
-#include "pCoSampVTLogitBoost.hpp"
+#include "pCoSamp2VTLogitBoost.hpp"
 #include <opencv2/core/core.hpp>
 #include <iostream>
 
@@ -71,7 +71,7 @@ int main ()
   tr.preprocess();
 
   // AOTO Boost
-  pCoSampVTLogitBoost ab;
+  pCoSamp2VTLogitBoost ab;
   ab.param_.J = 3;
   ab.param_.T = 500;
   ab.param_.v = 0.1;
