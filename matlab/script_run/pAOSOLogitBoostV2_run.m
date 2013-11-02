@@ -1,6 +1,7 @@
 %%
-name = 'mnist';
-dir_data = 'E:\Users\sp\data\dataset_mat';
+name = 'zipcode';
+% dir_data = 'E:\Users\sp\data\dataset_mat';
+dir_data = 'D:\Data\dataset_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pAOSOLogitBoostV2',name);
@@ -11,10 +12,10 @@ cv  = {0.1};
 cJ = {20};
 cns = {1};
 %%% sample
-crs = {0.1};
+crs = {0.01};
 cwrs = {0.95};
 %%% feature
-crf = {0.031};
+crf = {0.05};
 %%
 h = batch_pAOSOLogitBoostV2();
 h.num_Tpre = num_Tpre;

@@ -1,8 +1,8 @@
 %% config
-name = 'easy1hard2';
+name = 'optdigits';
 algoname1 = 'pCoSampVTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T500_v1.0e-001_J2_ns1_rf1.10e+000_rb1.50e-001_wrb9.50e-001.mat';
+fn1 = 'T5000_v1.0e-001_J20_ns1_rf2.00e-001_rb1.00e-002_wrb1.10e+000.mat';
 
 % it_ind = [];
 % it_ind = [1000, 2000,3000,4000,4700];

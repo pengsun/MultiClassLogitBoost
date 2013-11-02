@@ -1,20 +1,18 @@
 %% config
-name = 'c300f1n50';
+name = 'isolet';
 
-algoname1 = 'pVbExtSamp13AOSOVTLogitBoost_temp_wrs0.95';
+algoname1 = 'pCoSamp2VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc1.10e+00_rc1.10e+00.mat';
+fn1 = 'T5000_v1.0e-01_J20_ns1_rf5.14e-02_rb5.00e-02_wrb9.50e-01.mat';
 
-algoname2 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname2 = 'pCoSamp2VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc1.10e+00_rc1.10e+00.mat';
+fn2 = 'T5000_v1.0e-01_J20_ns1_rf5.14e-02_rb5.00e-02_wrb9.50e-01.mat';
 
-algoname3 = 'pVbExtSamp13VTLogitBoost_allcls_wrs0.95';
+algoname3 = 'pVbExtSamp14VTLogitBoost';
 dir_root3 = fullfile('.\rst',algoname3);
-fn3 = 'T500_v1.0e-01_J8_ns1_wrs9.50e-01_rs1.10e+00_rf1.10e+00_wrc1.10e+00_rc1.10e+00.mat';
+fn3 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs5.00e-02_rf5.14e-02_wrc1.10e+00_rc1.10e+00.mat';
 
-% dir_data = 'D:\Users\sp\data\dataset3_mat';
-% dir_data = 'D:\data\dataset_mat';
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
 tmp = load(ffn1);
@@ -25,6 +23,7 @@ num_it1 = tmp.num_it;
 time_tr1 = tmp.time_tr;
 tree_node_cc1 = tmp.tree_node_cc;
 tree_node_sc1 = tmp.tree_node_sc;
+losscls1 = tmp.LossCls;
 clear tmp;
 
 ffn2 = fullfile(dir_root2,name,fn2);
@@ -36,6 +35,7 @@ num_it2 = tmp.num_it;
 time_tr2 = tmp.time_tr;
 tree_node_cc2 = tmp.tree_node_cc;
 tree_node_sc2 = tmp.tree_node_sc;
+losscls2 = tmp.LossCls;
 clear tmp;
 
 ffn3 = fullfile(dir_root3,name,fn3);
@@ -47,6 +47,7 @@ num_it3 = tmp.num_it;
 time_tr3 = tmp.time_tr;
 tree_node_cc3 = tmp.tree_node_cc;
 tree_node_sc3 = tmp.tree_node_sc;
+losscls3 = tmp.LossCls;
 clear tmp;
 %% info
 % tmp_fn = fullfile(dir_data, [name,'.mat']);
@@ -132,6 +133,23 @@ hold on;
 plot(cumsum(vnop1(it1)),abs_grad1(it1), 'marker','x','linewidth',1,'color','m');
 plot(cumsum(vnop2(it2)),abs_grad2(it2), 'marker','.','linewidth',1,'color','r');
 plot(cumsum(vnop3(it3)),abs_grad3(it3), 'marker','*','linewidth',1,'color','b');
+% set(gca,'xscale','log','yscale','log');
+% set(gca,'xscale','log');
+set(gca,'yscale','log');
+hold off;
+h = legend(ffn1,ffn2,ffn3);
+set(h,'Interpreter','none');
+grid on;
+%% plot nop v.s. loss
+figure('name',name); 
+title( sprintf('nop v.s.loss') );
+hold on;
+plot(cumsum(vnop1(it1)), sum( losscls1(:,it1) ),...
+  'marker','x','linewidth',1,'color','m');
+plot(cumsum(vnop2(it2)), sum( losscls2(:,it2) ),...
+  'marker','.','linewidth',1,'color','r');
+plot(cumsum(vnop3(it3)), sum( losscls3(:,it3) ),...
+  'marker','*','linewidth',1,'color','b');
 % set(gca,'xscale','log','yscale','log');
 % set(gca,'xscale','log');
 set(gca,'yscale','log');
