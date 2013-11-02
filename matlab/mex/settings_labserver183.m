@@ -1,16 +1,16 @@
 %% opencv
 % root dir
-dir_root = 'E:\Users\sp\WorkStudy\OpenCV-2.2.0';
+dir_root = 'E:\Users\sp\WorkStudy\opencv243';
 % dir
 cvinc1 = fullfile(dir_root,'modules\ml\include');
 cvinc2 = fullfile(dir_root,'\modules\core\include');
 linkdird = fullfile(dir_root,'\lib\Debug');
 linkdir = fullfile(dir_root, '\lib\Release');
 %
-lib1d = 'opencv_ml220d';
-lib2d = 'opencv_core220d';
-lib1 = 'opencv_ml220';
-lib2 = 'opencv_core220';
+lib1d = 'opencv_ml243d';
+lib2d = 'opencv_core243d';
+lib1 = 'opencv_ml243';
+lib2 = 'opencv_core243';
 %% source codes
 dir_src = '../../src/';
 %% options
