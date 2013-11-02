@@ -76,7 +76,7 @@ int main ()
   ab.param_.T = 500;
   ab.param_.v = 0.1;
   ab.param_.ns = 1;
-  ab.param_.rb_ = 0.6;
+  ab.param_.rb_ = 0.2;
   ab.param_.rf_ = 1.1;
   ab.param_.wrb_ = 1.1;
 

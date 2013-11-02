@@ -23,11 +23,11 @@ struct pCoSampVT2Data {
 };
 
 // Solver
-struct pCoSamp2VT2Solver {
+struct pCoSamp2VTSparseSolver {
   static const double MAXGAMMA;
 
-  pCoSamp2VT2Solver () {};
-  pCoSamp2VT2Solver (pCoSampVT2Data* _data, VecVecIdx* _sitoci);
+  pCoSamp2VTSparseSolver () {};
+  pCoSamp2VTSparseSolver (pCoSampVT2Data* _data, VecVecIdx* _sitoci);
   void set_data   (pCoSampVT2Data* _data, VecVecIdx* _sitoci);
 
   void update_internal (VecIdx& vidx);
@@ -44,6 +44,28 @@ public:
 
   double cur_gain_;
   VecDbl cur_gain_cls_;
+};
+
+// Solver
+struct pCoSamp2VTSolver {
+  static const double MAXGAMMA;
+  //static const double EPS;
+
+  pCoSamp2VTSolver () {};
+  pCoSamp2VTSolver (pCoSampVT2Data* _data, VecIdx* _ci);
+  void set_data (pCoSampVT2Data* _data, VecIdx* _ci);
+
+  void update_internal (VecIdx& vidx);
+  void update_internal_incre (int idx);
+  void update_internal_decre (int idx);
+
+  void calc_gamma (double* gamma);
+  void calc_gain (double& gain);
+
+public:
+  std::vector<double> mg_, h_;
+  pCoSampVT2Data* data_;
+  VecIdx *ci_;
 };
 
 // Split descriptor
@@ -78,8 +100,9 @@ public:
   pCoSampVT2Node *parent_, *left_, *right_; //
   pCoSampVT2Split split_;
 
-  VecIdx sample_idx_; // for all the examples this node holds
-  pCoSamp2VT2Solver sol_this_; // for all the examples this node holds
+  VecIdx sample_idx_; // for all the examples this node holds (after sampling)
+  VecIdx allsample_idx_; // before sampling
+  pCoSamp2VTSparseSolver sol_this_; // for all the examples this node holds
 };
 
 // Node Comparator: the less the expected gain, the less the node

@@ -42,6 +42,17 @@ namespace {
     tmp.swap(in);
   }
 
+  void release_VecVecIdx (VecVecIdx &in) {
+    for (int i = 0; i < in.size(); ++i) {
+      VecIdx tmp;
+      tmp.swap( in[i] );
+    }
+
+    VecVecIdx ttt;
+    ttt.swap(in);
+
+  }
+
   void uniform_subsample_ratio (int N, double ratio, VecIdx &ind) {
     ind.clear();
     // sample without replacement
@@ -83,8 +94,6 @@ namespace {
       if ( sum>ratio ) break;
     } // for i
   }
-
-
 
   void calc_grad_1norm_samp (MatDbl& gg, MatDbl& out) {
     int nrow = gg.rows;
@@ -181,8 +190,64 @@ namespace {
     }
 
     if (cc==0) cc = 1;
-    return (double(cc)/double(cc));
+    return (double(cc)/double(N));
   }
+
+  void trim_mat (MatDbl &ww, double ratio, int Nmin, VecIdx &ind)
+  {
+    int N = ww.rows * ww.cols;
+
+    // sorting the index in descending order,
+    VecIdx wind(N);
+    for (int i = 0; i < N; ++i) wind[i] = i;
+    std::random_shuffle(wind.begin(),wind.end());
+    std::sort (wind.begin(),wind.end(), IdxMatGreater(&ww));
+
+    // normalization factor
+    double Z = std::accumulate(ww.begin(),ww.end(), 0.0);
+
+    // trim
+    ind.clear();
+    double sum = 0.0;
+    const double eps = 1e-11;
+    for (int i = 0; i < N; ++i) {
+      int ii = wind[i];
+      ind.push_back(ii);
+      //
+      if ( ind.size()>=Nmin ) break;
+      //
+      sum += (ww.at<double>(ii)+eps)/(Z+eps); // prevent numeric problem
+      if (ratio>1.0) continue; // never >= ratio...
+      if ( sum>ratio ) break;
+    } // for i
+  }
+
+  void recover_ind (VecIdx &ind, int Nrow, int Ncol, VecVecIdx &rowtocol, VecIdx &row)
+  {
+    // init
+    rowtocol.resize(Nrow);
+    for (int i = 0; i < Nrow; ++i)
+      rowtocol[i].clear();
+
+    // set row_to_col
+    int nn = ind.size();
+    for (int i = 0; i < nn; ++i) {
+      int ii = ind[i];
+
+      int irow = ii/Ncol;
+      int icol = ii%Ncol;
+
+      rowtocol[irow].push_back(icol);
+    }
+
+    // set row
+    for (int i = 0; i < Nrow; ++i) {
+      if ( rowtocol[i].empty() ) continue;
+
+      row.push_back(i);
+    } // for
+  } // recover_ind
+
 }
 
 // Implementation of pCoSampVT2Split
@@ -203,14 +268,14 @@ void pCoSampVT2Split::reset()
 }
 
 
-// Implementation of pCoSamp2VT2Solver
-const double pCoSamp2VT2Solver::MAXGAMMA = 5.0;
-pCoSamp2VT2Solver::pCoSamp2VT2Solver( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
+// Implementation of pCoSamp2VTSparseSolver
+const double pCoSamp2VTSparseSolver::MAXGAMMA = 5.0;
+pCoSamp2VTSparseSolver::pCoSamp2VTSparseSolver( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
 { 
   set_data(_data, _sitoci);
 }
 
-void pCoSamp2VT2Solver::set_data( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
+void pCoSamp2VTSparseSolver::set_data( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
 { 
   data_ = _data;
   sitoci_ = _sitoci;
@@ -222,7 +287,7 @@ void pCoSamp2VT2Solver::set_data( pCoSampVT2Data* _data, VecVecIdx* _sitoci)
   cur_gain_ = 0.0;
 }
 
-void pCoSamp2VT2Solver::update_internal( VecIdx& vidx )
+void pCoSamp2VTSparseSolver::update_internal( VecIdx& vidx )
 {
   for (VecIdx::iterator it = vidx.begin(); it!=vidx.end(); ++it  ) {
     int idx = *it;
@@ -230,7 +295,7 @@ void pCoSamp2VT2Solver::update_internal( VecIdx& vidx )
   } // for it
 }
 
-void pCoSamp2VT2Solver::update_internal_incre( int idx )
+void pCoSamp2VTSparseSolver::update_internal_incre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -264,7 +329,7 @@ void pCoSamp2VT2Solver::update_internal_incre( int idx )
   }
 }
 
-void pCoSamp2VT2Solver::update_internal_decre( int idx )
+void pCoSamp2VTSparseSolver::update_internal_decre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -298,13 +363,13 @@ void pCoSamp2VT2Solver::update_internal_decre( int idx )
   }
 }
 
-void pCoSamp2VT2Solver::calc_gamma( double *gamma)
+void pCoSamp2VTSparseSolver::calc_gamma( double *gamma)
 {
   int K = mg_.size();
   for (int k = 0; k < K; ++k) {
     double smg = mg_[k];
     double sh  = h_[k];
-    //if (sh <= 0) cv::error("pCoSamp2VT2Solver::calc_gamma: Invalid Hessian.");
+    //if (sh <= 0) cv::error("pCoSamp2VTSparseSolver::calc_gamma: Invalid Hessian.");
     if (sh == 0) sh = 1;
 
     double sgamma = smg/sh;
@@ -317,11 +382,107 @@ void pCoSamp2VT2Solver::calc_gamma( double *gamma)
   }
 }
 
-void pCoSamp2VT2Solver::calc_gain( double& gain )
+void pCoSamp2VTSparseSolver::calc_gain( double& gain )
 {
   gain = 0.5*cur_gain_;
 }
 
+
+// Implementation of pCoSamp2VTSolver
+const double pCoSamp2VTSolver::MAXGAMMA = 5.0;
+pCoSamp2VTSolver::pCoSamp2VTSolver( pCoSampVT2Data* _data, VecIdx* _ci)
+{ 
+  set_data(_data, _ci);
+}
+
+void pCoSamp2VTSolver::set_data( pCoSampVT2Data* _data, VecIdx* _ci)
+{ 
+  data_ = _data;
+  ci_ = _ci;
+
+  int KK = _ci->size();
+  mg_.assign(KK, 0.0);
+  h_.assign(KK, 0.0);
+}
+
+void pCoSamp2VTSolver::update_internal( VecIdx& vidx )
+{
+  for (VecIdx::iterator it = vidx.begin(); it!=vidx.end(); ++it  ) {
+    int idx = *it;
+    update_internal_incre(idx);
+  } // for it
+}
+
+void pCoSamp2VTSolver::update_internal_incre( int idx )
+{
+  int yi = int( data_->data_cls_->Y.at<float>(idx) );
+  double* ptr_pi = data_->p_->ptr<double>(idx);
+
+  // mg and h
+  int KK = mg_.size();
+  for (int kk = 0; kk < KK; ++kk) {
+    int k = this->ci_->at(kk);
+    double pik = *(ptr_pi + k);
+
+    if (yi==k) mg_[kk] += (1-pik);
+    else       mg_[kk] += (-pik);
+
+    h_[kk] += pik*(1-pik);
+  }
+}
+
+void pCoSamp2VTSolver::update_internal_decre( int idx )
+{
+  int yi = int( data_->data_cls_->Y.at<float>(idx) );
+  double* ptr_pi = data_->p_->ptr<double>(idx);
+
+  // mg and h
+  int KK = mg_.size();
+  for (int kk = 0; kk < KK; ++kk) {
+    int k = this->ci_->at(kk);
+    double pik = *(ptr_pi + k);
+
+    if (yi==k) mg_[kk] -= (1-pik);
+    else       mg_[kk] -= (-pik);
+
+    h_[kk] -= pik*(1-pik);
+  }
+}
+
+void pCoSamp2VTSolver::calc_gamma( double *gamma)
+{
+  int KK = mg_.size();
+  for (int kk = 0; kk < KK; ++kk) {
+    double smg = mg_[kk];
+    double sh  = h_[kk];
+    //if (sh <= 0) cv::error("pCoSamp2VTSolver::calc_gamma: Invalid Hessian.");
+    if (sh == 0) sh = 1;
+
+    double sgamma = smg/sh;
+    double cap = sgamma;
+    if (cap<-MAXGAMMA) cap = -MAXGAMMA;
+    else if (cap>MAXGAMMA) cap = MAXGAMMA;
+
+    // do the real updating
+    int k = this->ci_->at(kk);
+    *(gamma+k) = cap;
+
+  }
+}
+
+void pCoSamp2VTSolver::calc_gain( double& gain )
+{
+  gain = 0;
+  int KK = mg_.size();
+  for (int k = 0; k < KK; ++k) {
+    double smg = mg_[k];
+    double sh  = h_[k];
+    if (sh == 0) sh = 1;
+
+    gain += (smg*smg/sh);
+  }
+  gain = 0.5*gain;
+}
 
 // Implementation of pVbExtSamp12VTNode
 pCoSampVT2Node::pCoSampVT2Node(int _K)
@@ -446,8 +607,8 @@ void pCoSampVT2Tree::split( pCoSampVT2Data* _data )
     }
 
     split_node(cur_node,_data);
-    // release memory.
-    // no longer used in later splitting
+    // release memory: no longer used in later splitting
+    release_VecIdx(cur_node->allsample_idx_);
     release_VecIdx(cur_node->sample_idx_);
     release_VecDbl(cur_node->sol_this_.mg_);
     release_VecDbl(cur_node->sol_this_.h_);
@@ -479,6 +640,7 @@ void pCoSampVT2Tree::fit( pCoSampVT2Data* _data )
     // release memory.
     // no longer used in later splitting
     release_VecIdx(nd->sample_idx_);
+    release_VecIdx(nd->allsample_idx_);
     release_VecDbl( nd->sol_this_.mg_ );
     release_VecDbl( nd->sol_this_.h_ );
   }
@@ -682,12 +844,19 @@ void pCoSampVTTree::subsample_budget( pCoSampVTData* _data )
 
 }
 #endif // 0
-
 void pCoSampVT2Tree::subsample_budget( pCoSampVT2Data* _data )
 {
   /// set sub_si_, si_to_ci_
   
-  // sorting 
+  // sorting as if it is a vector
+  VecIdx ind;
+  int N = _data->data_cls_->X.rows;
+  int Nmin = (int) ( double(N)*double(K_)*param_.rb_ );
+  trim_mat(*(_data->ww_), param_.wrb_,Nmin, ind);
+
+  // recover the index: 1D -> 2D
+  recover_ind (ind, _data->ww_->rows, _data->ww_->cols,
+               si_to_ci_, sub_si_);
 }
 
 void pCoSampVT2Tree::clear()
@@ -711,6 +880,12 @@ void pCoSampVT2Tree::creat_root_node( pCoSampVT2Data* _data )
     int ind = sub_si_[ii];
     root->sample_idx_[ii] = ind;
   }
+
+  // all samples in node
+  int NALL = _data->data_cls_->X.rows;
+  root->allsample_idx_.resize(NALL);
+  for (int j = 0; j < NALL; ++j) 
+    root->allsample_idx_[j] = j;
 
   // update node class count (average)
   double avg_cc = calc_avg_cc(root->sample_idx_, this->si_to_ci_);
@@ -762,7 +937,7 @@ bool pCoSampVT2Tree::find_best_split_num_var(
 #endif
 
   // initialize
-  pCoSamp2VT2Solver sol_left(_data, &(this->si_to_ci_) ), 
+  pCoSamp2VTSparseSolver sol_left(_data, &(this->si_to_ci_) ), 
                     sol_right = _node->sol_this_;
 
   // scan each possible split 
@@ -904,8 +1079,19 @@ bool pCoSampVT2Tree::split_node( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
     else 
       _node->right_->sample_idx_.push_back(idx);
   }
-  // update current node's status: leaf -> internal node
-  
+
+  // send each sample (all) to left/right node
+  int nall = _node->allsample_idx_.size();
+  for (int i = 0; i < nall; ++i) {
+    int idx = _node->allsample_idx_[i];
+
+    float* p = (float*)data_cls->X.ptr(idx);
+    int dir = _node->calc_dir(p);
+    if (dir == -1) 
+      _node->left_->allsample_idx_.push_back(idx);
+    else 
+      _node->right_->allsample_idx_.push_back(idx);
+  }
 
   // set class subset for the two newly created nodes
   double avg_cc_left = calc_avg_cc( _node->left_->sample_idx_, this->si_to_ci_);
@@ -916,7 +1102,6 @@ bool pCoSampVT2Tree::split_node( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
   double avg_cc_right = calc_avg_cc(_node->right_->sample_idx_, this->si_to_ci_);
   this->node_cc_.push_back( avg_cc_right );
   this->node_sc_.push_back( _node->right_->sample_idx_.size() );
-
 
   // initialize node sovler
   _node->left_->sol_this_.set_data(_data, &(this->si_to_ci_));
@@ -954,17 +1139,18 @@ void pCoSampVT2Tree::fit_node( pCoSampVT2Node* _node, pCoSampVT2Data* _data )
   int nn = _node->sample_idx_.size();
   if (nn<=0) return;
 
-#if 0
-  // Use all the classes to update node values
+  // Use all the classes & all the instances to update node values
+#if 1
   VecIdx ci(this->K_);
   for (int k = 0; k < this->K_; ++k)
     ci[k] = k;
-  pCoSampVTSolver sol(_data, &ci);
-  sol.update_internal(_node->sample_idx_);
+  pCoSamp2VTSolver sol(_data, &ci);
+  sol.update_internal(_node->allsample_idx_);
   sol.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
-#if 1
+
+#if 0
   _node->sol_this_.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
@@ -1059,6 +1245,12 @@ void pCoSamp2VTLogitBoost::train( MLData* _data )
     trees_[t].split(&logitdata_);
     trees_[t].fit(&logitdata_);
 
+    // relase memory
+    release_VecIdx(trees_[t].sub_si_);
+    release_VecVecIdx(trees_[t].si_to_ci_);
+    release_VecIdx(trees_[t].sub_fi_);
+
+    // update
     update_F(t);
     update_p();
     update_ww();
@@ -1402,10 +1594,10 @@ void pCoSamp2VTLogitBoost::calc_loss_class(MLData* _data,  int t )
 bool pCoSamp2VTLogitBoost::should_stop( int t )
 {
   // stop if too small #classes subsampled
-  if ( ! (trees_[t].node_cc_.empty()) ) {
-    if (trees_[t].node_cc_[0] == 1) // only one class selected for root node
-      return true;
-  }
+  //if ( ! (trees_[t].node_cc_.empty()) ) {
+  //  if (trees_[t].node_cc_[0] == 1) // only one class selected for root node
+  //    return true;
+  //}
 
   // stop if loss is small enough
   double loss = L_iter_.at<double>(t);

@@ -814,7 +814,7 @@ void pVbExtSamp14VTTree::fit_node( pVbExtSamp14VTNode* _node, pVbExtSamp14VTData
   if (nn<=0) return;
 
 #if 1
-  // Use all the classes to update node values
+  // Use all the classes and all the examples to update node values
   VecIdx ci(this->K_);
   for (int k = 0; k < this->K_; ++k)
     ci[k] = k;

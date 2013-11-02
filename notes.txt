@@ -87,7 +87,8 @@ pVbExtSamp12SkimVTLogitBoost (Stable)
 Skim version of pVbExtSamp12VTLogitBoost. tight memory.
 
 pVbExtSamp14VTLogitBoost
-pVbExtSamp13VTLogitBoost, but record the the node gain. For parameters see batch_vb6_samp_boost.
+pVbExtSamp13VTLogitBoost, but record the the node gain and use all the classes & examples to update node values.
+For parameters see batch_vb6_samp_boost.
 
 pAvgSampVTLogitBoost
 pVbExtSamp14VTLogitBoost. Estimate w matrix by averaging. For parameters see batch_avgsamp_boost
