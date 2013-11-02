@@ -70,6 +70,13 @@ int main ()
   tr.problem_type = PROBLEM_CLS;
   tr.preprocess();
 
+  int NNN = tr.X.total();
+  for (int i = 0; i < NNN; ++i) {
+    cout << tr.X.at<float>(i) << " ";
+  }
+  cout << endl;
+  bool b = tr.X.isContinuous();
+
   // AOTO Boost
   pCoSamp2VTLogitBoost ab;
   ab.param_.J = 3;
