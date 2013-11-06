@@ -75,6 +75,7 @@ public:
   pVbExtSamp13AOSOVTSplit split_;
 
   VecIdx sample_idx_; // for all the examples this node holds
+  VecIdx allsample_idx_;
   VecIdx sub_ci_; // subclass set
   pVbExtSamp13AOSOVTSolver sol_this_; // for all the examples this node holds
 };

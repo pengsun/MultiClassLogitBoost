@@ -378,6 +378,7 @@ void pVbExtSamp13AOSOVTTree::split( pVbExtSamp13AOSOVTData* _data )
     // release memory.
     // no longer used in later splitting
     release_VecIdx(cur_node->sample_idx_);
+    release_VecIdx(cur_node->allsample_idx_);
     release_VecIdx(cur_node->sub_ci_);
     release_VecDbl(cur_node->sol_this_.mg_);
     release_VecDbl(cur_node->sol_this_.h_);
@@ -409,6 +410,7 @@ void pVbExtSamp13AOSOVTTree::fit( pVbExtSamp13AOSOVTData* _data )
     // release memory.
     // no longer used in later splitting
     release_VecIdx(nd->sample_idx_);
+    release_VecIdx(nd->allsample_idx_);
     release_VecIdx(nd->sub_ci_);
     release_VecDbl( nd->sol_this_.mg_ );
     release_VecDbl( nd->sol_this_.h_ );
@@ -608,6 +610,12 @@ void pVbExtSamp13AOSOVTTree::creat_root_node( pVbExtSamp13AOSOVTData* _data )
     root->sample_idx_[ii] = ind;
   }
 
+  // all samples in node
+  int NALL = _data->data_cls_->X.rows;
+  root->allsample_idx_.resize(NALL);
+  for (int j = 0; j < NALL; ++j) 
+    root->allsample_idx_[j] = j;
+
   // subsample_samples classes for the current node (node level)
   subsample_classes_for_node(root, _data);
 
@@ -802,6 +810,20 @@ bool pVbExtSamp13AOSOVTTree::split_node( pVbExtSamp13AOSOVTNode* _node, pVbExtSa
     else 
       _node->right_->sample_idx_.push_back(idx);
   }
+
+  // send each sample (all) to left/right node
+  int nall = _node->allsample_idx_.size();
+  for (int i = 0; i < nall; ++i) {
+    int idx = _node->allsample_idx_[i];
+
+    float* p = (float*)data_cls->X.ptr(idx);
+    int dir = _node->calc_dir(p);
+    if (dir == -1) 
+      _node->left_->allsample_idx_.push_back(idx);
+    else 
+      _node->right_->allsample_idx_.push_back(idx);
+  }
+
   // update current node's status: leaf -> internal node
   
 
@@ -858,7 +880,7 @@ void pVbExtSamp13AOSOVTTree::fit_node( pVbExtSamp13AOSOVTNode* _node, pVbExtSamp
   for (int k = 0; k < this->K_; ++k)
     ci[k] = k;
   pVbExtSamp13AOSOVTSolver sol(_data, &ci);
-  sol.update_internal(_node->sample_idx_);
+  sol.update_internal(_node->allsample_idx_);
   sol.calc_gamma( &(_node->fitvals_[0]) );
 #endif
 
