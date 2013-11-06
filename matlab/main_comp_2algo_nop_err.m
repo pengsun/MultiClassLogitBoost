@@ -1,13 +1,13 @@
 %% config
-name = 'zipcode';
+name = 'isolet';
 
 algoname1 = 'pCoSamp2VTLogitBoost';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T5000_v1.0e-01_J20_ns1_rf5.00e-02_rb5.00e-02_wrb9.50e-01.mat';
+fn1 = 'T5000_v1.0e-01_J20_ns1_rf5.14e-02_rb5.00e-02_wrb9.50e-01.mat';
 
 algoname2 = 'pVbExtSamp14VTLogitBoost';
 dir_root2 = fullfile('.\rst',algoname2);
-fn2 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs5.00e-02_rf5.00e-02_wrc1.10e+00_rc1.10e+00.mat';
+fn2 = 'T5000_v1.0e-01_J20_ns1_wrs9.50e-01_rs5.00e-02_rf5.14e-02_wrc1.10e+00_rc1.10e+00.mat';
 
 %% load
 ffn1 = fullfile(dir_root1,name,fn1);
