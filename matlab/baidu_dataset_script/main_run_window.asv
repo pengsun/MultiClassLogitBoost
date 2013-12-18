@@ -1,0 +1,30 @@
+%% parameters
+w = 240;
+%% loada data
+S = load( fn_data, '-mat','Xtr','Ytr','cat_mask' );
+X = S.X;
+Y = S.Y;
+catmask = S.cat_mask;
+clear S;
+%% 
+for istart = 1 : 223
+  iend = istart + w - 1;
+  Xtr = X(:,istart:iend);
+  Yte = Y(istart:iend);
+  
+
+end
+
+hboost = get_handle(obj);
+fprintf('train start at %s\n', datestr(clock));
+tic
+hboost = train(hboost, Xtr,Ytr,...
+'var_cat_mask',catmask,...
+'T',obj.T, 'v',obj.v, 'J',obj.J,...
+'node_size',obj.ns,...
+'rs',obj.rs, 'rf',obj.rf,'wrs',obj.wrs);
+t_tr = toc;
+fprintf('train end at %s\n', datestr(clock));
+clear Ytr;
+clear Xtr;
+drawnow;
