@@ -92,3 +92,9 @@ For parameters see batch_vb6_samp_boost.
 
 pAvgSampVTLogitBoost
 pVbExtSamp14VTLogitBoost. Estimate w matrix by averaging. For parameters see batch_avgsamp_boost
+
+pAOSOLogitBoostV2
+pAOSOLogitBoost with weight pruning and feature subsampling
+
+pAOSOGradBoost
+AOSO Boosting with gradient descent
