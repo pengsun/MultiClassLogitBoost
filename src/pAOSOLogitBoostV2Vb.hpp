@@ -10,6 +10,7 @@
 // Vector for index
 typedef std::vector<int> VecIdx;
 typedef std::vector<int> VecInt;
+typedef std::vector<VecInt> VecVecInt;
 typedef std::vector<double> VecDbl;
 
 // data shared by tree and booster
@@ -129,6 +130,7 @@ public:
 public:
   VecInt node_cc_; // class count for each node   
   VecInt node_sc_; // sample count for each node
+  VecVecInt leaf_si_; // sample index at each leaf
 
 public:
   void split( pAOSO2Data* _data );
@@ -202,8 +204,8 @@ public:
   int get_num_iter ();
   //double get_train_loss ();
   void get_nr (VecIdx& nr_wts, VecIdx& nr_wtc);
-  void get_cc (int itree, VecInt& node_cc);
-  void get_sc (int itree, VecInt& node_sc);
+  void get_cc (int itree, VecInt& node_cc); // class count
+  void get_sc (int itree, VecInt& node_sc); // sample count
   void get_is_leaf (int itree, VecInt& is_leaf);
 
 public:

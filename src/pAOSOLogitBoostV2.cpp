@@ -2,10 +2,10 @@
 #include <functional>
 #include <numeric>
 
-//#define  OUTPUT
+#define  OUTPUT
 #ifdef OUTPUT
 #include <fstream>
-std::ofstream os("output.txt");
+std::ofstream os("output_pAOSOLogitBoostV2.txt");
 #endif // OUTPUT
 
 using namespace std;
@@ -884,68 +884,73 @@ void pAOSO2Tree::fit_node( pAOSO2Node* _node, pAOSO2Data* _data )
 #endif
 
 #ifdef OUTPUT
-  //os << "id = " << _node->id_ << "(ter), ";
-  //os << "n = " << _node->sample_idx_.size() << ", ";
-  //os << "cls = (" << _node->cls1_ << ", " << _node->cls2_ << "), ";
+  int cls1 = _node->sol_this_.ci_->at(0);
+  int cls2 = _node->sol_this_.ci_->at(1);
 
-  //// # of cls1 and cls2
-  //int ncls1 = 0, ncls2 = 0;
-  //for (int i = 0; i < _node->sample_idx_.size(); ++i) {
-  //  int ix = _node->sample_idx_[i];
-  //  int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
-  //  if ( k == cls1) ncls1++;
-  //  if ( k == cls2) ncls2++;
-  //}
-  //// os << "ncls1 = " << ncls1 << ", " << "ncls2 = " << ncls2 << ", ";
+  os << "id = " << _node->id_ << "(ter), ";
+  os << "n = " << _node->sample_idx_.size() << ", ";
+  os << "cls = (" << cls1 << ", " 
+    << cls2 << "), ";
 
-  //// min, max of p
-  //vector<double> pp1, pp2;
-  //for (int i = 0; i < _node->sample_idx_.size(); ++i) {
-  //  int ix = _node->sample_idx_[i];
-  //  double* ptr = _data->p_->ptr<double>(ix);
-  //  int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
-  //  if ( k == cls1) {
-  //    pp1.push_back( *(ptr+k) );
-  //  }
-  //  if ( k == cls2) {
-  //    pp2.push_back( *(ptr+k) );
-  //  }
-  //}
+  // # of cls1 and cls2
+  int ncls1 = 0, ncls2 = 0;
+  for (int i = 0; i < _node->sample_idx_.size(); ++i) {
+    int ix = _node->sample_idx_[i];
+    int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
+    if ( k == cls1) ncls1++;
+    if ( k == cls2) ncls2++;
+  }
+  // os << "ncls1 = " << ncls1 << ", " << "ncls2 = " << ncls2 << ", ";
 
-  //vector<double>::iterator it;
-  //double pp1max, pp1min;
-  //if (!pp1.empty()) {
-  //  it = std::max(pp1.begin(), pp1.end());
-  //  if (it==pp1.end()) it = pp1.begin();
-  //  pp1max = *it;
-  //  it = std::min(pp1.begin(), pp1.end());
-  //  if (it==pp1.end()) it = pp1.begin();
-  //  pp1min = *it;
-  //  //os << "pp1max = " << pp1max << ", " << "pp1min = " << pp1min << ", ";
-  //}
-  //
-  //double pp2max, pp2min;
-  //if (!pp2.empty()) {
-  //  it = std::max(pp2.begin(), pp2.end());
-  //  if (it==pp2.end()) it = pp2.begin();
-  //  pp2max = *it;
-  //  it = std::min(pp2.begin(), pp2.end());
-  //  if (it==pp2.end()) it = pp2.begin();
-  //  pp2min = *it;
-  //  //os << "pp2max = " << pp2max << ", " << "pp2min = " << pp2min << ", "; 
-  //}
+  // min, max of p
+  vector<double> pp1, pp2;
+  for (int i = 0; i < _node->sample_idx_.size(); ++i) {
+    int ix = _node->sample_idx_[i];
+    double* ptr = _data->p_->ptr<double>(ix);
+    int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
+    if ( k == cls1) {
+      pp1.push_back( *(ptr+k) );
+    }
+    if ( k == cls2) {
+      pp2.push_back( *(ptr+k) );
+    }
+  }
 
-  //if (ncls1==0) os << "cls1 (n = 0), ";
-  //else 
-  //  os << "cls1 (n = " << ncls1 << ", pmax = " << pp1max
-  //     << ", pmin = " << pp1min << "), ";
+  vector<double>::iterator it;
+  double pp1max, pp1min;
+  if (!pp1.empty()) {
+    it = std::max(pp1.begin(), pp1.end());
+    if (it==pp1.end()) it = pp1.begin();
+    pp1max = *it;
+    it = std::min(pp1.begin(), pp1.end());
+    if (it==pp1.end()) it = pp1.begin();
+    pp1min = *it;
+    //os << "pp1max = " << pp1max << ", " << "pp1min = " << pp1min << ", ";
+  }
 
-  //if (ncls2==0) os << "cls2 (n = 0), ";
-  //else
-  //  os << "cls2 (n = " << ncls2 << ", pmax = " << pp2max
-  //  << ", pmin = " << pp2min << "), ";
+  double pp2max, pp2min;
+  if (!pp2.empty()) {
+    it = std::max(pp2.begin(), pp2.end());
+    if (it==pp2.end()) it = pp2.begin();
+    pp2max = *it;
+    it = std::min(pp2.begin(), pp2.end());
+    if (it==pp2.end()) it = pp2.begin();
+    pp2min = *it;
+    //os << "pp2max = " << pp2max << ", " << "pp2min = " << pp2min << ", "; 
+  }
 
-  //os << "gamma = " << _node->fit_val_ << endl;
+  if (ncls1==0) os << "cls1 (n = 0), ";
+  else 
+    os << "cls1 (n = " << ncls1 << ", pmax = " << pp1max
+    << ", pmin = " << pp1min << "), ";
+
+  if (ncls2==0) os << "cls2 (n = 0), ";
+  else
+    os << "cls2 (n = " << ncls2 << ", pmax = " << pp2max
+    << ", pmin = " << pp2min << "), ";
+
+  os << "gamma = (" << _node->fitvals_[0] << ", " 
+    << _node->fitvals_[1] << ")" << endl;
 #endif // OUTPUT
 }
 
