@@ -130,7 +130,7 @@ public:
 public:
   VecInt node_cc_; // class count for each node   
   VecInt node_sc_; // sample count for each node
-  VecVecInt leaf_si_; // sample index at each leaf
+  VecInt si_to_leaf; // sample index to leaf id
 
 public:
   void split( pAOSO2Data* _data );
@@ -207,6 +207,7 @@ public:
   void get_cc (int itree, VecInt& node_cc); // class count
   void get_sc (int itree, VecInt& node_sc); // sample count
   void get_is_leaf (int itree, VecInt& is_leaf);
+  void get_si_to_leaf (int itree, VecInt &si_to_leaf); // sample index to leaf id
 
 public:
   std::vector<double> abs_grad_; // total gradient. indicator for stopping. 

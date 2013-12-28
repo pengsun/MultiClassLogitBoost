@@ -2,7 +2,7 @@
 #include <functional>
 #include <numeric>
 
-#define  OUTPUT
+//#define  OUTPUT
 #ifdef OUTPUT
 #include <fstream>
 std::ofstream os("output.txt");
@@ -412,6 +412,8 @@ void pAOSO2Tree::split( pAOSO2Data* _data )
 
 void pAOSO2Tree::fit( pAOSO2Data* _data )
 {
+  si_to_leaf.resize(_data->data_cls_->X.rows, -1); // -1 denotes N/A
+
   // fitting node data for each leaf
   std::list<pAOSO2Node>::iterator it;
   for (it = nodes_.begin(); it != nodes_.end(); ++it) {
@@ -422,6 +424,12 @@ void pAOSO2Tree::fit( pAOSO2Data* _data )
     } 
 
     fit_node(nd,_data);
+
+    // sample index to leaf id
+    for (int ii = 0; ii < nd->sample_idx_.size(); ++ii) {
+      int ind = nd->sample_idx_[ii];
+      si_to_leaf[ind] = nd->id_;
+    }
 
     // release memory.
     // no longer used in later splitting
@@ -610,7 +618,6 @@ void pAOSO2Tree::clear()
 
   node_cc_.clear();
   node_sc_.clear();
-  leaf_si_.clear();
 }
 
 void pAOSO2Tree::creat_root_node( pAOSO2Data* _data )
@@ -1139,6 +1146,16 @@ void pAOSOLogitBoostV2Vb::get_is_leaf( int itree, VecInt& is_leaf )
   if ( (itree+1) >= NumIter_ ) itree = (NumIter_-1);
 
   trees_[itree].get_is_leaf(is_leaf);
+}
+
+
+void pAOSOLogitBoostV2Vb::get_si_to_leaf( int itree, VecInt &si_to_leaf )
+{
+  if (NumIter_==0) return;
+  if (itree<0) itree = 0;
+  if ( (itree+1) >= NumIter_ ) itree = (NumIter_-1);
+
+  si_to_leaf = trees_[itree].si_to_leaf;
 }
 
 void pAOSOLogitBoostV2Vb::train_init( MLData* _data )

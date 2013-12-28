@@ -1,8 +1,8 @@
 %%
-% name = 'zipcode';
+% name = 'zipcode38';
 name = 'optdigits05';
-% dir_data = 'E:\Users\sp\data\dataset_mat';
-dir_data = 'D:\Data\dataset2_mat';
+dir_data = 'D:\Users\sp\data\dataset2_mat';
+% dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
   'rst\pAOSOLogitBoostV2',name);
@@ -14,9 +14,9 @@ cJ = {2};
 cns = {1};
 %%% sample
 crs = {1.1};
-cwrs = {0.95};
+cwrs = {1.1};
 %%% feature
-crf = {0.2};
+crf = {1.1};
 %%
 h = batch_pAOSOLogitBoostV2();
 h.num_Tpre = num_Tpre;
