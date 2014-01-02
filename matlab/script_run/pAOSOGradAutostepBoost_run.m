@@ -6,12 +6,12 @@ name = 'optdigits05';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pAOSOGradBoost',name);
+  'rst\pAOSOGradAutostepBoost',name);
 %%
 num_Tpre = 5000;
 T = 5000;
-cv  = {1};
-cJ = {2};
+cv  = {nan};
+cJ = {8};
 cns = {1};
 %%% sample
 crs = {1.1};
@@ -19,7 +19,7 @@ cwrs = {0.95};
 %%% feature
 crf = {0.2};
 %%
-h = batch_pAOSOGradBoost();
+h = batch_pAOSOGradAutostepBoost();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;

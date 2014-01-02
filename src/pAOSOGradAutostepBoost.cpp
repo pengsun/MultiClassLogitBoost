@@ -1,11 +1,11 @@
-#include "pAOSOLogitBoostV2.hpp"
+#include "pAOSOGradAutostepBoost.hpp"
 #include <functional>
 #include <numeric>
 
-#define  OUTPUT
+//#define  OUTPUT
 #ifdef OUTPUT
 #include <fstream>
-std::ofstream os("output_pAOSOLogitBoostV2.txt");
+std::ofstream os("output.txt");
 #endif // OUTPUT
 
 using namespace std;
@@ -136,13 +136,13 @@ namespace {
   }
 }
 
-// Implementation of pAOSO2Split
-pAOSO2Split::pAOSO2Split()
+// Implementation of pAOSOAutostepGradSplit
+pAOSOAutostepGradSplit::pAOSOAutostepGradSplit()
 {
   reset();
 }
 
-void pAOSO2Split::reset()
+void pAOSOAutostepGradSplit::reset()
 {
   var_idx_ = -1;
   threshold_ = FLT_MAX;
@@ -154,15 +154,15 @@ void pAOSO2Split::reset()
 }
 
 
-// Implementation of pAOSO2Solver
-//const double pAOSO2Solver::EPS = 0.01;
-const double pAOSO2Solver::MAXGAMMA = 5.0;
-pAOSO2Solver::pAOSO2Solver( pAOSO2Data* _data, VecIdx* _ci)
+// Implementation of pAOSOAutostepGradSolver
+//const double pAOSOAutostepGradSolver::EPS = 0.01;
+const double pAOSOAutostepGradSolver::MAXGAMMA = 5.0;
+pAOSOAutostepGradSolver::pAOSOAutostepGradSolver( pAOSOAutostepGradData* _data, VecIdx* _ci)
 { 
   set_data(_data, _ci);
 }
 
-void pAOSO2Solver::set_data( pAOSO2Data* _data, VecIdx* _ci)
+void pAOSOAutostepGradSolver::set_data( pAOSOAutostepGradData* _data, VecIdx* _ci)
 { 
   data_ = _data;
   ci_ = _ci;
@@ -172,10 +172,10 @@ void pAOSO2Solver::set_data( pAOSO2Data* _data, VecIdx* _ci)
   
   mg_.assign(KK, 0.0);
   h_.assign(KK, 0.0);
-  hh_ = 0.0;
+
 }
 
-void pAOSO2Solver::update_internal( VecIdx& vidx )
+void pAOSOAutostepGradSolver::update_internal( VecIdx& vidx )
 {
   for (VecIdx::iterator it = vidx.begin(); it!=vidx.end(); ++it  ) {
     int idx = *it;
@@ -183,7 +183,7 @@ void pAOSO2Solver::update_internal( VecIdx& vidx )
   } // for it
 }
 
-void pAOSO2Solver::update_internal_incre( int idx )
+void pAOSOAutostepGradSolver::update_internal_incre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -194,7 +194,7 @@ void pAOSO2Solver::update_internal_incre( int idx )
 
   if (yi==k1) mg_[0] += (1-p1);
   else        mg_[0] += (-p1);
-  h_[0] += p1*(1-p1);
+  h_[0] += 0.25; // max p1*(1-p1)
 
   // the second class
   int k2 = this->ci_->at(1);
@@ -202,14 +202,12 @@ void pAOSO2Solver::update_internal_incre( int idx )
 
   if (yi==k2) mg_[1] += (1-p2);
   else        mg_[1] += (-p2);
-  h_[1] += p2*(1-p2);
+  h_[1] += 0.25; // max p2*(1-p2)
 
-  // cross
-  hh_ += p1*p2;
   
 }
 
-void pAOSO2Solver::update_internal_decre( int idx )
+void pAOSOAutostepGradSolver::update_internal_decre( int idx )
 {
   int yi = int( data_->data_cls_->Y.at<float>(idx) );
   double* ptr_pi = data_->p_->ptr<double>(idx);
@@ -220,7 +218,7 @@ void pAOSO2Solver::update_internal_decre( int idx )
 
   if (yi==k1) mg_[0] -= (1-p1);
   else        mg_[0] -= (-p1);
-  h_[0] -= p1*(1-p1);
+  h_[0] -= 0.25; // max p1*(1-p1);
 
   // the second class
   int k2 = this->ci_->at(1);
@@ -228,20 +226,19 @@ void pAOSO2Solver::update_internal_decre( int idx )
 
   if (yi==k2) mg_[1] -= (1-p2);
   else        mg_[1] -= (-p2);
-  h_[1] -= p2*(1-p2);
+  h_[1] -= 0.25; // max p2*(1-p2);
 
-  // cross
-  hh_ -= p1*p2;
+
 }
 
-void pAOSO2Solver::calc_gamma( double *gamma)
+void pAOSOAutostepGradSolver::calc_gamma( double *gamma)
 {
   // calculate the scalar
   double mg1 = mg_[0], mg2 = mg_[1];
   double h1 = h_[0], h2 = h_[1];
 
   double mg = mg1-mg2;
-  double h = h1 + h2 + 2*hh_;
+  double h = h1 + h2;
   if (h==0) h = 1;
 
   // clap to the range [-MAX,MAX]
@@ -257,13 +254,13 @@ void pAOSO2Solver::calc_gamma( double *gamma)
 
 }
 
-void pAOSO2Solver::calc_gain( double& gain )
+void pAOSOAutostepGradSolver::calc_gain( double& gain )
 {
   double mg1 = mg_[0], mg2 = mg_[1];
   double h1 = h_[0], h2 = h_[1];
 
   double mg = mg1 - mg2;
-  double h  = h1 + h2 + 2*hh_;
+  double h  = h1 + h2;
   if (h==0) h = 1;
 
   gain = mg*mg/(2*h);
@@ -271,7 +268,7 @@ void pAOSO2Solver::calc_gain( double& gain )
 
 
 // Implementation of pVbExtSamp12VTNode
-pAOSO2Node::pAOSO2Node(int _K)
+pAOSOAutostepGradNode::pAOSOAutostepGradNode(int _K)
 {
   id_ = 0;
   parent_ = left_ = right_ = 0;
@@ -279,7 +276,7 @@ pAOSO2Node::pAOSO2Node(int _K)
   fitvals_.assign(_K, 0);
 }
 
-pAOSO2Node::pAOSO2Node( int _id, int _K )
+pAOSOAutostepGradNode::pAOSOAutostepGradNode( int _id, int _K )
 {
   id_ = _id;
   parent_ = left_ = right_ = 0;
@@ -287,7 +284,7 @@ pAOSO2Node::pAOSO2Node( int _id, int _K )
   fitvals_.assign(_K, 0);
 }
 
-int pAOSO2Node::calc_dir( float* _psample )
+int pAOSOAutostepGradNode::calc_dir( float* _psample )
 {
   float _val = *(_psample + split_.var_idx_);
 
@@ -306,9 +303,9 @@ int pAOSO2Node::calc_dir( float* _psample )
   return dir;
 }
 
-// Implementation of pAOSO2_best_split_finder (helper class)
-pAOSO2_best_split_finder::pAOSO2_best_split_finder(pAOSO2Tree *_tree, 
-  pAOSO2Node *_node, pAOSO2Data *_data)
+// Implementation of pAOSOGrad_best_split_finder (helper class)
+pAOSOGrad_best_split_finder::pAOSOGrad_best_split_finder(pAOSOAutostepGradTree *_tree, 
+  pAOSOAutostepGradNode *_node, pAOSOAutostepGradData *_data)
 {
   this->tree_ = _tree;
   this->node_ = _node;
@@ -317,7 +314,7 @@ pAOSO2_best_split_finder::pAOSO2_best_split_finder(pAOSO2Tree *_tree,
   this->cb_split_.reset();
 }
 
-pAOSO2_best_split_finder::pAOSO2_best_split_finder (const pAOSO2_best_split_finder &f, cv::Split)
+pAOSOGrad_best_split_finder::pAOSOGrad_best_split_finder (const pAOSOGrad_best_split_finder &f, cv::Split)
 {
   this->tree_ = f.tree_;
   this->node_ = f.node_;
@@ -325,14 +322,14 @@ pAOSO2_best_split_finder::pAOSO2_best_split_finder (const pAOSO2_best_split_find
   this->cb_split_ = f.cb_split_;
 }
 
-void pAOSO2_best_split_finder::operator() (const cv::BlockedRange &r)
+void pAOSOGrad_best_split_finder::operator() (const cv::BlockedRange &r)
 {
 
   // for each variable, find the best split
   for (int ii = r.begin(); ii != r.end(); ++ii) {
     int vi = this->tree_->sub_fi_[ii];
 
-    pAOSO2Split the_split;
+    pAOSOAutostepGradSplit the_split;
     the_split.reset();
     bool ret;
     ret = tree_->find_best_split_num_var(node_, data_, vi, 
@@ -346,23 +343,23 @@ void pAOSO2_best_split_finder::operator() (const cv::BlockedRange &r)
   } // for vi
 }
 
-void pAOSO2_best_split_finder::join (pAOSO2_best_split_finder &rhs)
+void pAOSOGrad_best_split_finder::join (pAOSOGrad_best_split_finder &rhs)
 {
   if ( rhs.cb_split_.expected_gain_ > (this->cb_split_.expected_gain_) ) {
     (this->cb_split_) = (rhs.cb_split_);
   }
 }
 
-// Implementation of pAOSO2Tree::Param
-pAOSO2Tree::Param::Param()
+// Implementation of pAOSOAutostepGradTree::Param
+pAOSOAutostepGradTree::Param::Param()
 {
   max_leaves_ = 2;
   node_size_ = 5;
   ratio_si_ = ratio_fi_ = 0.6;
 }
 
-// Implementation of pAOSO2Tree
-void pAOSO2Tree::split( pAOSO2Data* _data )
+// Implementation of pAOSOAutostepGradTree
+void pAOSOAutostepGradTree::split( pAOSOAutostepGradData* _data )
 {
   // clear
   clear();
@@ -374,7 +371,7 @@ void pAOSO2Tree::split( pAOSO2Data* _data )
   // root node
   creat_root_node(_data);
   candidate_nodes_.push(&nodes_.front());
-  pAOSO2Node* root = candidate_nodes_.top(); 
+  pAOSOAutostepGradNode* root = candidate_nodes_.top(); 
   find_best_candidate_split(root, _data);
   int nleaves = 1;
 
@@ -382,7 +379,7 @@ void pAOSO2Tree::split( pAOSO2Data* _data )
   while ( nleaves < param_.max_leaves_ &&
           !candidate_nodes_.empty() )
   {
-    pAOSO2Node* cur_node = candidate_nodes_.top(); // the most prior node
+    pAOSOAutostepGradNode* cur_node = candidate_nodes_.top(); // the most prior node
     candidate_nodes_.pop();
     --nleaves;
 
@@ -410,12 +407,12 @@ void pAOSO2Tree::split( pAOSO2Data* _data )
   }
 }
 
-void pAOSO2Tree::fit( pAOSO2Data* _data )
+void pAOSOAutostepGradTree::fit( pAOSOAutostepGradData* _data )
 {
   // fitting node data for each leaf
-  std::list<pAOSO2Node>::iterator it;
+  std::list<pAOSOAutostepGradNode>::iterator it;
   for (it = nodes_.begin(); it != nodes_.end(); ++it) {
-    pAOSO2Node* nd = &(*it);
+    pAOSOAutostepGradNode* nd = &(*it);
 
     if (nd->left_!=0) { // not a leaf
       continue;
@@ -433,26 +430,26 @@ void pAOSO2Tree::fit( pAOSO2Data* _data )
 }
 
 
-pAOSO2Node* pAOSO2Tree::get_node( float* _sample)
+pAOSOAutostepGradNode* pAOSOAutostepGradTree::get_node( float* _sample)
 {
-  pAOSO2Node* cur_node = &(nodes_.front());
+  pAOSOAutostepGradNode* cur_node = &(nodes_.front());
   while (true) {
     if (cur_node->left_==0) break; // leaf reached 
 
     int dir = cur_node->calc_dir(_sample);
-    pAOSO2Node* next = (dir==-1) ? (cur_node->left_) : (cur_node->right_);
+    pAOSOAutostepGradNode* next = (dir==-1) ? (cur_node->left_) : (cur_node->right_);
     cur_node = next;
   }
   return cur_node;
 }
 
 
-void pAOSO2Tree::get_is_leaf( VecInt& is_leaf )
+void pAOSOAutostepGradTree::get_is_leaf( VecInt& is_leaf )
 {
   is_leaf.clear();
   is_leaf.resize(nodes_.size());
 
-  std::list<pAOSO2Node>::iterator it = nodes_.begin();
+  std::list<pAOSOAutostepGradNode>::iterator it = nodes_.begin();
   for (int i = 0; it!=nodes_.end(); ++it, ++i) {
     if (it->left_==0 && it->right_==0)
       is_leaf[i] = 1;
@@ -461,7 +458,7 @@ void pAOSO2Tree::get_is_leaf( VecInt& is_leaf )
   } // for i
 }
 
-void pAOSO2Tree::predict( MLData* _data )
+void pAOSOAutostepGradTree::predict( MLData* _data )
 {
   int N = _data->X.rows;
   int K = K_;
@@ -475,7 +472,7 @@ void pAOSO2Tree::predict( MLData* _data )
   }
 }
 
-void pAOSO2Tree::predict( float* _sample, float* _score )
+void pAOSOAutostepGradTree::predict( float* _sample, float* _score )
 {
   // initialize all the *K* classes
   for (int k = 0; k < K_; ++k) {
@@ -483,7 +480,7 @@ void pAOSO2Tree::predict( float* _sample, float* _score )
   }
 
   // update all the K classes...
-  pAOSO2Node* nd = get_node(_sample);
+  pAOSOAutostepGradNode* nd = get_node(_sample);
   for (int k = 0; k < K_; ++k) {
     float val = static_cast<float>( nd->fitvals_[k] );
     *(_score + k) = val;
@@ -492,7 +489,7 @@ void pAOSO2Tree::predict( float* _sample, float* _score )
 }
 
 
-void pAOSO2Tree::subsample_samples(pAOSO2Data* _data)
+void pAOSOAutostepGradTree::subsample_samples(pAOSOAutostepGradData* _data)
 {
   /// subsample_samples samples
   cv::Mat_<double> g_samp;
@@ -509,7 +506,7 @@ void pAOSO2Tree::subsample_samples(pAOSO2Data* _data)
 
 }
 
-void pAOSO2Tree::subsample_classes_for_node( pAOSO2Node* _node, pAOSO2Data* _data )
+void pAOSOAutostepGradTree::subsample_classes_for_node( pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data )
 {
   /// find best two classes
 
@@ -603,7 +600,7 @@ void pAOSO2Tree::subsample_classes_for_node( pAOSO2Node* _node, pAOSO2Data* _dat
   //_node->sub_ci_ = ci_wt;
 }
 
-void pAOSO2Tree::clear()
+void pAOSOAutostepGradTree::clear()
 {
   nodes_.clear();
   candidate_nodes_.~priority_queue();
@@ -612,10 +609,10 @@ void pAOSO2Tree::clear()
   node_sc_.clear();
 }
 
-void pAOSO2Tree::creat_root_node( pAOSO2Data* _data )
+void pAOSOAutostepGradTree::creat_root_node( pAOSOAutostepGradData* _data )
 {
-  nodes_.push_back(pAOSO2Node(0,K_));
-  pAOSO2Node* root = &(nodes_.back());
+  nodes_.push_back(pAOSOAutostepGradNode(0,K_));
+  pAOSOAutostepGradNode* root = &(nodes_.back());
 
   // samples in node
   int NN = this->sub_si_.size();
@@ -641,7 +638,7 @@ void pAOSO2Tree::creat_root_node( pAOSO2Data* _data )
   this->calc_gain(root, _data);
 }
 
-bool pAOSO2Tree::find_best_candidate_split( pAOSO2Node* _node, pAOSO2Data* _data )
+bool pAOSOAutostepGradTree::find_best_candidate_split( pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data )
 {
   // subsample the features for the current node (node level)
   int NF = _data->data_cls_->X.cols;
@@ -652,7 +649,7 @@ bool pAOSO2Tree::find_best_candidate_split( pAOSO2Node* _node, pAOSO2Data* _data
   cv::BlockedRange br(0,nsubvar,1);
 
   // do the search in parallel
-  pAOSO2_best_split_finder bsf(this,_node,_data);
+  pAOSOGrad_best_split_finder bsf(this,_node,_data);
   cv::parallel_reduce(br, bsf);
 
   // update node's split
@@ -661,8 +658,8 @@ bool pAOSO2Tree::find_best_candidate_split( pAOSO2Node* _node, pAOSO2Data* _data
 
 }
 
-bool pAOSO2Tree::find_best_split_num_var( 
-  pAOSO2Node* _node, pAOSO2Data* _data, int _ivar, pAOSO2Split &cb_split)
+bool pAOSOAutostepGradTree::find_best_split_num_var( 
+  pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data, int _ivar, pAOSOAutostepGradSplit &cb_split)
 {
   VecIdx node_sample_si;
   MLData* data_cls = _data->data_cls_;
@@ -677,7 +674,7 @@ bool pAOSO2Tree::find_best_split_num_var(
 #endif
 
   // initialize
-  pAOSO2Solver sol_left(_data, _node->sol_this_.ci_), 
+  pAOSOAutostepGradSolver sol_left(_data, _node->sol_this_.ci_), 
                       sol_right = _node->sol_this_;
 
   // scan each possible split 
@@ -717,7 +714,7 @@ bool pAOSO2Tree::find_best_split_num_var(
     cb_split);
 }
 
-void pAOSO2Tree::make_node_sorted_idx( pAOSO2Node* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node )
+void pAOSOAutostepGradTree::make_node_sorted_idx( pAOSOAutostepGradNode* _node, MLData* _data, int _ivar, VecIdx& sorted_idx_node )
 {
   VecIdx16 sam_idx16;
   VecIdx32 sam_idx32;
@@ -753,11 +750,11 @@ void pAOSO2Tree::make_node_sorted_idx( pAOSO2Node* _node, MLData* _data, int _iv
   }  
 }
 
-bool pAOSO2Tree::set_best_split_num_var( 
-  pAOSO2Node* _node, MLData* _data, int _ivar, 
+bool pAOSOAutostepGradTree::set_best_split_num_var( 
+  pAOSOAutostepGradNode* _node, MLData* _data, int _ivar, 
   VecIdx& node_sample_si, 
   int best_i, double best_gain, double best_gain_left, double best_gain_right,
-  pAOSO2Split &cb_split)
+  pAOSOAutostepGradSplit &cb_split)
 {
   if (best_i==-1) return false; // fail to find...
 
@@ -783,7 +780,7 @@ bool pAOSO2Tree::set_best_split_num_var(
   return true;  
 }
 
-bool pAOSO2Tree::can_split_node( pAOSO2Node* _node )
+bool pAOSOAutostepGradTree::can_split_node( pAOSOAutostepGradNode* _node )
 {
   bool flag = true;
   int nn = _node->sample_idx_.size();
@@ -792,15 +789,15 @@ bool pAOSO2Tree::can_split_node( pAOSO2Node* _node )
           idx != -1);                  // has candidate split  
 }
 
-bool pAOSO2Tree::split_node( pAOSO2Node* _node, pAOSO2Data* _data )
+bool pAOSOAutostepGradTree::split_node( pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data )
 {
   // create left and right node
-  pAOSO2Node tmp1(nodes_.size(), K_);
+  pAOSOAutostepGradNode tmp1(nodes_.size(), K_);
   nodes_.push_back(tmp1);
   _node->left_ = &(nodes_.back());
   _node->left_->parent_ = _node;
 
-  pAOSO2Node tmp2(nodes_.size(), K_);
+  pAOSOAutostepGradNode tmp2(nodes_.size(), K_);
   nodes_.push_back(tmp2);
   _node->right_ = &(nodes_.back());
   _node->right_->parent_ = _node;
@@ -857,14 +854,14 @@ bool pAOSO2Tree::split_node( pAOSO2Node* _node, pAOSO2Data* _data )
   return true;
 }
 
-void pAOSO2Tree::calc_gain(pAOSO2Node* _node, pAOSO2Data* _data)
+void pAOSOAutostepGradTree::calc_gain(pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data)
 {
   double gain;
   _node->sol_this_.calc_gain(gain);
   _node->split_.this_gain_ = gain;
 }
 
-void pAOSO2Tree::fit_node( pAOSO2Node* _node, pAOSO2Data* _data )
+void pAOSOAutostepGradTree::fit_node( pAOSOAutostepGradNode* _node, pAOSOAutostepGradData* _data )
 {
   int nn = _node->sample_idx_.size();
   if (nn<=0) return;
@@ -884,78 +881,73 @@ void pAOSO2Tree::fit_node( pAOSO2Node* _node, pAOSO2Data* _data )
 #endif
 
 #ifdef OUTPUT
-  int cls1 = _node->sol_this_.ci_->at(0);
-  int cls2 = _node->sol_this_.ci_->at(1);
+  //os << "id = " << _node->id_ << "(ter), ";
+  //os << "n = " << _node->sample_idx_.size() << ", ";
+  //os << "cls = (" << _node->cls1_ << ", " << _node->cls2_ << "), ";
 
-  os << "id = " << _node->id_ << "(ter), ";
-  os << "n = " << _node->sample_idx_.size() << ", ";
-  os << "cls = (" << cls1 << ", " 
-    << cls2 << "), ";
+  //// # of cls1 and cls2
+  //int ncls1 = 0, ncls2 = 0;
+  //for (int i = 0; i < _node->sample_idx_.size(); ++i) {
+  //  int ix = _node->sample_idx_[i];
+  //  int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
+  //  if ( k == cls1) ncls1++;
+  //  if ( k == cls2) ncls2++;
+  //}
+  //// os << "ncls1 = " << ncls1 << ", " << "ncls2 = " << ncls2 << ", ";
 
-  // # of cls1 and cls2
-  int ncls1 = 0, ncls2 = 0;
-  for (int i = 0; i < _node->sample_idx_.size(); ++i) {
-    int ix = _node->sample_idx_[i];
-    int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
-    if ( k == cls1) ncls1++;
-    if ( k == cls2) ncls2++;
-  }
-  // os << "ncls1 = " << ncls1 << ", " << "ncls2 = " << ncls2 << ", ";
+  //// min, max of p
+  //vector<double> pp1, pp2;
+  //for (int i = 0; i < _node->sample_idx_.size(); ++i) {
+  //  int ix = _node->sample_idx_[i];
+  //  double* ptr = _data->p_->ptr<double>(ix);
+  //  int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
+  //  if ( k == cls1) {
+  //    pp1.push_back( *(ptr+k) );
+  //  }
+  //  if ( k == cls2) {
+  //    pp2.push_back( *(ptr+k) );
+  //  }
+  //}
 
-  // min, max of p
-  vector<double> pp1, pp2;
-  for (int i = 0; i < _node->sample_idx_.size(); ++i) {
-    int ix = _node->sample_idx_[i];
-    double* ptr = _data->p_->ptr<double>(ix);
-    int k = static_cast<int>( _data->data_cls_->Y.at<float>(ix) );
-    if ( k == cls1) {
-      pp1.push_back( *(ptr+k) );
-    }
-    if ( k == cls2) {
-      pp2.push_back( *(ptr+k) );
-    }
-  }
+  //vector<double>::iterator it;
+  //double pp1max, pp1min;
+  //if (!pp1.empty()) {
+  //  it = std::max(pp1.begin(), pp1.end());
+  //  if (it==pp1.end()) it = pp1.begin();
+  //  pp1max = *it;
+  //  it = std::min(pp1.begin(), pp1.end());
+  //  if (it==pp1.end()) it = pp1.begin();
+  //  pp1min = *it;
+  //  //os << "pp1max = " << pp1max << ", " << "pp1min = " << pp1min << ", ";
+  //}
+  //
+  //double pp2max, pp2min;
+  //if (!pp2.empty()) {
+  //  it = std::max(pp2.begin(), pp2.end());
+  //  if (it==pp2.end()) it = pp2.begin();
+  //  pp2max = *it;
+  //  it = std::min(pp2.begin(), pp2.end());
+  //  if (it==pp2.end()) it = pp2.begin();
+  //  pp2min = *it;
+  //  //os << "pp2max = " << pp2max << ", " << "pp2min = " << pp2min << ", "; 
+  //}
 
-  vector<double>::iterator it;
-  double pp1max, pp1min;
-  if (!pp1.empty()) {
-    it = std::max(pp1.begin(), pp1.end());
-    if (it==pp1.end()) it = pp1.begin();
-    pp1max = *it;
-    it = std::min(pp1.begin(), pp1.end());
-    if (it==pp1.end()) it = pp1.begin();
-    pp1min = *it;
-    //os << "pp1max = " << pp1max << ", " << "pp1min = " << pp1min << ", ";
-  }
+  //if (ncls1==0) os << "cls1 (n = 0), ";
+  //else 
+  //  os << "cls1 (n = " << ncls1 << ", pmax = " << pp1max
+  //     << ", pmin = " << pp1min << "), ";
 
-  double pp2max, pp2min;
-  if (!pp2.empty()) {
-    it = std::max(pp2.begin(), pp2.end());
-    if (it==pp2.end()) it = pp2.begin();
-    pp2max = *it;
-    it = std::min(pp2.begin(), pp2.end());
-    if (it==pp2.end()) it = pp2.begin();
-    pp2min = *it;
-    //os << "pp2max = " << pp2max << ", " << "pp2min = " << pp2min << ", "; 
-  }
+  //if (ncls2==0) os << "cls2 (n = 0), ";
+  //else
+  //  os << "cls2 (n = " << ncls2 << ", pmax = " << pp2max
+  //  << ", pmin = " << pp2min << "), ";
 
-  if (ncls1==0) os << "cls1 (n = 0), ";
-  else 
-    os << "cls1 (n = " << ncls1 << ", pmax = " << pp1max
-    << ", pmin = " << pp1min << "), ";
-
-  if (ncls2==0) os << "cls2 (n = 0), ";
-  else
-    os << "cls2 (n = " << ncls2 << ", pmax = " << pp2max
-    << ", pmin = " << pp2min << "), ";
-
-  os << "gamma = (" << _node->fitvals_[0] << ", " 
-    << _node->fitvals_[1] << ")" << endl;
+  //os << "gamma = " << _node->fit_val_ << endl;
 #endif // OUTPUT
 }
 
-// Implementation of pAOSOLogitBoostV2::Param
-pAOSOLogitBoostV2::Param::Param()
+// Implementation of pAOSOGradAutostepBoost::Param
+pAOSOGradAutostepBoost::Param::Param()
 {
   T = 2;
   v = 0.1;
@@ -964,10 +956,10 @@ pAOSOLogitBoostV2::Param::Param()
   ratio_si_ = ratio_fi_ = 0.6;
   weight_ratio_si_ = 0.6;
 }
-// Implementation of pAOSOLogitBoostV2
-const double pAOSOLogitBoostV2::EPS_LOSS = 1e-6;
-const double pAOSOLogitBoostV2::MAX_F = 100;
-void pAOSOLogitBoostV2::train( MLData* _data )
+// Implementation of pAOSOGradAutostepBoost
+const double pAOSOGradAutostepBoost::EPS_LOSS = 1e-6;
+const double pAOSOGradAutostepBoost::MAX_F = 100;
+void pAOSOGradAutostepBoost::train( MLData* _data )
 {
   train_init(_data);
 
@@ -998,7 +990,7 @@ void pAOSOLogitBoostV2::train( MLData* _data )
 
 }
 
-void pAOSOLogitBoostV2::predict( MLData* _data )
+void pAOSOGradAutostepBoost::predict( MLData* _data )
 {
   int N = _data->X.rows;
   int K = K_;
@@ -1012,7 +1004,7 @@ void pAOSOLogitBoostV2::predict( MLData* _data )
   }
 }
 
-void pAOSOLogitBoostV2::predict( float* _sapmle, float* _score )
+void pAOSOGradAutostepBoost::predict( float* _sapmle, float* _score )
 {
   // initialize
   for (int k = 0; k < K_; ++k) {
@@ -1031,7 +1023,7 @@ void pAOSOLogitBoostV2::predict( float* _sapmle, float* _score )
   } // for t
 }
 
-void pAOSOLogitBoostV2::predict( MLData* _data, int _Tpre )
+void pAOSOGradAutostepBoost::predict( MLData* _data, int _Tpre )
 {
   // trees to be used
   if (_Tpre > NumIter_) _Tpre = NumIter_;
@@ -1068,7 +1060,7 @@ void pAOSOLogitBoostV2::predict( MLData* _data, int _Tpre )
   Tpre_beg_ = _Tpre;
 }
 
-void pAOSOLogitBoostV2::predict( float* _sapmle, float* _score, int _Tpre )
+void pAOSOGradAutostepBoost::predict( float* _sapmle, float* _score, int _Tpre )
 {
   // IMPORTANT: caller should assure the validity of _Tpre
 
@@ -1090,17 +1082,17 @@ void pAOSOLogitBoostV2::predict( float* _sapmle, float* _score, int _Tpre )
 }
 
 
-int pAOSOLogitBoostV2::get_class_count()
+int pAOSOGradAutostepBoost::get_class_count()
 {
   return K_;
 }
 
-int pAOSOLogitBoostV2::get_num_iter()
+int pAOSOGradAutostepBoost::get_num_iter()
 {
   return NumIter_;
 }
 
-void pAOSOLogitBoostV2::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
+void pAOSOGradAutostepBoost::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
 {
   nr_wts.resize(this->NumIter_);
   nr_wtc.resize(this->NumIter_);
@@ -1112,7 +1104,7 @@ void pAOSOLogitBoostV2::get_nr( VecIdx& nr_wts, VecIdx& nr_wtc )
 
 }
 
-void pAOSOLogitBoostV2::get_cc( int itree, VecInt& node_cc )
+void pAOSOGradAutostepBoost::get_cc( int itree, VecInt& node_cc )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1122,7 +1114,7 @@ void pAOSOLogitBoostV2::get_cc( int itree, VecInt& node_cc )
 }
 
 
-void pAOSOLogitBoostV2::get_sc( int itree, VecInt& node_sc )
+void pAOSOGradAutostepBoost::get_sc( int itree, VecInt& node_sc )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1131,7 +1123,7 @@ void pAOSOLogitBoostV2::get_sc( int itree, VecInt& node_sc )
   node_sc = trees_[itree].node_sc_;
 }
 
-void pAOSOLogitBoostV2::get_is_leaf( int itree, VecInt& is_leaf )
+void pAOSOGradAutostepBoost::get_is_leaf( int itree, VecInt& is_leaf )
 {
   if (NumIter_==0) return;
   if (itree<0) itree = 0;
@@ -1140,7 +1132,7 @@ void pAOSOLogitBoostV2::get_is_leaf( int itree, VecInt& is_leaf )
   trees_[itree].get_is_leaf(is_leaf);
 }
 
-void pAOSOLogitBoostV2::train_init( MLData* _data )
+void pAOSOGradAutostepBoost::train_init( MLData* _data )
 {
   // class count
   K_ = _data->get_class_count();
@@ -1152,7 +1144,7 @@ void pAOSOLogitBoostV2::train_init( MLData* _data )
   p_.create(N,K_); 
   update_p();
 
-  // temp: shrikage factor
+  // automatic step length(shrinkage factor) by smoothness upper bounding
   param_.v = 1/double(N);
 
   // Loss
@@ -1202,7 +1194,7 @@ void pAOSOLogitBoostV2::train_init( MLData* _data )
   Tpre_beg_ = 0;
 }
 
-void pAOSOLogitBoostV2::update_F(int t)
+void pAOSOGradAutostepBoost::update_F(int t)
 {
   int N = logitdata_.data_cls_->X.rows;
   double v = param_.v;
@@ -1220,7 +1212,7 @@ void pAOSOLogitBoostV2::update_F(int t)
   } // for i
 }
 
-void pAOSOLogitBoostV2::update_p()
+void pAOSOGradAutostepBoost::update_p()
 {
   int N = F_.rows;
   int K = K_;
@@ -1245,7 +1237,7 @@ void pAOSOLogitBoostV2::update_p()
   }// for n  
 }
 
-void pAOSOLogitBoostV2::update_gg()
+void pAOSOGradAutostepBoost::update_gg()
 {
   int N = F_.rows;
   double delta = 0;
@@ -1265,7 +1257,7 @@ void pAOSOLogitBoostV2::update_gg()
   } // for i
 }
 
-void pAOSOLogitBoostV2::update_abs_grad_class(int t)
+void pAOSOGradAutostepBoost::update_abs_grad_class(int t)
 {
   int N = F_.rows;
 
@@ -1281,7 +1273,7 @@ void pAOSOLogitBoostV2::update_abs_grad_class(int t)
 }
 
 
-void pAOSOLogitBoostV2::calc_loss( MLData* _data )
+void pAOSOGradAutostepBoost::calc_loss( MLData* _data )
 {
   const double PMIN = 0.0001;
   int N = _data->X.rows;
@@ -1295,7 +1287,7 @@ void pAOSOLogitBoostV2::calc_loss( MLData* _data )
   }
 }
 
-void pAOSOLogitBoostV2::calc_loss_iter( int t )
+void pAOSOGradAutostepBoost::calc_loss_iter( int t )
 {
   double sum = 0;
   int N = L_.rows;
@@ -1305,7 +1297,7 @@ void pAOSOLogitBoostV2::calc_loss_iter( int t )
   L_iter_.at<double>(t) = sum;
 }
 
-void pAOSOLogitBoostV2::calc_loss_class(MLData* _data,  int t )
+void pAOSOGradAutostepBoost::calc_loss_class(MLData* _data,  int t )
 {
   const double PMIN = 0.0001;
   int N = _data->X.rows;
@@ -1319,7 +1311,7 @@ void pAOSOLogitBoostV2::calc_loss_class(MLData* _data,  int t )
   }
 }
 
-bool pAOSOLogitBoostV2::should_stop( int t )
+bool pAOSOGradAutostepBoost::should_stop( int t )
 {
   // stop if too small #classes subsampled
   if ( ! (trees_[t].node_cc_.empty()) ) {
@@ -1332,7 +1324,7 @@ bool pAOSOLogitBoostV2::should_stop( int t )
   return ( (loss<EPS_LOSS) ? true : false );
 }
 
-void pAOSOLogitBoostV2::calc_grad( int t )
+void pAOSOGradAutostepBoost::calc_grad( int t )
 {
   int N = F_.rows;
   double delta = 0;
