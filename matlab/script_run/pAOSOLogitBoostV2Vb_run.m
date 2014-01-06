@@ -1,6 +1,7 @@
 %%
-name = 'zipcode38';
+% name = 'zipcode38';
 % name = 'optdigits05';
+name = 'pendigits49';
 % dir_data = 'D:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -16,7 +17,7 @@ cns = {1};
 crs = {1.1};
 cwrs = {0.95};
 %%% feature
-crf = {0.05};
+crf = {0.4};
 %%
 h = batch_pAOSOLogitBoostV2Vb();
 h.num_Tpre = num_Tpre;

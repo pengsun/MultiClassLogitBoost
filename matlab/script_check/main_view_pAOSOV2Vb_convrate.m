@@ -1,9 +1,10 @@
 %% config
-name = 'optdigits05';
+% name = 'optdigits05';
 % name = 'zipcode38';
+name = 'pendigits49';
 algoname1 = 'pAOSOLogitBoostV2Vb';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-01_J2_ns1_wrs9.50e-01_rs1.10e+00_rf2.00e-01.mat';
+fn1 = 'T1000_v1.0e-01_J2_ns1_wrs9.50e-01_rs1.10e+00_rf4.00e-01.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -40,10 +41,18 @@ end
 figure;
 plot(h);
 set(gca,'yscale','log');
+grid on;
 
 figure;
 plot(ratio);
+title('Hessian ratio');
 grid on;
+%%
+L = sum(loss_cls);
+figure;
+plot(it1,L(it1)); 
+set(gca,'yscale','log'); grid on;
+title('Loss');
 %% sample & class count
 % for i = 1 : numel(tree_node_cc)
 %   cc(i) = tree_node_cc{i}(1);
