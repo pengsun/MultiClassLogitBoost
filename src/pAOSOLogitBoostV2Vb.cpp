@@ -987,7 +987,12 @@ void pAOSOLogitBoostV2Vb::train( MLData* _data )
     trees_[t].fit(&logitdata_);
 
     update_F(t);
-    update_p();
+    update_p(); 
+
+    MatDbl tmp;
+    p_.copyTo(tmp);
+    pp_.push_back(tmp);
+
     update_gg();
     update_abs_grad_class(t);
 
@@ -1157,6 +1162,17 @@ void pAOSOLogitBoostV2Vb::get_si_to_leaf( int itree, VecInt &si_to_leaf )
 
   si_to_leaf = trees_[itree].si_to_leaf;
 }
+
+
+void pAOSOLogitBoostV2Vb::get_pp( int itree, MatDbl &p )
+{
+  if (NumIter_==0) return;
+  if (itree<0) itree = 0;
+  if ( (itree+1) >= NumIter_ ) itree = (NumIter_-1);
+
+  p = pp_[itree];
+}
+
 
 void pAOSOLogitBoostV2Vb::train_init( MLData* _data )
 {

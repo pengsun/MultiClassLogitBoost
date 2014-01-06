@@ -5,7 +5,7 @@ name = 'zipcode38';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pAOSOLogitBoostV2',name);
+  'rst\pAOSOLogitBoostV2Vb',name);
 %%
 num_Tpre = 1000;
 T = 1000;
@@ -18,7 +18,7 @@ cwrs = {0.95};
 %%% feature
 crf = {0.05};
 %%
-h = batch_pAOSOLogitBoostV2();
+h = batch_pAOSOLogitBoostV2Vb();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;

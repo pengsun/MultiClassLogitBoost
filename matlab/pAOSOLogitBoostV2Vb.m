@@ -60,6 +60,14 @@ classdef pAOSOLogitBoostV2Vb
       end % for i
     end % get_is_leaf    
     
+    function pp = get_pp(obj)
+      NumIter = pAOSOLogitBoostV2Vb_mex('get',obj.ptr);
+      for i = 1 : NumIter
+        pp{i} = ...
+          pAOSOLogitBoostV2Vb_mex('get_pp',obj.ptr, i); %#ok<AGROW>
+      end % for i
+    end % get_pp
+    
     function Y = predict(obj, X, T)
       if (nargin==2) 
         T = pAOSOLogitBoostV2Vb_mex('get',obj.ptr);

@@ -184,6 +184,25 @@ void get_si_to_leaf(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   plhs[0] = VecInt_to_mxArray(si_to_leaf);
 }
 
+// [pp] = get_pp(dummy, h, itree);
+void get_pp(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
+{
+  /* Input */
+  // get pointer
+  double *ptmp = (double*)mxGetData(prhs[1]);
+  long long p = (long long) ptmp[0];
+  booster_t* pbooster = (booster_t*) p;
+  // itree
+  int itree = (int)mxGetScalar(prhs[2]);
+
+  // retrieve 
+  MatDbl pp;
+  pbooster->get_pp(itree, pp);
+
+  /*Output*/
+  plhs[0] = cvMatDbl_to_mxArray(pp);
+}
+
 // delete(dummy, h);
 void del(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[]) 
 {
@@ -247,6 +266,9 @@ void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])
   }
   else if ( 0 == strcmp(str,"get_si_to_leaf") ) {
     get_si_to_leaf(nlhs,plhs, nrhs,prhs);
+  }
+  else if ( 0 == strcmp(str,"get_pp") ) {
+    get_pp(nlhs,plhs, nrhs,prhs);
   }
   else if ( 0 == strcmp(str,"predict") ) {
     predict(nlhs,plhs, nrhs,prhs);

@@ -12,6 +12,8 @@ typedef std::vector<int> VecIdx;
 typedef std::vector<int> VecInt;
 typedef std::vector<VecInt> VecVecInt;
 typedef std::vector<double> VecDbl;
+typedef cv::Mat_<double> MatDbl;
+typedef std::vector<cv::Mat_<double> > VecMatDbl;
 
 // data shared by tree and booster
 struct pAOSO2Data {
@@ -208,12 +210,14 @@ public:
   void get_sc (int itree, VecInt& node_sc); // sample count
   void get_is_leaf (int itree, VecInt& is_leaf);
   void get_si_to_leaf (int itree, VecInt &si_to_leaf); // sample index to leaf id
+  void get_pp (int itree, MatDbl &p);
 
 public:
   std::vector<double> abs_grad_; // total gradient. indicator for stopping. 
   cv::Mat_<double> F_, p_; // Score and Probability. #samples * #class
   cv::Mat_<double> abs_grad_class_; // #iteration * #classes
   cv::Mat_<double> loss_class_;
+  VecMatDbl pp_; // #iterations * (#samples*#classes)
 
 
 protected:
