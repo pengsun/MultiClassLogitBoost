@@ -1,10 +1,11 @@
 %% config
 % name = 'optdigits05';
-% name = 'zipcode38';
-name = 'pendigits49';
+name = 'zipcode38';
+% name = 'pendigits49';
+% name = 'mnist10k05';
 algoname1 = 'pAOSOLogitBoostV2Vb';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-01_J2_ns1_wrs9.50e-01_rs1.10e+00_rf4.00e-01.mat';
+fn1 = 'T1000_v1.0e-01_J2_ns1_wrs1.10e+00_rs1.10e+00_rf5.00e-02.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\data\dataset_mat';
@@ -27,6 +28,7 @@ tree_node_sc = tmp.tree_node_sc;
 grad_cls = tmp.GradCls;
 loss_cls = tmp.LossCls;
 pp = tmp.pp;
+tree_si_to_leaf = tmp.tree_si_to_leaf;
 clear tmp;
 %% weight (Hessian)
 for i = 1 : length(pp)
@@ -40,12 +42,37 @@ for j = 2 : length(h)
 end
 figure;
 plot(h);
+title('Hessian');
 set(gca,'yscale','log');
 grid on;
 
 figure;
 plot(ratio);
 title('Hessian ratio');
+grid on;
+%% node weight
+for i = 2 : length(pp)
+  tmp = pp{i};
+  p = tmp(1,:);
+  tmp = pp{i-1};
+  pprev = tmp(1,:);
+  
+  % each node
+  uid = unique( tree_si_to_leaf{i} );
+  for j = 1 : length(uid)
+    ix = (tree_si_to_leaf{i}==uid(j));
+    p_node = p(ix);
+    pprev_node = pprev(ix);
+    h_node = sum( 4.*p_node.*(1-p_node) );
+    hprev_node = sum( 4.*pprev_node.*(1-pprev_node) );
+    rr(i, j) = h_node/(hprev_node + eps);
+  end
+end
+
+figure;
+plot(rr);
+% set(gca,'ylim',[0.7,1.3]);
+title('Node Hessian ratio');
 grid on;
 %%
 L = sum(loss_cls);
@@ -153,6 +180,11 @@ title('Loss');
 % end
 % fprintf('\n');
 % clear temp;
+%% plot error
+figure;
+plot(it1, err_it1(it1));
+title('testing error');
+grid on;
 %% print error
 fprintf('%s:\n',fn1);
 fprintf('err = %d\n\n',err_it1(end));
