@@ -1,14 +1,14 @@
 %%
-name = 'optdigits';
+% name = 'optdigits';
 % name = 'zipcode38';
-% name = 'optdigits05';
+name = 'optdigits05';
 % name = 'pendigits49';
 % name = 'mnist10k05';
 % dir_data = 'D:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pAOSOLogitBoostV2Vb',name);
+  'rst\pAOSOGradBoostVb',name);
 %%
 num_Tpre = 1000;
 T = 1000;
@@ -19,9 +19,9 @@ cns = {1};
 crs = {1.1};
 cwrs = {1.1};
 %%% feature
-crf = {0.031};
+crf = {0.2};
 %%
-h = batch_pAOSOLogitBoostV2Vb();
+h = batch_pAOSOGradBoostVb();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;

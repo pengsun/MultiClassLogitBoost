@@ -93,8 +93,14 @@ For parameters see batch_vb6_samp_boost.
 pAvgSampVTLogitBoost
 pVbExtSamp14VTLogitBoost. Estimate w matrix by averaging. For parameters see batch_avgsamp_boost
 
-pAOSOLogitBoostV2
+pAOSOLogitBoostV2 (stable)
 pAOSOLogitBoost with weight pruning and feature subsampling
 
 pAOSOGradBoost
 AOSO Boosting with gradient descent
+
+pAOSOLogitBoostV2Vb
+pAOSOLogitBoostV2, verbose. Record leaf-to-instance mapping.
+
+pAOSOGradBoostVb
+pAOSOGradBoost, verbose. Record leaf-to-instance mapping.
