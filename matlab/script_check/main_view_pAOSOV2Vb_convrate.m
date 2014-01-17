@@ -1,11 +1,11 @@
 %% config
-% name = 'optdigits05';
+name = 'optdigits05';
 % name = 'zipcode38';
 % name = 'pendigits49';
-name = 'mnist10k05';
+% name = 'mnist10k05';
 algoname1 = 'pAOSOLogitBoostV2Vb';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-001_J2_ns1_wrs1.10e+000_rs1.10e+000_rf3.10e-002.mat';
+fn1 = 'T1000_v1.0e-01_J2_ns1_wrs1.10e+00_rs1.10e+00_rf2.00e-01.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 % dir_data = 'D:\data\dataset_mat';
