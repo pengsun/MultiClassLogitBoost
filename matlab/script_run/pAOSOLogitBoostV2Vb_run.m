@@ -1,9 +1,9 @@
 %%
-name = 'optdigits';
+% name = 'optdigits';
 % name = 'zipcode38';
 % name = 'optdigits05';
 % name = 'pendigits49';
-% name = 'mnist10k05';
+name = 'mnist10k05';
 % dir_data = 'D:\Users\sp\data\dataset2_mat';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
@@ -13,7 +13,7 @@ dir_rst = fullfile('.\',...
 num_Tpre = 1000;
 T = 1000;
 cv  = {0.1};
-cJ = {2};
+cJ = {8};
 cns = {1};
 %%% sample
 crs = {1.1};

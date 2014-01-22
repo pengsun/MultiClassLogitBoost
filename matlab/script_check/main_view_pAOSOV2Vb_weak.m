@@ -1,14 +1,14 @@
 %% config
-name = 'optdigits05';
+% name = 'optdigits05';
 % name = 'zipcode38';
 % name = 'pendigits49';
-% name = 'mnist10k05';
+name = 'mnist10k05';
 algoname1 = 'pAOSOLogitBoostV2Vb';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-001_J2_ns1_wrs1.10e+000_rs1.10e+000_rf2.00e-001.mat';
+fn1 = 'T1000_v1.0e-001_J8_ns1_wrs1.10e+000_rs1.10e+000_rf3.10e-002.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
-% dir_data = 'D:\data\dataset_mat';
+dir_data = 'D:\data\dataset2_mat';
 
 % it_ind = [];
 % it_ind = [1000, 2000,3000,4000,4700];
@@ -30,6 +30,10 @@ loss_cls = tmp.LossCls;
 pp = tmp.pp;
 tree_si_to_leaf = tmp.tree_si_to_leaf;
 clear tmp;
+%% load dataset
+tmp = load( fullfile(dir_data, [name,'.mat']) );
+r = double( (tmp.Ytr==0) );
+clear tmp;
 %%
 T = length(pp);
 for i = 2 : T
@@ -41,73 +45,20 @@ for i = 2 : T
   for j = 1 : length(uid)
     ix = (tree_si_to_leaf{i}==uid(j));
     p_node = p(ix);
-    pprev_node = pprev(ix);
-    h_node = sum( 4.*p_node.*(1-p_node) );
-    hprev_node = sum( 4.*pprev_node.*(1-pprev_node) );
-    rr(i, j) = h_node/(hprev_node + eps);
+    r_node = r(ix);
+    g_node = 2*(p_node - r_node);
+    wr(i,j) = abs(sum(g_node))/sum(abs(g_node));
   end
 end
 
+% the firs row is omitted
+wr(1,:) = [];
+
+%% plot weak
 figure;
-plot(rr);
+plot(wr);
 % set(gca,'ylim',[0.7,1.3]);
-title('Node Hessian ratio');
+title('Node Weak');
 grid on;
-%% weight (Hessian)
-% for i = 1 : length(pp)
-%   tmp = pp{i};
-%   p = tmp(1,:);
-%   h(i) = sum( 4.*p.*(1-p) );
-% end
-% ratio = [];
-% for j = 2 : length(h)
-%   ratio(end+1) = h(j)/(h(j-1)+eps);
-% end
-% figure;
-% plot(h);
-% title('Hessian');
-% set(gca,'yscale','log');
-% grid on;
-% 
-% figure;
-% plot(ratio);
-% title('Hessian ratio');
-% grid on;
-%% node weight
-% for i = 2 : length(pp)
-%   tmp = pp{i};
-%   p = tmp(1,:);
-%   tmp = pp{i-1};
-%   pprev = tmp(1,:);
-%   
-%   % each node
-%   uid = unique( tree_si_to_leaf{i} );
-%   for j = 1 : length(uid)
-%     ix = (tree_si_to_leaf{i}==uid(j));
-%     p_node = p(ix);
-%     pprev_node = pprev(ix);
-%     h_node = sum( 4.*p_node.*(1-p_node) );
-%     hprev_node = sum( 4.*pprev_node.*(1-pprev_node) );
-%     rr(i, j) = h_node/(hprev_node + eps);
-%   end
-% end
-% 
-% figure;
-% plot(rr);
-% % set(gca,'ylim',[0.7,1.3]);
-% title('Node Hessian ratio');
-% grid on;
-%% plot loss
-% L = sum(loss_cls);
-% figure;
-% plot(it1,L(it1)); 
-% set(gca,'yscale','log'); grid on;
-% title('Loss');
-%% plot error
-% figure;
-% plot(it1, err_it1(it1));
-% title('testing error');
-% grid on;
-%% print error
-% fprintf('%s:\n',fn1);
-% fprintf('err = %d\n\n',err_it1(end));
+%% print weak
+fprintf('min weak = %d\n', min(min(wr)));
