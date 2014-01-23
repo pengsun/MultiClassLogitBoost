@@ -104,3 +104,6 @@ pAOSOLogitBoostV2, verbose. Record leaf-to-instance mapping.
 
 pAOSOGradBoostVb
 pAOSOGradBoost, verbose. Record leaf-to-instance mapping.
+
+pAOSOMARTVb
+pAOSOLogitBoostV2Vb, but using Least Square Fitting of gradient when growing a tree (one step Newton when fitting leaf value). 

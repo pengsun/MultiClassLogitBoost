@@ -5,7 +5,7 @@
 name = 'mnist10k05';
 algoname1 = 'pAOSOLogitBoostV2Vb';
 dir_root1 = fullfile('.\rst',algoname1);
-fn1 = 'T1000_v1.0e-001_J8_ns1_wrs1.10e+000_rs1.10e+000_rf3.10e-002.mat';
+fn1 = 'T1000_v1.0e-001_J2_ns1_wrs1.10e+000_rs1.10e+000_rf3.10e-002.mat';
 
 % dir_data = 'E:\Users\sp\data\dataset_mat';
 dir_data = 'D:\data\dataset2_mat';
@@ -62,3 +62,5 @@ title('Node Weak');
 grid on;
 %% print weak
 fprintf('min weak = %d\n', min(min(wr)));
+fprintf('max weak = %d\n', max(max(wr)));
+fprintf('median weak = %d\n', median(median(wr)));

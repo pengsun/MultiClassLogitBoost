@@ -8,8 +8,8 @@ name = 'mnist10k05';
 dir_data = 'D:\Data\dataset2_mat';
 fn_data = fullfile(dir_data, [name,'.mat']);
 dir_rst = fullfile('.\',...
-  'rst\pAOSOGradBoostVb',name);
-%%5
+  'rst\pAOSOMARTVb',name);
+%%
 num_Tpre = 1000;
 T = 1000;
 cv  = {0.1};
@@ -21,7 +21,7 @@ cwrs = {1.1};
 %%% feature
 crf = {0.031};
 %%
-h = batch_pAOSOGradBoostVb();
+h = batch_pAOSOMARTVb();
 h.num_Tpre = num_Tpre;
 h.T = T;
 h.cv = cv;
