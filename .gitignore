@@ -5,3 +5,12 @@
 *.dep
 *.pdb
 *.ncb
+*.user
+*.exe
+*.htm
+*.map
+*.suo
+*.mexw32
+/test_VC/test_pSampVTLogitBoost/Debug/*.res
+*.mat
+*.res
